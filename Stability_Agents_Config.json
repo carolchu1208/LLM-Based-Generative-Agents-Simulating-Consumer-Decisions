@@ -1,0 +1,281 @@
+{
+    "general": {
+      "global_time_limit": 24,
+      "max_attempts": 2,
+      "memory_limit": 100,
+      "prompt_meta": "### Instruction:\n{}\n### Response:"
+    },
+    "town_areas": {
+        "fitness": {
+            "Serenity Flow Yoga Studio": "A tranquil yoga and pilates studio featuring mindfulness and holistic movement. Frequented by professionals, influencers, and high-profile wellness advocates.",
+            "HIIT House Gym": "An elite training facility specializing in strength training, cardio endurance, and high-intensity interval workouts. Attracts executives, personal trainers, and fitness enthusiasts."
+        },
+        "residences": {
+            "Parkview Luxury Residences": "A high-end residential building with penthouses, a rooftop pool, and a private gym. Residents are professionals and influencers.",
+            "Skyline Elite Condos": "A modern high-rise with luxury apartments, smart home features, and a high-tech wellness center."
+        },
+        "work": {
+            "101 Work Building": "A glass skyscraper housing finance and consulting firms. Employees prioritize work-life balance and wellness.",
+            "Tech Office Midtown": "A state-of-the-art office hub for technology companies and startups. Employees enjoy wellness perks like standing desks, meditation rooms, and running clubs.",
+            "Downtown Consulting Firm": "An exclusive consulting office with a rooftop terrace and networking spaces. Employees balance intense projects with wellness and high-end lifestyle choices."
+        },
+        "grocery": {
+            "Dean & DeLuca - NYC": "A luxury gourmet market known for fine foods, high-quality coffee, and imported delicacies. A social hotspot where professionals and high-income families shop and network over coffee."
+        },
+        "education": {
+            "Bright Future Private Academy": "A top-tier private school with an extensive extracurricular program, including sports, arts, and leadership training. Parents actively participate in fundraisers and networking events.",
+            "Parkview Luxury Daycare": "A boutique daycare with an organic meal plan, language immersion programs, and yoga for toddlers. Many high-income parents drop their kids off before heading to work or fitness classes."
+        },
+        "shopping": {
+            "Lululemon Boutique – Upper East Side": "A premium Lululemon store offering the latest in luxury activewear, exclusive product launches, and private styling consultations. Located near fitness centers and organic cafes, it's a hub for stylish, health-conscious professionals.",
+            "Revive Wellness Collective": "A luxury wellness boutique offering high-end skincare, premium supplements, and personalized recovery treatments. Owned by Mia Thompson, it serves professionals and wellness enthusiasts looking for elite self-care solutions.",
+            "Tiffany & Co. – Upper East Side": "A world-renowned luxury jewelry store symbolizing elegance and status. Many residents shop here for special occasions or high-end gifts.",
+            "Madison Avenue Designer Row": "A stretch of high-end fashion stores featuring brands like Chanel, Gucci, and Louis Vuitton. A prime shopping district for high-net-worth individuals."
+        },
+        "social_dining": {
+            "The Gourmet Bistro": "A fine dining restaurant offering gourmet cuisine, a wine cellar, and a private dining room. Often frequented by professionals and influencers for special occasions.",
+            "The Organic Cafe": "A cozy, organic cafe offering fresh, locally sourced ingredients. A popular spot for brunch and post-workout meals, often visited by fitness trainers and wellness influencers.",
+            "The Executive Lounge – Upper East Side": "An exclusive business and networking lounge for high-net-worth individuals, consultants, and executives. A place for meetings, casual work, and luxury networking events."
+        },
+        "residential": {
+            "Maple Street Apartments": "A modern apartment complex with family-friendly amenities, close to schools and parks",
+            "Oakwood Condos": "Luxury condominiums with great views and premium amenities",
+            "Pine Grove Houses": "Family-friendly neighborhood with spacious homes and good schools"
+        },
+        "commercial": {
+            "Tech Hub": "Modern office building housing various tech companies and startups",
+            "Financial District": "Area with banks and financial institutions",
+            "Downtown Mall": "A bustling shopping center with various stores and services",
+            "Fried Chicken Shop": "A popular fast-food restaurant known for its crispy chicken meals",
+            "Community Center": "Facility offering various community services and activities"
+        },
+        "recreational": {
+            "City Park": "Large green space with walking trails, playgrounds, and picnic areas",
+            "Sports Complex": "Area with basketball courts, soccer fields, and fitness facilities"
+        },
+        "healthcare": {
+            "City Hospital": "Main healthcare facility with emergency services and specialized care",
+            "Community Clinic": "Local healthcare center providing primary care services"
+        },
+        "retail": {
+            "Grocery Store": "Well-stocked supermarket with fresh produce and household items",
+            "Pharmacy": "Local drugstore with prescription services and health products"
+        }
+    },
+    "town_people": {
+        "Emma Walker": {
+            "description": "Female, 38 years old, married, 2 kids. Runs a high-end yoga studio with a strong following on social media.",
+            "starting_location": "Serenity Flow Yoga Studio",
+            "residence": "Parkview Luxury Residences"
+        },
+        "Sophia Chang": {
+            "description": "Female, 42 years old, married, 3 kids. Stay-at-home mom & wellness advocate. Leads local fitness moms' group with a strong Instagram presence.",
+            "starting_location": "Parkview Luxury Residences",
+            "residence": "Parkview Luxury Residences"
+        },
+        "Lucas Reed": {
+            "basics": {
+                "name": "Lucas Reed",
+                "age": 44,
+                "occupation": "vice president of private bank",
+                "residence": "Parkview Luxury Residences",
+                "workplace": "101 Work Building",
+                "family": {
+                    "status": "married",
+                    "household_members": ["wife", "child_10", "child_7"]
+                }
+            }
+        },
+        "Mia Thompson": {
+        "description": "Female, 34 years old, owner of 'Revive Wellness Collective', a luxury wellness and beauty concept store. Currently pregnant with her first child, she focuses on holistic wellness, premium skincare, and fitness recovery treatments for high-end clientele.",
+        "starting_location": "Revive Wellness Collective",
+        "residence": "Upper East Side Townhouse"
+        },
+        "Ethan Brooks": {
+            "description": "Male, 39 years old, single. Engineering consultant, interested in luxury fashion and fitness.",
+            "starting_location": "101 Work Building",
+            "residence": "Skyline Elite Condos"
+        },
+        "Rachel Adams": {
+            "description": "Female, 29 years old, engaged. Personal trainer & owner of 'HIIT House' gym. Works with high-end clients.",
+            "starting_location": "HIIT House Gym",
+            "residence": "Skyline Elite Condos"
+        },
+        "Noah Hernandez": {
+            "description": "Male, 31 years old, single. Head coach at 'HIIT House'. Specializes in strength and endurance training.",
+            "starting_location": "HIIT House Gym",
+            "residence": "Midtown Fitness Lofts"
+        },
+        "Lily Carter": {
+            "description": "Female, 35 years old, married, trying for a baby. Yoga instructor at 'Serenity Flow Yoga Studio'.",
+            "starting_location": "Serenity Flow Yoga Studio",
+            "residence": "Upper East Side Townhouse"
+        },
+        "Daniel Kim": {
+            "description": "Male, 27 years old, single. Tech worker & marathon runner.",
+            "starting_location": "Tech Office Midtown",
+            "residence": "Skyline Elite Condos"
+        },
+        "Jessica Lin": {
+            "description": "Female, 30 years old, married, 1st trimester pregnancy. Consultant balancing career & maternity life.",
+            "starting_location": "Downtown Consulting Firm",
+            "residence": "Parkview Luxury Residences"
+        },
+        "John Smith": {
+            "basics": {
+                "name": "John Smith",
+                "age": 38,
+                "occupation": "software engineer",
+                "residence": "Maple Street Apartments",
+                "workplace": "Tech Hub",
+                "family": {
+                    "status": "married",
+                    "household_members": ["wife", "child_8", "child_5"]
+                }
+            }
+        },
+        "Sarah Johnson": {
+            "basics": {
+                "name": "Sarah Johnson",
+                "age": 28,
+                "occupation": "marketing manager",
+                "residence": "Oakwood Condos",
+                "workplace": "Tech Hub",
+                "family": {
+                    "status": "single",
+                    "household_members": ["cat"]
+                }
+            }
+        },
+        "Michael Brown": {
+            "basics": {
+                "name": "Michael Brown",
+                "age": 42,
+                "occupation": "financial analyst",
+                "residence": "Pine Grove Houses",
+                "workplace": "Financial District",
+                "family": {
+                    "status": "married",
+                    "household_members": ["wife", "child_12"]
+                }
+            }
+        },
+        "Emily Davis": {
+            "basics": {
+                "name": "Emily Davis",
+                "age": 25,
+                "occupation": "elementary school teacher",
+                "residence": "Maple Street Apartments",
+                "workplace": "Elementary School",
+                "family": {
+                    "status": "single",
+                    "household_members": ["roommate"]
+                }
+            }
+        },
+        "David Wilson": {
+            "basics": {
+                "name": "David Wilson",
+                "age": 68,
+                "occupation": "retired professor",
+                "residence": "Oakwood Condos",
+                "workplace": "City University",
+                "family": {
+                    "status": "married",
+                    "household_members": ["wife"]
+                }
+            }
+        },
+        "Lisa Anderson": {
+            "basics": {
+                "name": "Lisa Anderson",
+                "age": 32,
+                "occupation": "registered nurse",
+                "residence": "Pine Grove Houses",
+                "workplace": "Community Center",
+                "family": {
+                    "status": "married",
+                    "household_members": ["husband", "child_4"]
+                }
+            }
+        },
+        "Robert Taylor": {
+            "basics": {
+                "name": "Robert Taylor",
+                "age": 45,
+                "occupation": "manufacturing supervisor",
+                "residence": "Maple Street Apartments",
+                "workplace": "Downtown Mall",
+                "family": {
+                    "status": "married",
+                    "household_members": ["wife"]
+                }
+            }
+        },
+        "Jennifer White": {
+            "basics": {
+                "name": "Jennifer White",
+                "age": 14,
+                "occupation": "student",
+                "residence": "Oakwood Condos",
+                "workplace": "High School",
+                "family": {
+                    "status": "single",
+                    "household_members": ["mother", "father"]
+                }
+            }
+        },
+        "William Clark": {
+            "basics": {
+                "name": "William Clark",
+                "age": 40,
+                "occupation": "high school teacher",
+                "residence": "Pine Grove Houses",
+                "workplace": "High School",
+                "family": {
+                    "status": "married",
+                    "household_members": ["wife"]
+                }
+            }
+        },
+        "Patricia Lewis": {
+            "basics": {
+                "name": "Patricia Lewis",
+                "age": 72,
+                "occupation": "retired accountant",
+                "residence": "Maple Street Apartments",
+                "workplace": "City Park",
+                "family": {
+                    "status": "single",
+                    "household_members": []
+                }
+            }
+        },
+        "James Martinez": {
+            "basics": {
+                "name": "James Martinez",
+                "age": 35,
+                "occupation": "agricultural consultant",
+                "residence": "Pine Grove Houses",
+                "workplace": "Community Center",
+                "family": {
+                    "status": "married",
+                    "household_members": ["wife", "child_10"]
+                }
+            }
+        },
+        "Elizabeth Thompson": {
+            "basics": {
+                "name": "Elizabeth Thompson",
+                "age": 30,
+                "occupation": "industrial engineer",
+                "residence": "Oakwood Condos",
+                "workplace": "Tech Hub",
+                "family": {
+                    "status": "single",
+                    "household_members": []
+                }
+            }
+        }
+    }
+}
