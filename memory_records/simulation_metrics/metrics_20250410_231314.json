@@ -1,0 +1,357 @@
+{
+  "simulation_start": "2025-04-10 23:13:14",
+  "simulation_end": "2025-04-10 23:13:32",
+  "daily_metrics": {
+    "1": {
+      "store_visits": {
+        "total_count": 0,
+        "visitors": [],
+        "peak_hours": {}
+      },
+      "sales": {
+        "total_amount": 0.0,
+        "transactions": [],
+        "meals_sold": 0,
+        "average_transaction": 0.0,
+        "repeat_customers": {}
+      },
+      "discount_usage": {
+        "total_count": 0,
+        "total_savings": 0.0,
+        "transactions": [],
+        "conversion_rate": 0.0
+      },
+      "word_of_mouth": {
+        "total_mentions": 0,
+        "positive": [],
+        "neutral": [],
+        "negative": [],
+        "influencers": {},
+        "spread_chains": [],
+        "sale_mentions": {
+          "discount_awareness": [],
+          "discount_sharing": [],
+          "price_discussion": []
+        }
+      },
+      "customer_segments": {
+        "new_customers": [],
+        "returning_customers": [],
+        "influenced_customers": []
+      },
+      "social_network": {
+        "information_flow": [],
+        "key_influencers": {},
+        "community_impact": {}
+      }
+    },
+    "2": {
+      "store_visits": {
+        "total_count": 0,
+        "visitors": [],
+        "peak_hours": {}
+      },
+      "sales": {
+        "total_amount": 0.0,
+        "transactions": [],
+        "meals_sold": 0,
+        "average_transaction": 0.0,
+        "repeat_customers": {}
+      },
+      "discount_usage": {
+        "total_count": 0,
+        "total_savings": 0.0,
+        "transactions": [],
+        "conversion_rate": 0.0
+      },
+      "word_of_mouth": {
+        "total_mentions": 0,
+        "positive": [],
+        "neutral": [],
+        "negative": [],
+        "influencers": {},
+        "spread_chains": [],
+        "sale_mentions": {
+          "discount_awareness": [],
+          "discount_sharing": [],
+          "price_discussion": []
+        }
+      },
+      "customer_segments": {
+        "new_customers": [],
+        "returning_customers": [],
+        "influenced_customers": []
+      },
+      "social_network": {
+        "information_flow": [],
+        "key_influencers": {},
+        "community_impact": {}
+      },
+      "visit_history": {}
+    },
+    "3": {
+      "store_visits": {
+        "total_count": 0,
+        "visitors": [],
+        "peak_hours": {}
+      },
+      "sales": {
+        "total_amount": 0.0,
+        "transactions": [],
+        "meals_sold": 0,
+        "average_transaction": 0.0,
+        "repeat_customers": {}
+      },
+      "discount_usage": {
+        "total_count": 0,
+        "total_savings": 0.0,
+        "transactions": [],
+        "conversion_rate": 0.0
+      },
+      "word_of_mouth": {
+        "total_mentions": 0,
+        "positive": [],
+        "neutral": [],
+        "negative": [],
+        "influencers": {},
+        "spread_chains": [],
+        "sale_mentions": {
+          "discount_awareness": [],
+          "discount_sharing": [],
+          "price_discussion": []
+        }
+      },
+      "customer_segments": {
+        "new_customers": [],
+        "returning_customers": [],
+        "influenced_customers": []
+      },
+      "social_network": {
+        "information_flow": [],
+        "key_influencers": {},
+        "community_impact": {}
+      },
+      "visit_history": {}
+    },
+    "4": {
+      "store_visits": {
+        "total_count": 0,
+        "visitors": [],
+        "peak_hours": {}
+      },
+      "sales": {
+        "total_amount": 0.0,
+        "transactions": [],
+        "meals_sold": 0,
+        "average_transaction": 0.0,
+        "repeat_customers": {}
+      },
+      "discount_usage": {
+        "total_count": 0,
+        "total_savings": 0.0,
+        "transactions": [],
+        "conversion_rate": 0.0
+      },
+      "word_of_mouth": {
+        "total_mentions": 0,
+        "positive": [],
+        "neutral": [],
+        "negative": [],
+        "influencers": {},
+        "spread_chains": [],
+        "sale_mentions": {
+          "discount_awareness": [],
+          "discount_sharing": [],
+          "price_discussion": []
+        }
+      },
+      "customer_segments": {
+        "new_customers": [],
+        "returning_customers": [],
+        "influenced_customers": []
+      },
+      "social_network": {
+        "information_flow": [],
+        "key_influencers": {},
+        "community_impact": {}
+      },
+      "visit_history": {}
+    },
+    "5": {
+      "store_visits": {
+        "total_count": 0,
+        "visitors": [],
+        "peak_hours": {}
+      },
+      "sales": {
+        "total_amount": 0.0,
+        "transactions": [],
+        "meals_sold": 0,
+        "average_transaction": 0.0,
+        "repeat_customers": {}
+      },
+      "discount_usage": {
+        "total_count": 0,
+        "total_savings": 0.0,
+        "transactions": [],
+        "conversion_rate": 0.0
+      },
+      "word_of_mouth": {
+        "total_mentions": 0,
+        "positive": [],
+        "neutral": [],
+        "negative": [],
+        "influencers": {},
+        "spread_chains": [],
+        "sale_mentions": {
+          "discount_awareness": [],
+          "discount_sharing": [],
+          "price_discussion": []
+        }
+      },
+      "customer_segments": {
+        "new_customers": [],
+        "returning_customers": [],
+        "influenced_customers": []
+      },
+      "social_network": {
+        "information_flow": [],
+        "key_influencers": {},
+        "community_impact": {}
+      },
+      "visit_history": {}
+    },
+    "6": {
+      "store_visits": {
+        "total_count": 0,
+        "visitors": [],
+        "peak_hours": {}
+      },
+      "sales": {
+        "total_amount": 0.0,
+        "transactions": [],
+        "meals_sold": 0,
+        "average_transaction": 0.0,
+        "repeat_customers": {}
+      },
+      "discount_usage": {
+        "total_count": 0,
+        "total_savings": 0.0,
+        "transactions": [],
+        "conversion_rate": 0.0
+      },
+      "word_of_mouth": {
+        "total_mentions": 0,
+        "positive": [],
+        "neutral": [],
+        "negative": [],
+        "influencers": {},
+        "spread_chains": [],
+        "sale_mentions": {
+          "discount_awareness": [],
+          "discount_sharing": [],
+          "price_discussion": []
+        }
+      },
+      "customer_segments": {
+        "new_customers": [],
+        "returning_customers": [],
+        "influenced_customers": []
+      },
+      "social_network": {
+        "information_flow": [],
+        "key_influencers": {},
+        "community_impact": {}
+      },
+      "visit_history": {}
+    },
+    "7": {
+      "store_visits": {
+        "total_count": 0,
+        "visitors": [],
+        "peak_hours": {}
+      },
+      "sales": {
+        "total_amount": 0.0,
+        "transactions": [],
+        "meals_sold": 0,
+        "average_transaction": 0.0,
+        "repeat_customers": {}
+      },
+      "discount_usage": {
+        "total_count": 0,
+        "total_savings": 0.0,
+        "transactions": [],
+        "conversion_rate": 0.0
+      },
+      "word_of_mouth": {
+        "total_mentions": 0,
+        "positive": [],
+        "neutral": [],
+        "negative": [],
+        "influencers": {},
+        "spread_chains": [],
+        "sale_mentions": {
+          "discount_awareness": [],
+          "discount_sharing": [],
+          "price_discussion": []
+        }
+      },
+      "customer_segments": {
+        "new_customers": [],
+        "returning_customers": [],
+        "influenced_customers": []
+      },
+      "social_network": {
+        "information_flow": [],
+        "key_influencers": {},
+        "community_impact": {}
+      },
+      "visit_history": {}
+    },
+    "8": {
+      "store_visits": {
+        "total_count": 0,
+        "visitors": [],
+        "peak_hours": {}
+      },
+      "sales": {
+        "total_amount": 0.0,
+        "transactions": [],
+        "meals_sold": 0,
+        "average_transaction": 0.0,
+        "repeat_customers": {}
+      },
+      "discount_usage": {
+        "total_count": 0,
+        "total_savings": 0.0,
+        "transactions": [],
+        "conversion_rate": 0.0
+      },
+      "word_of_mouth": {
+        "total_mentions": 0,
+        "positive": [],
+        "neutral": [],
+        "negative": [],
+        "influencers": {},
+        "spread_chains": [],
+        "sale_mentions": {
+          "discount_awareness": [],
+          "discount_sharing": [],
+          "price_discussion": []
+        }
+      },
+      "customer_segments": {
+        "new_customers": [],
+        "returning_customers": [],
+        "influenced_customers": []
+      },
+      "social_network": {
+        "information_flow": [],
+        "key_influencers": {},
+        "community_impact": {}
+      },
+      "visit_history": {}
+    }
+  }
+}

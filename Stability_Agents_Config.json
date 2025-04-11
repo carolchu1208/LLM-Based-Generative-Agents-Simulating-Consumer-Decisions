@@ -1,125 +1,243 @@
 {
-    "general": {
-      "global_time_limit": 24,
-      "max_attempts": 2,
-      "memory_limit": 100,
-      "prompt_meta": "### Instruction:\n{}\n### Response:"
-    },
     "town_areas": {
-        "fitness": {
-            "Serenity Flow Yoga Studio": "A tranquil yoga and pilates studio featuring mindfulness and holistic movement. Frequented by professionals, influencers, and high-profile wellness advocates.",
-            "HIIT House Gym": "An elite training facility specializing in strength training, cardio endurance, and high-intensity interval workouts. Attracts executives, personal trainers, and fitness enthusiasts."
+        "retail_and_grocery": {
+            "Target": {
+                "type": "retail",
+                "opening_hours": {"start": 8, "end": 22}
+            },
+            "Local Market": {
+                "type": "retail",
+                "opening_hours": {"start": 7, "end": 21}
+            },
+            "Main Street Shops": {
+                "type": "commercial",
+                "opening_hours": {"start": 10, "end": 21}
+            },
+            "Pharmacy": "Local drugstore with prescription services and health products"
         },
         "residences": {
-            "Parkview Luxury Residences": "A high-end residential building with penthouses, a rooftop pool, and a private gym. Residents are professionals and influencers.",
-            "Skyline Elite Condos": "A modern high-rise with luxury apartments, smart home features, and a high-tech wellness center."
+            "Maple Street Apartments": "A modern apartment complex with family-friendly amenities, close to schools and parks",
+            "Oak View Condos": "Mid-range condominiums with good amenities and convenient location",
+            "Pine Grove Houses": "Family-friendly neighborhood with single-family homes",
+            "Riverside Apartments": "Affordable apartment complex popular with young professionals and students"
         },
         "work": {
-            "101 Work Building": "A glass skyscraper housing finance and consulting firms. Employees prioritize work-life balance and wellness.",
-            "Tech Office Midtown": "A state-of-the-art office hub for technology companies and startups. Employees enjoy wellness perks like standing desks, meditation rooms, and running clubs.",
-            "Downtown Consulting Firm": "An exclusive consulting office with a rooftop terrace and networking spaces. Employees balance intense projects with wellness and high-end lifestyle choices."
+            "Town Office Building": "A professional office building housing various local businesses",
+            "Tech Hub": "Modern office space for tech companies and startups",
+            "Downtown Business Center": "Mixed-use building with offices and local businesses",
+            "Financial District": "Area with banks and financial institutions"
         },
-        "grocery": {
-            "Dean & DeLuca - NYC": "A luxury gourmet market known for fine foods, high-quality coffee, and imported delicacies. A social hotspot where professionals and high-income families shop and network over coffee."
+        "dining": {
+            "Family Restaurant": "Popular local restaurant serving American comfort food",
+            "The Coffee Shop": "Cozy cafe offering coffee, pastries, and light meals",
+            "Local Diner": "Classic American diner serving breakfast all day",
+            "Fried Chicken Shop": "A popular fast-food restaurant known for its crispy chicken meals"
         },
         "education": {
-            "Bright Future Private Academy": "A top-tier private school with an extensive extracurricular program, including sports, arts, and leadership training. Parents actively participate in fundraisers and networking events.",
-            "Parkview Luxury Daycare": "A boutique daycare with an organic meal plan, language immersion programs, and yoga for toddlers. Many high-income parents drop their kids off before heading to work or fitness classes."
+            "Town Public High School": {
+                "type": "school",
+                "opening_hours": {"start": 8, "end": 15},
+                "age_range": [14, 18]
+            },
+            "Elementary School": {
+                "type": "school",
+                "opening_hours": {"start": 8, "end": 15},
+                "age_range": [5, 11]
+            },
+            "Sunshine Daycare Center": "Affordable local daycare center providing quality childcare services",
+            "Town Community College": "Local college offering associate degrees and continuing education programs"
         },
-        "shopping": {
-            "Lululemon Boutique – Upper East Side": "A premium Lululemon store offering the latest in luxury activewear, exclusive product launches, and private styling consultations. Located near fitness centers and organic cafes, it's a hub for stylish, health-conscious professionals.",
-            "Revive Wellness Collective": "A luxury wellness boutique offering high-end skincare, premium supplements, and personalized recovery treatments. Owned by Mia Thompson, it serves professionals and wellness enthusiasts looking for elite self-care solutions.",
-            "Tiffany & Co. – Upper East Side": "A world-renowned luxury jewelry store symbolizing elegance and status. Many residents shop here for special occasions or high-end gifts.",
-            "Madison Avenue Designer Row": "A stretch of high-end fashion stores featuring brands like Chanel, Gucci, and Louis Vuitton. A prime shopping district for high-net-worth individuals."
-        },
-        "social_dining": {
-            "The Gourmet Bistro": "A fine dining restaurant offering gourmet cuisine, a wine cellar, and a private dining room. Often frequented by professionals and influencers for special occasions.",
-            "The Organic Cafe": "A cozy, organic cafe offering fresh, locally sourced ingredients. A popular spot for brunch and post-workout meals, often visited by fitness trainers and wellness influencers.",
-            "The Executive Lounge – Upper East Side": "An exclusive business and networking lounge for high-net-worth individuals, consultants, and executives. A place for meetings, casual work, and luxury networking events."
-        },
-        "residential": {
-            "Maple Street Apartments": "A modern apartment complex with family-friendly amenities, close to schools and parks",
-            "Oakwood Condos": "Luxury condominiums with great views and premium amenities",
-            "Pine Grove Houses": "Family-friendly neighborhood with spacious homes and good schools"
-        },
-        "commercial": {
-            "Tech Hub": "Modern office building housing various tech companies and startups",
-            "Financial District": "Area with banks and financial institutions",
-            "Downtown Mall": "A bustling shopping center with various stores and services",
-            "Fried Chicken Shop": "A popular fast-food restaurant known for its crispy chicken meals",
-            "Community Center": "Facility offering various community services and activities"
-        },
-        "recreational": {
+        "community": {
             "City Park": "Large green space with walking trails, playgrounds, and picnic areas",
-            "Sports Complex": "Area with basketball courts, soccer fields, and fitness facilities"
+            "Community Sports Complex Center": "Area with basketball courts, soccer fields, and fitness facilities"
         },
         "healthcare": {
             "City Hospital": "Main healthcare facility with emergency services and specialized care",
             "Community Clinic": "Local healthcare center providing primary care services"
-        },
-        "retail": {
-            "Grocery Store": "Well-stocked supermarket with fresh produce and household items",
-            "Pharmacy": "Local drugstore with prescription services and health products"
         }
     },
     "town_people": {
         "Emma Walker": {
-            "description": "Female, 38 years old, married, 2 kids. Runs a high-end yoga studio with a strong following on social media.",
-            "starting_location": "Serenity Flow Yoga Studio",
-            "residence": "Parkview Luxury Residences"
+            "basics": {
+                "name": "Emma Walker",
+                "age": 38,
+                "occupation": "fitness instructor",
+                "residence": "Pine Grove Houses",
+                "workplace": "Community Sports Complex Center",
+                "family": {
+                    "status": "married",
+                    "household_members": ["husband", "child_1", "child_2"]
+                },
+                "income": {
+                    "type": "annual",
+                    "amount": 250000,
+                    "schedule": "full_time"
+                }
+            }
         },
         "Sophia Chang": {
-            "description": "Female, 42 years old, married, 3 kids. Stay-at-home mom & wellness advocate. Leads local fitness moms' group with a strong Instagram presence.",
-            "starting_location": "Parkview Luxury Residences",
-            "residence": "Parkview Luxury Residences"
+            "basics": {
+                "name": "Sophia Chang",
+                "age": 42,
+                "occupation": "stay-at-home mom",
+                "residence": "Pine Grove Houses",
+                "workplace": "Parkview Luxury Residences",
+                "family": {
+                    "status": "married",
+                    "household_members": ["husband", "child_1", "child_2", "child_3"]
+                }
+            }
         },
         "Lucas Reed": {
             "basics": {
                 "name": "Lucas Reed",
                 "age": 44,
                 "occupation": "vice president of private bank",
-                "residence": "Parkview Luxury Residences",
+                "residence": "Pine Grove Houses",
                 "workplace": "101 Work Building",
                 "family": {
                     "status": "married",
                     "household_members": ["wife", "child_10", "child_7"]
+                },
+                "income": {
+                    "type": "annual",
+                    "amount": 250000,
+                    "schedule": "full_time"
                 }
             }
         },
         "Mia Thompson": {
-        "description": "Female, 34 years old, owner of 'Revive Wellness Collective', a luxury wellness and beauty concept store. Currently pregnant with her first child, she focuses on holistic wellness, premium skincare, and fitness recovery treatments for high-end clientele.",
-        "starting_location": "Revive Wellness Collective",
-        "residence": "Upper East Side Townhouse"
+            "basics": {
+                "name": "Mia Thompson",
+                "age": 34,
+                "occupation": "pharmacy manager",
+                "residence": "Oak View Condos",
+                "workplace": "Pharmacy",
+                "family": {
+                    "status": "single",
+                    "household_members": []
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 6500,
+                    "schedule": "full_time",
+                    "pay_frequency": "monthly"
+                }
+            }
         },
         "Ethan Brooks": {
-            "description": "Male, 39 years old, single. Engineering consultant, interested in luxury fashion and fitness.",
-            "starting_location": "101 Work Building",
-            "residence": "Skyline Elite Condos"
+            "basics": {
+                "name": "Ethan Brooks",
+                "age": 39,
+                "occupation": "Target store manager",
+                "residence": "Oak View Condos",
+                "workplace": "Target",
+                "family": {
+                    "status": "single",
+                    "household_members": []
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 5500,
+                    "schedule": "full_time",
+                    "pay_frequency": "monthly"
+                }
+            }
         },
         "Rachel Adams": {
-            "description": "Female, 29 years old, engaged. Personal trainer & owner of 'HIIT House' gym. Works with high-end clients.",
-            "starting_location": "HIIT House Gym",
-            "residence": "Skyline Elite Condos"
+            "basics": {
+                "name": "Rachel Adams",
+                "age": 29,
+                "occupation": "daycare assistant",
+                "residence": "Maple Street Apartments",
+                "workplace": "Sunshine Daycare Center",
+                "family": {
+                    "status": "engaged",
+                    "household_members": ["fiance"]
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 3800,
+                    "schedule": "full_time",
+                    "pay_frequency": "monthly"
+                }
+            }
         },
         "Noah Hernandez": {
-            "description": "Male, 31 years old, single. Head coach at 'HIIT House'. Specializes in strength and endurance training.",
-            "starting_location": "HIIT House Gym",
-            "residence": "Midtown Fitness Lofts"
+            "basics": {
+                "name": "Noah Hernandez",
+                "age": 31,
+                "occupation": "personal trainer",
+                "residence": "Maple Street Apartments",
+                "workplace": "Community Sports Complex Center",
+                "family": {
+                    "status": "single",
+                    "household_members": []
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 4200,
+                    "schedule": "full_time",
+                    "pay_frequency": "monthly"
+                }
+            }
         },
         "Lily Carter": {
-            "description": "Female, 35 years old, married, trying for a baby. Yoga instructor at 'Serenity Flow Yoga Studio'.",
-            "starting_location": "Serenity Flow Yoga Studio",
-            "residence": "Upper East Side Townhouse"
+            "basics": {
+                "name": "Lily Carter",
+                "age": 35,
+                "occupation": "fitness instructor",
+                "residence": "Maple Street Apartments",
+                "workplace": "Community Sports Complex Center",
+                "family": {
+                    "status": "married",
+                    "household_members": ["husband"]
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 4000,
+                    "schedule": "full_time",
+                    "pay_frequency": "monthly"
+                }
+            }
         },
         "Daniel Kim": {
-            "description": "Male, 27 years old, single. Tech worker & marathon runner.",
-            "starting_location": "Tech Office Midtown",
-            "residence": "Skyline Elite Condos"
+            "basics": {
+                "name": "Daniel Kim",
+                "age": 27,
+                "occupation": "IT support technician",
+                "residence": "Maple Street Apartments",
+                "workplace": "Tech Hub",
+                "family": {
+                    "status": "single",
+                    "household_members": []
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 8500,
+                    "schedule": "full_time",
+                    "pay_frequency": "monthly"
+                }
+            }
         },
         "Jessica Lin": {
-            "description": "Female, 30 years old, married, 1st trimester pregnancy. Consultant balancing career & maternity life.",
-            "starting_location": "Downtown Consulting Firm",
-            "residence": "Parkview Luxury Residences"
+            "basics": {
+                "name": "Jessica Lin",
+                "age": 30,
+                "occupation": "retail sales associate",
+                "residence": "Maple Street Apartments",
+                "workplace": "Target",
+                "family": {
+                    "status": "married",
+                    "household_members": ["husband"]
+                },
+                "income": {
+                    "type": "hourly",
+                    "amount": 16.00,
+                    "schedule": "full_time",
+                    "pay_frequency": "biweekly"
+                }
+            }
         },
         "John Smith": {
             "basics": {
@@ -131,6 +249,12 @@
                 "family": {
                     "status": "married",
                     "household_members": ["wife", "child_8", "child_5"]
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 8500,
+                    "schedule": "full_time",
+                    "pay_frequency": "monthly"
                 }
             }
         },
@@ -139,11 +263,17 @@
                 "name": "Sarah Johnson",
                 "age": 28,
                 "occupation": "marketing manager",
-                "residence": "Oakwood Condos",
+                "residence": "Oak View Condos",
                 "workplace": "Tech Hub",
                 "family": {
                     "status": "single",
                     "household_members": ["cat"]
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 7000,
+                    "schedule": "full_time",
+                    "pay_frequency": "monthly"
                 }
             }
         },
@@ -157,6 +287,12 @@
                 "family": {
                     "status": "married",
                     "household_members": ["wife", "child_12"]
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 9000,
+                    "schedule": "full_time",
+                    "pay_frequency": "monthly"
                 }
             }
         },
@@ -170,6 +306,12 @@
                 "family": {
                     "status": "single",
                     "household_members": ["roommate"]
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 8500,
+                    "schedule": "full_time",
+                    "pay_frequency": "monthly"
                 }
             }
         },
@@ -178,11 +320,17 @@
                 "name": "David Wilson",
                 "age": 68,
                 "occupation": "retired professor",
-                "residence": "Oakwood Condos",
-                "workplace": "City University",
+                "residence": "Oak View Condos",
+                "workplace": "Town Community College",
                 "family": {
                     "status": "married",
                     "household_members": ["wife"]
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 5000,
+                    "schedule": "pension",
+                    "pay_frequency": "monthly"
                 }
             }
         },
@@ -190,12 +338,18 @@
             "basics": {
                 "name": "Lisa Anderson",
                 "age": 32,
-                "occupation": "registered nurse",
+                "occupation": "medical office receptionist",
                 "residence": "Pine Grove Houses",
-                "workplace": "Community Center",
+                "workplace": "Community Clinic",
                 "family": {
                     "status": "married",
                     "household_members": ["husband", "child_4"]
+                },
+                "income": {
+                    "type": "hourly",
+                    "amount": 19.00,
+                    "schedule": "full_time",
+                    "pay_frequency": "biweekly"
                 }
             }
         },
@@ -203,12 +357,18 @@
             "basics": {
                 "name": "Robert Taylor",
                 "age": 45,
-                "occupation": "manufacturing supervisor",
+                "occupation": "Local Market manager",
                 "residence": "Maple Street Apartments",
-                "workplace": "Downtown Mall",
+                "workplace": "Local Market",
                 "family": {
                     "status": "married",
                     "household_members": ["wife"]
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 5200,
+                    "schedule": "full_time",
+                    "pay_frequency": "monthly"
                 }
             }
         },
@@ -217,7 +377,7 @@
                 "name": "Jennifer White",
                 "age": 14,
                 "occupation": "student",
-                "residence": "Oakwood Condos",
+                "residence": "Oak View Condos",
                 "workplace": "High School",
                 "family": {
                     "status": "single",
@@ -235,6 +395,12 @@
                 "family": {
                     "status": "married",
                     "household_members": ["wife"]
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 4800,
+                    "schedule": "full_time",
+                    "pay_frequency": "monthly"
                 }
             }
         },
@@ -242,12 +408,18 @@
             "basics": {
                 "name": "Patricia Lewis",
                 "age": 72,
-                "occupation": "retired accountant",
+                "occupation": "retired retail worker",
                 "residence": "Maple Street Apartments",
                 "workplace": "City Park",
                 "family": {
                     "status": "single",
                     "household_members": []
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 2000,
+                    "schedule": "pension",
+                    "pay_frequency": "monthly"
                 }
             }
         },
@@ -255,12 +427,18 @@
             "basics": {
                 "name": "James Martinez",
                 "age": 35,
-                "occupation": "agricultural consultant",
+                "occupation": "community center coordinator",
                 "residence": "Pine Grove Houses",
                 "workplace": "Community Center",
                 "family": {
                     "status": "married",
                     "household_members": ["wife", "child_10"]
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 4500,
+                    "schedule": "full_time",
+                    "pay_frequency": "monthly"
                 }
             }
         },
@@ -269,13 +447,108 @@
                 "name": "Elizabeth Thompson",
                 "age": 30,
                 "occupation": "industrial engineer",
-                "residence": "Oakwood Condos",
+                "residence": "Oak View Condos",
                 "workplace": "Tech Hub",
                 "family": {
                     "status": "single",
                     "household_members": []
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 7500,
+                    "schedule": "full_time",
+                    "pay_frequency": "monthly"
                 }
             }
+        },
+        "Kevin Chen": {
+            "basics": {
+                "name": "Kevin Chen",
+                "age": 23,
+                "occupation": "fried chicken shop shift supervisor",
+                "income": {
+                    "type": "hourly",
+                    "amount": 18.50,
+                    "schedule": "full_time",
+                    "pay_frequency": "biweekly"
+                },
+                "residence": "Maple Street Apartments",
+                "workplace": "Fried Chicken Shop",
+                "family": {
+                    "status": "single",
+                    "household_members": ["roommate"]
+                }
+            }
+        },
+        "Maria Rodriguez": {
+            "basics": {
+                "name": "Maria Rodriguez",
+                "age": 19,
+                "occupation": "fried chicken shop crew member",
+                "income": {
+                    "type": "hourly",
+                    "amount": 15.00,
+                    "schedule": "full_time",
+                    "pay_frequency": "biweekly"
+                },
+                "residence": "Pine Grove Houses",
+                "workplace": "Fried Chicken Shop",
+                "family": {
+                    "status": "single",
+                    "household_members": ["parents", "sister"]
+                }
+            }
+        }
+    },
+    "places": {
+        "Elementary School": {
+            "type": "school",
+            "description": "Local elementary school",
+            "age_range": [5, 11],
+            "opening_hours": {
+                "start": 8,
+                "end": 15
+            }
+        },
+        "Happy Kids Daycare": {
+            "type": "daycare",
+            "description": "Daycare center for young children",
+            "age_range": [0, 5],
+            "opening_hours": {
+                "start": 7,
+                "end": 18
+            }
+        },
+        "Fried Chicken Shop": {
+            "type": "restaurant",
+            "description": "Popular fried chicken restaurant",
+            "opening_hours": {
+                "start": 10,
+                "end": 22
+            },
+            "menu": {
+                "Fried Chicken": 15.99
+            }
+        }
+    },
+    "agents": {
+        "John Smith": {
+            "role": "Father",
+            "occupation": "Office Worker",
+            "monthly_income": 5000,
+            "family": ["Mary Smith", "Tommy Smith"]
+        },
+        "Mary Smith": {
+            "role": "Mother",
+            "occupation": "Teacher",
+            "monthly_income": 4000,
+            "family": ["John Smith", "Tommy Smith"]
+        },
+        "Tommy Smith": {
+            "role": "Child",
+            "occupation": "Student",
+            "monthly_income": 0,
+            "family": ["John Smith", "Mary Smith"]
         }
     }
 }

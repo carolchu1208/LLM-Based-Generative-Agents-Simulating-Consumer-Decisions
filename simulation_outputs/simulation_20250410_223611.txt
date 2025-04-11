@@ -1,0 +1,3 @@
+=== Simulation Started at 22:36:11 ===
+Day 1 begins
+

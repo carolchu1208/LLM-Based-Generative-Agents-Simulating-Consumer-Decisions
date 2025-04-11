@@ -1,0 +1,1128 @@
+=== Simulation Started at 23:16:43 ===
+Day 1 begins
+
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Emma Walker: Moved to Community Sports Complex Center
+Mia Thompson: Moved to Pharmacy
+Ethan Brooks: Moved to Target
+Rachel Adams: Moved to Sunshine Daycare Center
+Noah Hernandez: Moved to Community Sports Complex Center
+Lily Carter: Moved to Community Sports Complex Center
+Daniel Kim: Moved to Tech Hub
+Jessica Lin: Moved to Target
+John Smith: Moved to Tech Hub
+Sarah Johnson: Moved to Tech Hub
+Michael Brown: Moved to Financial District
+David Wilson: Moved to Town Community College
+Lisa Anderson: Moved to Community Clinic
+Robert Taylor: Moved to Local Market
+Patricia Lewis: Moved to City Park
+Elizabeth Thompson: Moved to Tech Hub
+Kevin Chen: Moved to Fried Chicken Shop
+Maria Rodriguez: Moved to Fried Chicken Shop
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 1, 09:00
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 1, 14:00
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Emma Walker: Cooked meal at home (First time trying Home Cooking based on good price)
+Sophia Chang: Moved to Family Restaurant
+Lucas Reed: Cooked meal at home (First time trying Home Cooking based on good price)
+Mia Thompson: Cooked meal at home (First time trying Home Cooking based on good price)
+Ethan Brooks: Cooked meal at home (First time trying Home Cooking based on good price)
+Rachel Adams: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Noah Hernandez: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Lily Carter: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Daniel Kim: Cooked meal at home (First time trying Home Cooking based on good price)
+Jessica Lin: Cooked meal at home (First time trying Home Cooking based on trying something new)
+John Smith: Cooked meal at home (First time trying Home Cooking based on good price)
+Sarah Johnson: Cooked meal at home (First time trying Home Cooking based on good price)
+Michael Brown: Cooked meal at home (First time trying Home Cooking based on good price)
+Emily Davis: Cooked meal at home (First time trying Home Cooking based on good price)
+David Wilson: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Lisa Anderson: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Robert Taylor: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Jennifer White: Moved to Fried Chicken Shop
+William Clark: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Patricia Lewis: Cooked meal at home (First time trying Home Cooking based on trying something new)
+James Martinez: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Elizabeth Thompson: Cooked meal at home (First time trying Home Cooking based on good price)
+Kevin Chen: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Error processing agent Maria Rodriguez: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Maria Rodriguez: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 1, 20:00
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Mia Thompson: Cooked meal at home (First time trying Home Cooking based on good price)
+Ethan Brooks: Cooked meal at home (First time trying Home Cooking based on good price)
+Rachel Adams: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Noah Hernandez: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Lily Carter: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Daniel Kim: Cooked meal at home (First time trying Home Cooking based on good price)
+Error processing agent Jessica Lin: name 'metrics' is not defined
+John Smith: Cooked meal at home (First time trying Home Cooking based on good price)
+Sarah Johnson: Cooked meal at home (First time trying Home Cooking based on good price)
+Michael Brown: Cooked meal at home (First time trying Home Cooking based on good price)
+Emily Davis: Cooked meal at home (First time trying Home Cooking based on good price)
+David Wilson: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Lisa Anderson: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Robert Taylor: Cooked meal at home (First time trying Home Cooking based on trying something new)
+William Clark: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+James Martinez: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Elizabeth Thompson: Cooked meal at home (First time trying Home Cooking based on good price)
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Daily summary saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_summary/summary_20250410_231645.txt
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Error processing agent Jessica Lin: name 'metrics' is not defined
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Mia Thompson: Cooked meal at home (First time trying Home Cooking based on good price)
+Ethan Brooks: Cooked meal at home (First time trying Home Cooking based on good price)
+Rachel Adams: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Noah Hernandez: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Lily Carter: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Daniel Kim: Cooked meal at home (First time trying Home Cooking based on good price)
+John Smith: Cooked meal at home (First time trying Home Cooking based on good price)
+Sarah Johnson: Cooked meal at home (First time trying Home Cooking based on good price)
+Michael Brown: Cooked meal at home (First time trying Home Cooking based on good price)
+Emily Davis: Cooked meal at home (First time trying Home Cooking based on good price)
+David Wilson: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Lisa Anderson: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Robert Taylor: Cooked meal at home (First time trying Home Cooking based on trying something new)
+William Clark: Cooked meal at home (First time trying Home Cooking based on trying something new)
+James Martinez: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Elizabeth Thompson: Cooked meal at home (First time trying Home Cooking based on good price)
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Mia Thompson: Cooked meal at home (First time trying Home Cooking based on good price)
+Ethan Brooks: Cooked meal at home (First time trying Home Cooking based on good price)
+Rachel Adams: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Noah Hernandez: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Lily Carter: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Daniel Kim: Cooked meal at home (First time trying Home Cooking based on good price)
+John Smith: Cooked meal at home (First time trying Home Cooking based on good price)
+Sarah Johnson: Cooked meal at home (First time trying Home Cooking based on good price)
+Michael Brown: Cooked meal at home (First time trying Home Cooking based on good price)
+Emily Davis: Cooked meal at home (First time trying Home Cooking based on good price)
+David Wilson: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Lisa Anderson: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Robert Taylor: Cooked meal at home (First time trying Home Cooking based on trying something new)
+William Clark: Cooked meal at home (First time trying Home Cooking based on trying something new)
+James Martinez: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Elizabeth Thompson: Cooked meal at home (First time trying Home Cooking based on good price)
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 2, 09:00
+Sophia Chang: Moved to Fried Chicken Shop
+Jennifer White: Moved to Local Diner
+Error processing agent Maria Rodriguez: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Sophia Chang: Moved to The Coffee Shop
+Jennifer White: Moved to The Coffee Shop
+Error processing agent Maria Rodriguez: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Mia Thompson: Cooked meal at home (First time trying Home Cooking based on good price)
+Ethan Brooks: Cooked meal at home (First time trying Home Cooking based on good price)
+Error processing agent Rachel Adams: name 'metrics' is not defined
+Error processing agent Noah Hernandez: name 'metrics' is not defined
+Error processing agent Lily Carter: name 'metrics' is not defined
+Daniel Kim: Cooked meal at home (First time trying Home Cooking based on good price)
+John Smith: Cooked meal at home (First time trying Home Cooking based on good price)
+Sarah Johnson: Cooked meal at home (First time trying Home Cooking based on good price)
+Error processing agent Michael Brown: name 'metrics' is not defined
+Emily Davis: Cooked meal at home (First time trying Home Cooking based on good price)
+Error processing agent David Wilson: name 'metrics' is not defined
+Error processing agent Lisa Anderson: name 'metrics' is not defined
+Error processing agent Robert Taylor: name 'metrics' is not defined
+Error processing agent William Clark: name 'metrics' is not defined
+Error processing agent James Martinez: name 'metrics' is not defined
+Elizabeth Thompson: Cooked meal at home (First time trying Home Cooking based on good price)
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Rachel Adams: name 'metrics' is not defined
+Error processing agent Noah Hernandez: name 'metrics' is not defined
+Error processing agent Lily Carter: name 'metrics' is not defined
+Error processing agent Michael Brown: name 'metrics' is not defined
+Error processing agent David Wilson: name 'metrics' is not defined
+Error processing agent Lisa Anderson: name 'metrics' is not defined
+Error processing agent Robert Taylor: name 'metrics' is not defined
+Error processing agent William Clark: name 'metrics' is not defined
+Error processing agent James Martinez: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 2, 14:00
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Error processing agent Jessica Lin: name 'metrics' is not defined
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Mia Thompson: need to buy groceries first
+Ethan Brooks: need to buy groceries first
+Daniel Kim: need to buy groceries first
+Error processing agent Jessica Lin: name 'metrics' is not defined
+John Smith: need to buy groceries first
+Sarah Johnson: need to buy groceries first
+Emily Davis: need to buy groceries first
+Emily Davis: Moved to Fried Chicken Shop
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+Elizabeth Thompson: need to buy groceries first
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Error processing agent Jessica Lin: name 'metrics' is not defined
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 2, 20:00
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Daily summary saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_summary/summary_20250410_231648.txt
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Sophia Chang: Moved to Local Diner
+Error processing agent Maria Rodriguez: 'Agent' object has no attribute 'experiment_settings'
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Sophia Chang: Moved to The Coffee Shop
+Rachel Adams: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Noah Hernandez: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Lily Carter: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Michael Brown: Cooked meal at home (First time trying Home Cooking based on good price)
+David Wilson: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Lisa Anderson: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Robert Taylor: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Jennifer White: Moved to Local Diner
+William Clark: Cooked meal at home (First time trying Home Cooking based on trying something new)
+James Martinez: Cooked meal at home (First time trying Home Cooking based on trying something new)
+Error processing agent Maria Rodriguez: 'Agent' object has no attribute 'experiment_settings'
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Mia Thompson: need to buy groceries first
+Mia Thompson: Moved to Local Diner
+Ethan Brooks: need to buy groceries first
+Ethan Brooks: Moved to Fried Chicken Shop
+Daniel Kim: need to buy groceries first
+Daniel Kim: Moved to Fried Chicken Shop
+John Smith: need to buy groceries first
+John Smith: Moved to Local Diner
+Sarah Johnson: need to buy groceries first
+Sarah Johnson: Moved to The Coffee Shop
+Emily Davis: need to buy groceries first
+Emily Davis: Moved to Local Diner
+Elizabeth Thompson: need to buy groceries first
+Elizabeth Thompson: Moved to Family Restaurant
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: 'Agent' object has no attribute 'experiment_settings'
+Error processing agent Lucas Reed: 'Agent' object has no attribute 'experiment_settings'
+Mia Thompson: need to buy groceries first
+Mia Thompson: Moved to Fried Chicken Shop
+Ethan Brooks: need to buy groceries first
+Ethan Brooks: Moved to The Coffee Shop
+Daniel Kim: need to buy groceries first
+Daniel Kim: Moved to Family Restaurant
+Error processing agent Jessica Lin: 'Agent' object has no attribute 'experiment_settings'
+John Smith: need to buy groceries first
+John Smith: Moved to Family Restaurant
+Sarah Johnson: need to buy groceries first
+Sarah Johnson: Moved to Fried Chicken Shop
+Emily Davis: need to buy groceries first
+Emily Davis: Moved to Fried Chicken Shop
+Error processing agent Patricia Lewis: 'Agent' object has no attribute 'experiment_settings'
+Elizabeth Thompson: need to buy groceries first
+Elizabeth Thompson: Moved to Local Diner
+Error processing agent Kevin Chen: 'Agent' object has no attribute 'experiment_settings'
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: 'Agent' object has no attribute 'experiment_settings'
+Error processing agent Lucas Reed: 'Agent' object has no attribute 'experiment_settings'
+Mia Thompson: need to buy groceries first
+Mia Thompson: Moved to Local Diner
+Ethan Brooks: need to buy groceries first
+Ethan Brooks: Moved to Local Diner
+Daniel Kim: need to buy groceries first
+Daniel Kim: Moved to The Coffee Shop
+Error processing agent Jessica Lin: 'Agent' object has no attribute 'experiment_settings'
+John Smith: need to buy groceries first
+John Smith: Moved to Local Diner
+Sarah Johnson: need to buy groceries first
+Emily Davis: need to buy groceries first
+Error processing agent Patricia Lewis: 'Agent' object has no attribute 'experiment_settings'
+Elizabeth Thompson: need to buy groceries first
+Elizabeth Thompson: Moved to Fried Chicken Shop
+Error processing agent Kevin Chen: 'Agent' object has no attribute 'experiment_settings'
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: 'Agent' object has no attribute 'experiment_settings'
+Error processing agent Lucas Reed: 'Agent' object has no attribute 'experiment_settings'
+Mia Thompson: Moved to Pharmacy
+Ethan Brooks: Moved to Target
+Daniel Kim: Moved to Tech Hub
+Error processing agent Jessica Lin: 'Agent' object has no attribute 'experiment_settings'
+John Smith: Moved to Tech Hub
+Sarah Johnson: Moved to Tech Hub
+Error processing agent Patricia Lewis: 'Agent' object has no attribute 'experiment_settings'
+Elizabeth Thompson: Moved to Tech Hub
+Error processing agent Kevin Chen: 'Agent' object has no attribute 'experiment_settings'
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 3, 09:00
+Rachel Adams: need to buy groceries first
+Noah Hernandez: need to buy groceries first
+Lily Carter: need to buy groceries first
+Michael Brown: need to buy groceries first
+David Wilson: need to buy groceries first
+Lisa Anderson: need to buy groceries first
+Robert Taylor: need to buy groceries first
+William Clark: need to buy groceries first
+William Clark: Moved to The Coffee Shop
+James Martinez: need to buy groceries first
+James Martinez: Moved to Family Restaurant
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Rachel Adams: need to buy groceries first
+Noah Hernandez: need to buy groceries first
+Lily Carter: need to buy groceries first
+Michael Brown: need to buy groceries first
+David Wilson: need to buy groceries first
+Lisa Anderson: need to buy groceries first
+Robert Taylor: need to buy groceries first
+William Clark: need to buy groceries first
+James Martinez: need to buy groceries first
+James Martinez: Moved to Local Diner
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 3, 14:00
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Sophia Chang: Moved to Fried Chicken Shop
+Error processing agent Maria Rodriguez: 'Agent' object has no attribute 'experiment_settings'
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Jennifer White: Moved to The Coffee Shop
+Error processing agent Maria Rodriguez: 'Agent' object has no attribute 'experiment_settings'
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 3, 20:00
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Mia Thompson: need to buy groceries first
+Mia Thompson: Moved to Local Diner
+Ethan Brooks: need to buy groceries first
+Ethan Brooks: Moved to The Coffee Shop
+Daniel Kim: need to buy groceries first
+Daniel Kim: Moved to Family Restaurant
+John Smith: need to buy groceries first
+John Smith: Moved to Local Diner
+Sarah Johnson: need to buy groceries first
+Sarah Johnson: Moved to Fried Chicken Shop
+Emily Davis: need to buy groceries first
+Emily Davis: Moved to Local Diner
+Elizabeth Thompson: need to buy groceries first
+Elizabeth Thompson: Moved to Family Restaurant
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: 'Agent' object has no attribute 'experiment_settings'
+Error processing agent Lucas Reed: 'Agent' object has no attribute 'experiment_settings'
+Mia Thompson: need to buy groceries first
+Mia Thompson: Moved to The Coffee Shop
+Ethan Brooks: need to buy groceries first
+Ethan Brooks: Moved to Fried Chicken Shop
+Daniel Kim: need to buy groceries first
+Daniel Kim: Moved to Local Diner
+Error processing agent Jessica Lin: 'Agent' object has no attribute 'experiment_settings'
+John Smith: need to buy groceries first
+John Smith: Moved to The Coffee Shop
+Sarah Johnson: need to buy groceries first
+Sarah Johnson: Moved to Family Restaurant
+Emily Davis: need to buy groceries first
+Emily Davis: Moved to Fried Chicken Shop
+Error processing agent Patricia Lewis: 'Agent' object has no attribute 'experiment_settings'
+Elizabeth Thompson: need to buy groceries first
+Elizabeth Thompson: Moved to The Coffee Shop
+Error processing agent Kevin Chen: 'Agent' object has no attribute 'experiment_settings'
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: 'Agent' object has no attribute 'experiment_settings'
+Error processing agent Lucas Reed: 'Agent' object has no attribute 'experiment_settings'
+Mia Thompson: need to buy groceries first
+Ethan Brooks: need to buy groceries first
+Ethan Brooks: Moved to Local Diner
+Daniel Kim: need to buy groceries first
+Error processing agent Jessica Lin: 'Agent' object has no attribute 'experiment_settings'
+John Smith: need to buy groceries first
+Sarah Johnson: need to buy groceries first
+Sarah Johnson: Moved to The Coffee Shop
+Emily Davis: need to buy groceries first
+Error processing agent Patricia Lewis: 'Agent' object has no attribute 'experiment_settings'
+Elizabeth Thompson: need to buy groceries first
+Elizabeth Thompson: Moved to Local Diner
+Error processing agent Kevin Chen: 'Agent' object has no attribute 'experiment_settings'
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Daily summary saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_summary/summary_20250410_231650.txt
+Error processing agent Emma Walker: 'Agent' object has no attribute 'experiment_settings'
+Error processing agent Lucas Reed: 'Agent' object has no attribute 'experiment_settings'
+Rachel Adams: need to buy groceries first
+Rachel Adams: Moved to Fried Chicken Shop
+Noah Hernandez: need to buy groceries first
+Noah Hernandez: Moved to Fried Chicken Shop
+Lily Carter: need to buy groceries first
+Lily Carter: Moved to Fried Chicken Shop
+Error processing agent Jessica Lin: 'Agent' object has no attribute 'experiment_settings'
+Michael Brown: need to buy groceries first
+Michael Brown: Moved to Local Diner
+David Wilson: need to buy groceries first
+David Wilson: Moved to Fried Chicken Shop
+Lisa Anderson: need to buy groceries first
+Lisa Anderson: Moved to Fried Chicken Shop
+Robert Taylor: need to buy groceries first
+Robert Taylor: Moved to Family Restaurant
+William Clark: need to buy groceries first
+William Clark: Moved to Fried Chicken Shop
+Error processing agent Patricia Lewis: 'Agent' object has no attribute 'experiment_settings'
+James Martinez: need to buy groceries first
+James Martinez: Moved to The Coffee Shop
+Error processing agent Kevin Chen: 'Agent' object has no attribute 'experiment_settings'
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Rachel Adams: 'Agent' object has no attribute 'experiment_settings'
+Error processing agent Noah Hernandez: 'Agent' object has no attribute 'experiment_settings'
+Error processing agent Lily Carter: 'Agent' object has no attribute 'experiment_settings'
+Michael Brown: need to buy groceries first
+Michael Brown: Moved to The Coffee Shop
+Error processing agent David Wilson: 'Agent' object has no attribute 'experiment_settings'
+Error processing agent Lisa Anderson: 'Agent' object has no attribute 'experiment_settings'
+Robert Taylor: need to buy groceries first
+Error processing agent William Clark: 'Agent' object has no attribute 'experiment_settings'
+James Martinez: need to buy groceries first
+James Martinez: Moved to Family Restaurant
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Rachel Adams: 'Agent' object has no attribute 'experiment_settings'
+Error processing agent Noah Hernandez: 'Agent' object has no attribute 'experiment_settings'
+Error processing agent Lily Carter: 'Agent' object has no attribute 'experiment_settings'
+Michael Brown: need to buy groceries first
+Error processing agent David Wilson: 'Agent' object has no attribute 'experiment_settings'
+Error processing agent Lisa Anderson: 'Agent' object has no attribute 'experiment_settings'
+Robert Taylor: need to buy groceries first
+Error processing agent William Clark: 'Agent' object has no attribute 'experiment_settings'
+James Martinez: need to buy groceries first
+James Martinez: Moved to The Coffee Shop
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Mia Thompson: Moved to Pharmacy
+Ethan Brooks: Moved to Target
+Rachel Adams: Moved to Sunshine Daycare Center
+Noah Hernandez: Moved to Community Sports Complex Center
+Lily Carter: Moved to Community Sports Complex Center
+Daniel Kim: Moved to Tech Hub
+John Smith: Moved to Tech Hub
+Sarah Johnson: Moved to Tech Hub
+Michael Brown: Moved to Financial District
+David Wilson: Moved to Town Community College
+Lisa Anderson: Moved to Community Clinic
+Robert Taylor: Moved to Local Market
+Elizabeth Thompson: Moved to Tech Hub
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 4, 09:00
+Sophia Chang: Moved to The Coffee Shop
+Jennifer White: Moved to Family Restaurant
+Error processing agent Maria Rodriguez: 'Agent' object has no attribute 'experiment_settings'
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Jennifer White: Moved to Fried Chicken Shop
+Error processing agent Maria Rodriguez: 'Agent' object has no attribute 'experiment_settings'
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Mia Thompson: need to buy groceries first
+Ethan Brooks: need to buy groceries first
+Daniel Kim: need to buy groceries first
+John Smith: need to buy groceries first
+Sarah Johnson: need to buy groceries first
+Error processing agent Emily Davis: 'Agent' object has no attribute 'experiment_settings'
+Elizabeth Thompson: need to buy groceries first
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 4, 14:00
+Error processing agent Emma Walker: 'Agent' object has no attribute 'experiment_settings'
+Error processing agent Lucas Reed: 'Agent' object has no attribute 'experiment_settings'
+Mia Thompson: need to buy groceries first
+Ethan Brooks: need to buy groceries first
+Daniel Kim: need to buy groceries first
+Error processing agent Jessica Lin: 'Agent' object has no attribute 'experiment_settings'
+John Smith: need to buy groceries first
+Sarah Johnson: need to buy groceries first
+Emily Davis: need to buy groceries first
+Emily Davis: Moved to The Coffee Shop
+Error processing agent Patricia Lewis: 'Agent' object has no attribute 'experiment_settings'
+Elizabeth Thompson: need to buy groceries first
+Error processing agent Kevin Chen: 'Agent' object has no attribute 'experiment_settings'
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: 'Agent' object has no attribute 'experiment_settings'
+Error processing agent Lucas Reed: 'Agent' object has no attribute 'experiment_settings'
+Mia Thompson: need to buy groceries first
+Ethan Brooks: need to buy groceries first
+Daniel Kim: need to buy groceries first
+Error processing agent Jessica Lin: 'Agent' object has no attribute 'experiment_settings'
+John Smith: need to buy groceries first
+Sarah Johnson: need to buy groceries first
+Emily Davis: need to buy groceries first
+Error processing agent Patricia Lewis: 'Agent' object has no attribute 'experiment_settings'
+Elizabeth Thompson: need to buy groceries first
+Error processing agent Kevin Chen: 'Agent' object has no attribute 'experiment_settings'
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: 'Agent' object has no attribute 'experiment_settings'
+Error processing agent Lucas Reed: 'Agent' object has no attribute 'experiment_settings'
+Rachel Adams: need to buy groceries first
+Noah Hernandez: need to buy groceries first
+Lily Carter: need to buy groceries first
+Error processing agent Jessica Lin: 'Agent' object has no attribute 'experiment_settings'
+Michael Brown: need to buy groceries first
+David Wilson: need to buy groceries first
+Lisa Anderson: need to buy groceries first
+Robert Taylor: need to buy groceries first
+Error processing agent William Clark: 'Agent' object has no attribute 'experiment_settings'
+Error processing agent Patricia Lewis: 'Agent' object has no attribute 'experiment_settings'
+James Martinez: need to buy groceries first
+James Martinez: Moved to Fried Chicken Shop
+Error processing agent Kevin Chen: 'Agent' object has no attribute 'experiment_settings'
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Rachel Adams: need to buy groceries first
+Noah Hernandez: need to buy groceries first
+Lily Carter: need to buy groceries first
+Michael Brown: need to buy groceries first
+David Wilson: need to buy groceries first
+Lisa Anderson: need to buy groceries first
+Robert Taylor: need to buy groceries first
+William Clark: need to buy groceries first
+William Clark: Moved to Family Restaurant
+James Martinez: need to buy groceries first
+James Martinez: Moved to The Coffee Shop
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Rachel Adams: need to buy groceries first
+Rachel Adams: Moved to Fried Chicken Shop
+Noah Hernandez: need to buy groceries first
+Noah Hernandez: Moved to Family Restaurant
+Lily Carter: need to buy groceries first
+Lily Carter: Moved to The Coffee Shop
+Michael Brown: need to buy groceries first
+Michael Brown: Moved to The Coffee Shop
+David Wilson: need to buy groceries first
+David Wilson: Moved to Family Restaurant
+Lisa Anderson: need to buy groceries first
+Lisa Anderson: Moved to The Coffee Shop
+Robert Taylor: need to buy groceries first
+Robert Taylor: Moved to Family Restaurant
+William Clark: need to buy groceries first
+William Clark: Moved to The Coffee Shop
+James Martinez: need to buy groceries first
+James Martinez: Moved to Local Diner
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 4, 20:00
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Daily summary saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_summary/summary_20250410_231653.txt
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Sophia Chang: Moved to Local Diner
+Error processing agent Maria Rodriguez: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Sophia Chang: Moved to Family Restaurant
+Jennifer White: Moved to The Coffee Shop
+Error processing agent Maria Rodriguez: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Mia Thompson: need to buy groceries first
+Mia Thompson: Moved to Local Diner
+Ethan Brooks: need to buy groceries first
+Ethan Brooks: Moved to Fried Chicken Shop
+Daniel Kim: need to buy groceries first
+Daniel Kim: Moved to Local Diner
+John Smith: need to buy groceries first
+John Smith: Moved to Family Restaurant
+Sarah Johnson: need to buy groceries first
+Sarah Johnson: Moved to The Coffee Shop
+Emily Davis: need to buy groceries first
+Elizabeth Thompson: need to buy groceries first
+Elizabeth Thompson: Moved to Fried Chicken Shop
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Mia Thompson: need to buy groceries first
+Mia Thompson: Moved to Family Restaurant
+Ethan Brooks: need to buy groceries first
+Ethan Brooks: Moved to Family Restaurant
+Daniel Kim: need to buy groceries first
+Error processing agent Jessica Lin: name 'metrics' is not defined
+John Smith: need to buy groceries first
+John Smith: Moved to Local Diner
+Sarah Johnson: need to buy groceries first
+Sarah Johnson: Moved to Family Restaurant
+Emily Davis: need to buy groceries first
+Emily Davis: Moved to Fried Chicken Shop
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+Elizabeth Thompson: need to buy groceries first
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Mia Thompson: need to buy groceries first
+Ethan Brooks: need to buy groceries first
+Ethan Brooks: Moved to Fried Chicken Shop
+Daniel Kim: need to buy groceries first
+Error processing agent Jessica Lin: name 'metrics' is not defined
+John Smith: need to buy groceries first
+John Smith: Moved to Fried Chicken Shop
+Sarah Johnson: need to buy groceries first
+Sarah Johnson: Moved to The Coffee Shop
+Emily Davis: need to buy groceries first
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+Elizabeth Thompson: need to buy groceries first
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Mia Thompson: Moved to Pharmacy
+Ethan Brooks: Moved to Target
+Error processing agent Rachel Adams: name 'metrics' is not defined
+Noah Hernandez: need to buy groceries first
+Noah Hernandez: Moved to Community Sports Complex Center
+Lily Carter: need to buy groceries first
+Lily Carter: Moved to Community Sports Complex Center
+Daniel Kim: Moved to Tech Hub
+Error processing agent Jessica Lin: name 'metrics' is not defined
+John Smith: Moved to Tech Hub
+Sarah Johnson: Moved to Tech Hub
+Michael Brown: need to buy groceries first
+Michael Brown: Moved to Financial District
+David Wilson: need to buy groceries first
+David Wilson: Moved to Town Community College
+Lisa Anderson: need to buy groceries first
+Lisa Anderson: Moved to Community Clinic
+Robert Taylor: need to buy groceries first
+Robert Taylor: Moved to Local Market
+William Clark: need to buy groceries first
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+James Martinez: need to buy groceries first
+Elizabeth Thompson: Moved to Tech Hub
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 5, 09:00
+Error processing agent Rachel Adams: name 'metrics' is not defined
+Noah Hernandez: need to buy groceries first
+Lily Carter: need to buy groceries first
+Michael Brown: need to buy groceries first
+David Wilson: need to buy groceries first
+Lisa Anderson: need to buy groceries first
+Robert Taylor: need to buy groceries first
+William Clark: need to buy groceries first
+James Martinez: need to buy groceries first
+James Martinez: Moved to The Coffee Shop
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Rachel Adams: name 'metrics' is not defined
+Noah Hernandez: need to buy groceries first
+Lily Carter: need to buy groceries first
+Michael Brown: need to buy groceries first
+David Wilson: need to buy groceries first
+Lisa Anderson: need to buy groceries first
+Robert Taylor: need to buy groceries first
+William Clark: need to buy groceries first
+William Clark: Moved to Family Restaurant
+James Martinez: need to buy groceries first
+James Martinez: Moved to Family Restaurant
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Rachel Adams: Moved to Sunshine Daycare Center
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 5, 14:00
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Maria Rodriguez: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Sophia Chang: Moved to Local Diner
+Error processing agent Maria Rodriguez: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 5, 20:00
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Mia Thompson: need to buy groceries first
+Mia Thompson: Moved to Family Restaurant
+Ethan Brooks: need to buy groceries first
+Ethan Brooks: Moved to Local Diner
+Daniel Kim: need to buy groceries first
+Daniel Kim: Moved to Family Restaurant
+John Smith: need to buy groceries first
+John Smith: Moved to Family Restaurant
+Sarah Johnson: need to buy groceries first
+Sarah Johnson: Moved to Fried Chicken Shop
+Emily Davis: need to buy groceries first
+Emily Davis: Moved to Family Restaurant
+Elizabeth Thompson: need to buy groceries first
+Elizabeth Thompson: Moved to Fried Chicken Shop
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Mia Thompson: need to buy groceries first
+Mia Thompson: Moved to The Coffee Shop
+Ethan Brooks: need to buy groceries first
+Ethan Brooks: Moved to Family Restaurant
+Daniel Kim: need to buy groceries first
+Daniel Kim: Moved to Fried Chicken Shop
+Error processing agent Jessica Lin: name 'metrics' is not defined
+John Smith: need to buy groceries first
+John Smith: Moved to Local Diner
+Sarah Johnson: need to buy groceries first
+Sarah Johnson: Moved to The Coffee Shop
+Emily Davis: need to buy groceries first
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+Elizabeth Thompson: need to buy groceries first
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Mia Thompson: need to buy groceries first
+Mia Thompson: Moved to Family Restaurant
+Ethan Brooks: need to buy groceries first
+Ethan Brooks: Moved to The Coffee Shop
+Daniel Kim: need to buy groceries first
+Daniel Kim: Moved to The Coffee Shop
+Error processing agent Jessica Lin: name 'metrics' is not defined
+John Smith: need to buy groceries first
+John Smith: Moved to The Coffee Shop
+Sarah Johnson: need to buy groceries first
+Emily Davis: need to buy groceries first
+Emily Davis: Moved to Local Diner
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+Elizabeth Thompson: need to buy groceries first
+Elizabeth Thompson: Moved to The Coffee Shop
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Daily summary saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_summary/summary_20250410_231656.txt
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Rachel Adams: need to buy groceries first
+Rachel Adams: Moved to Fried Chicken Shop
+Noah Hernandez: need to buy groceries first
+Noah Hernandez: Moved to Fried Chicken Shop
+Lily Carter: need to buy groceries first
+Lily Carter: Moved to The Coffee Shop
+Error processing agent Jessica Lin: name 'metrics' is not defined
+Michael Brown: need to buy groceries first
+Michael Brown: Moved to Family Restaurant
+David Wilson: need to buy groceries first
+David Wilson: Moved to The Coffee Shop
+Lisa Anderson: need to buy groceries first
+Lisa Anderson: Moved to The Coffee Shop
+Robert Taylor: need to buy groceries first
+Robert Taylor: Moved to Local Diner
+William Clark: need to buy groceries first
+William Clark: Moved to Local Diner
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+James Martinez: need to buy groceries first
+James Martinez: Moved to Local Diner
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Rachel Adams: name 'metrics' is not defined
+Error processing agent Noah Hernandez: name 'metrics' is not defined
+Lily Carter: need to buy groceries first
+Lily Carter: Moved to Fried Chicken Shop
+Michael Brown: need to buy groceries first
+Michael Brown: Moved to Local Diner
+David Wilson: need to buy groceries first
+David Wilson: Moved to Family Restaurant
+Lisa Anderson: need to buy groceries first
+Lisa Anderson: Moved to Local Diner
+Robert Taylor: need to buy groceries first
+Robert Taylor: Moved to Fried Chicken Shop
+William Clark: need to buy groceries first
+William Clark: Moved to Family Restaurant
+James Martinez: need to buy groceries first
+James Martinez: Moved to Fried Chicken Shop
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Rachel Adams: name 'metrics' is not defined
+Error processing agent Noah Hernandez: name 'metrics' is not defined
+Error processing agent Lily Carter: name 'metrics' is not defined
+Michael Brown: need to buy groceries first
+Michael Brown: Moved to The Coffee Shop
+David Wilson: need to buy groceries first
+David Wilson: Moved to Fried Chicken Shop
+Lisa Anderson: need to buy groceries first
+Lisa Anderson: Moved to Family Restaurant
+Error processing agent Robert Taylor: name 'metrics' is not defined
+William Clark: need to buy groceries first
+William Clark: Moved to Fried Chicken Shop
+Error processing agent James Martinez: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Mia Thompson: Moved to Pharmacy
+Ethan Brooks: Moved to Target
+Rachel Adams: Moved to Sunshine Daycare Center
+Noah Hernandez: Moved to Community Sports Complex Center
+Lily Carter: Moved to Community Sports Complex Center
+Daniel Kim: Moved to Tech Hub
+John Smith: Moved to Tech Hub
+Sarah Johnson: Moved to Tech Hub
+Michael Brown: Moved to Financial District
+David Wilson: Moved to Town Community College
+Lisa Anderson: Moved to Community Clinic
+Robert Taylor: Moved to Local Market
+Elizabeth Thompson: Moved to Tech Hub
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 6, 09:00
+Error processing agent Maria Rodriguez: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Sophia Chang: Moved to The Coffee Shop
+Jennifer White: Moved to Fried Chicken Shop
+Error processing agent Maria Rodriguez: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Mia Thompson: need to buy groceries first
+Ethan Brooks: need to buy groceries first
+Daniel Kim: need to buy groceries first
+John Smith: need to buy groceries first
+Sarah Johnson: need to buy groceries first
+Emily Davis: need to buy groceries first
+Emily Davis: Moved to Family Restaurant
+Elizabeth Thompson: need to buy groceries first
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 6, 14:00
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Mia Thompson: need to buy groceries first
+Ethan Brooks: need to buy groceries first
+Daniel Kim: need to buy groceries first
+Error processing agent Jessica Lin: name 'metrics' is not defined
+John Smith: need to buy groceries first
+Sarah Johnson: need to buy groceries first
+Emily Davis: need to buy groceries first
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+Elizabeth Thompson: need to buy groceries first
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Mia Thompson: need to buy groceries first
+Ethan Brooks: need to buy groceries first
+Daniel Kim: need to buy groceries first
+Error processing agent Jessica Lin: name 'metrics' is not defined
+John Smith: need to buy groceries first
+Sarah Johnson: need to buy groceries first
+Emily Davis: need to buy groceries first
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+Elizabeth Thompson: need to buy groceries first
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Rachel Adams: need to buy groceries first
+Noah Hernandez: need to buy groceries first
+Lily Carter: need to buy groceries first
+Error processing agent Jessica Lin: name 'metrics' is not defined
+Michael Brown: need to buy groceries first
+David Wilson: need to buy groceries first
+Lisa Anderson: need to buy groceries first
+Robert Taylor: need to buy groceries first
+Error processing agent William Clark: name 'metrics' is not defined
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+Error processing agent James Martinez: name 'metrics' is not defined
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Rachel Adams: need to buy groceries first
+Noah Hernandez: need to buy groceries first
+Lily Carter: need to buy groceries first
+Michael Brown: need to buy groceries first
+David Wilson: need to buy groceries first
+Lisa Anderson: need to buy groceries first
+Robert Taylor: need to buy groceries first
+William Clark: need to buy groceries first
+William Clark: Moved to Family Restaurant
+James Martinez: need to buy groceries first
+James Martinez: Moved to The Coffee Shop
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Rachel Adams: need to buy groceries first
+Rachel Adams: Moved to Family Restaurant
+Noah Hernandez: need to buy groceries first
+Noah Hernandez: Moved to The Coffee Shop
+Lily Carter: need to buy groceries first
+Lily Carter: Moved to The Coffee Shop
+Michael Brown: need to buy groceries first
+Michael Brown: Moved to Local Diner
+David Wilson: need to buy groceries first
+David Wilson: Moved to The Coffee Shop
+Lisa Anderson: need to buy groceries first
+Lisa Anderson: Moved to Family Restaurant
+Robert Taylor: need to buy groceries first
+Robert Taylor: Moved to The Coffee Shop
+William Clark: need to buy groceries first
+William Clark: Moved to Local Diner
+James Martinez: need to buy groceries first
+James Martinez: Moved to Family Restaurant
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 6, 20:00
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Daily summary saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_summary/summary_20250410_231658.txt
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Sophia Chang: Moved to Family Restaurant
+Jennifer White: Moved to Family Restaurant
+Error processing agent Maria Rodriguez: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Sophia Chang: Moved to The Coffee Shop
+Jennifer White: Moved to Fried Chicken Shop
+Error processing agent Maria Rodriguez: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Mia Thompson: need to buy groceries first
+Mia Thompson: Moved to Fried Chicken Shop
+Ethan Brooks: need to buy groceries first
+Ethan Brooks: Moved to Fried Chicken Shop
+Daniel Kim: need to buy groceries first
+Daniel Kim: Moved to The Coffee Shop
+John Smith: need to buy groceries first
+John Smith: Moved to Fried Chicken Shop
+Sarah Johnson: need to buy groceries first
+Sarah Johnson: Moved to Local Diner
+Emily Davis: need to buy groceries first
+Elizabeth Thompson: need to buy groceries first
+Elizabeth Thompson: Moved to Fried Chicken Shop
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Mia Thompson: need to buy groceries first
+Ethan Brooks: need to buy groceries first
+Ethan Brooks: Moved to Local Diner
+Daniel Kim: need to buy groceries first
+Daniel Kim: Moved to Fried Chicken Shop
+Error processing agent Jessica Lin: name 'metrics' is not defined
+John Smith: need to buy groceries first
+John Smith: Moved to Local Diner
+Sarah Johnson: need to buy groceries first
+Sarah Johnson: Moved to Family Restaurant
+Emily Davis: need to buy groceries first
+Emily Davis: Moved to Fried Chicken Shop
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+Elizabeth Thompson: need to buy groceries first
+Elizabeth Thompson: Moved to Family Restaurant
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Mia Thompson: need to buy groceries first
+Mia Thompson: Moved to Family Restaurant
+Ethan Brooks: need to buy groceries first
+Ethan Brooks: Moved to The Coffee Shop
+Daniel Kim: need to buy groceries first
+Error processing agent Jessica Lin: name 'metrics' is not defined
+John Smith: need to buy groceries first
+John Smith: Moved to The Coffee Shop
+Sarah Johnson: need to buy groceries first
+Sarah Johnson: Moved to The Coffee Shop
+Emily Davis: need to buy groceries first
+Emily Davis: Moved to Local Diner
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+Elizabeth Thompson: need to buy groceries first
+Elizabeth Thompson: Moved to Fried Chicken Shop
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Mia Thompson: Moved to Pharmacy
+Ethan Brooks: Moved to Target
+Rachel Adams: need to buy groceries first
+Rachel Adams: Moved to Sunshine Daycare Center
+Noah Hernandez: need to buy groceries first
+Noah Hernandez: Moved to Community Sports Complex Center
+Lily Carter: need to buy groceries first
+Lily Carter: Moved to Community Sports Complex Center
+Daniel Kim: Moved to Tech Hub
+Error processing agent Jessica Lin: name 'metrics' is not defined
+John Smith: Moved to Tech Hub
+Sarah Johnson: Moved to Tech Hub
+Michael Brown: need to buy groceries first
+Michael Brown: Moved to Financial District
+David Wilson: need to buy groceries first
+David Wilson: Moved to Town Community College
+Lisa Anderson: need to buy groceries first
+Lisa Anderson: Moved to Community Clinic
+Robert Taylor: need to buy groceries first
+Robert Taylor: Moved to Local Market
+William Clark: need to buy groceries first
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+James Martinez: need to buy groceries first
+James Martinez: Moved to The Coffee Shop
+Elizabeth Thompson: Moved to Tech Hub
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 7, 09:00
+Rachel Adams: need to buy groceries first
+Noah Hernandez: need to buy groceries first
+Lily Carter: need to buy groceries first
+Michael Brown: need to buy groceries first
+David Wilson: need to buy groceries first
+Lisa Anderson: need to buy groceries first
+Robert Taylor: need to buy groceries first
+William Clark: need to buy groceries first
+William Clark: Moved to The Coffee Shop
+James Martinez: need to buy groceries first
+James Martinez: Moved to Local Diner
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Rachel Adams: need to buy groceries first
+Noah Hernandez: need to buy groceries first
+Lily Carter: need to buy groceries first
+Michael Brown: need to buy groceries first
+David Wilson: need to buy groceries first
+Lisa Anderson: need to buy groceries first
+Robert Taylor: need to buy groceries first
+William Clark: need to buy groceries first
+William Clark: Moved to Fried Chicken Shop
+James Martinez: need to buy groceries first
+James Martinez: Moved to The Coffee Shop
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 7, 14:00
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Sophia Chang: Moved to Family Restaurant
+Error processing agent Maria Rodriguez: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Sophia Chang: Moved to Fried Chicken Shop
+Jennifer White: Moved to The Coffee Shop
+Error processing agent Maria Rodriguez: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+
+Time now: Day 7, 20:00
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Mia Thompson: need to buy groceries first
+Mia Thompson: Moved to Fried Chicken Shop
+Ethan Brooks: need to buy groceries first
+Ethan Brooks: Moved to Fried Chicken Shop
+Daniel Kim: need to buy groceries first
+Daniel Kim: Moved to Fried Chicken Shop
+John Smith: need to buy groceries first
+John Smith: Moved to Local Diner
+Sarah Johnson: need to buy groceries first
+Sarah Johnson: Moved to Local Diner
+Emily Davis: need to buy groceries first
+Emily Davis: Moved to The Coffee Shop
+Elizabeth Thompson: need to buy groceries first
+Elizabeth Thompson: Moved to The Coffee Shop
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Mia Thompson: need to buy groceries first
+Mia Thompson: Moved to Local Diner
+Ethan Brooks: need to buy groceries first
+Daniel Kim: need to buy groceries first
+Error processing agent Jessica Lin: name 'metrics' is not defined
+John Smith: need to buy groceries first
+John Smith: Moved to Fried Chicken Shop
+Sarah Johnson: need to buy groceries first
+Sarah Johnson: Moved to Family Restaurant
+Emily Davis: need to buy groceries first
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+Elizabeth Thompson: need to buy groceries first
+Elizabeth Thompson: Moved to Family Restaurant
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Error processing agent Emma Walker: name 'metrics' is not defined
+Error processing agent Lucas Reed: name 'metrics' is not defined
+Mia Thompson: need to buy groceries first
+Ethan Brooks: need to buy groceries first
+Ethan Brooks: Moved to Local Diner
+Daniel Kim: need to buy groceries first
+Daniel Kim: Moved to Family Restaurant
+Error processing agent Jessica Lin: name 'metrics' is not defined
+John Smith: need to buy groceries first
+John Smith: Moved to The Coffee Shop
+Sarah Johnson: need to buy groceries first
+Sarah Johnson: Moved to Fried Chicken Shop
+Emily Davis: need to buy groceries first
+Emily Davis: Moved to Local Diner
+Error processing agent Patricia Lewis: name 'metrics' is not defined
+Elizabeth Thompson: need to buy groceries first
+Elizabeth Thompson: Moved to Fried Chicken Shop
+Error processing agent Kevin Chen: name 'metrics' is not defined
+Metrics saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_metrics/metrics_20250410_231643.json
+Daily summary saved to: /Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability/memory_records/simulation_summary/summary_20250410_231701.txt
+
+=== Simulation Complete ===
+
+=== Final Statistics ===
+
+Fried Chicken Shop Statistics:
+------------------------------
+Total visits: 0
+Total meals sold: 0
+Unique customers: 0
+Total revenue: $0.00
+Discount usage: 0 times
+Total customer savings: $0.00
+Word of mouth mentions: 0
+

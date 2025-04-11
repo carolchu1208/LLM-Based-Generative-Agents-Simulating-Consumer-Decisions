@@ -1,0 +1,15 @@
+=== Simulation Summary - Day 7, Hour 23:00 ===
+
+
+Fried Chicken Shop Statistics:
+------------------------------
+Total visits: 0
+Total meals sold: 0
+Unique customers: 0
+Total revenue: $0.00
+Discount usage: 0 times
+Total customer savings: $0.00
+Word of mouth mentions: 0
+
+Memory Statistics:
+------------------------------

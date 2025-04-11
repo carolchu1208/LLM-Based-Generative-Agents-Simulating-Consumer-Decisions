@@ -2,12 +2,28 @@ from datetime import datetime
 import os
 import json
 
+# Define sales-related keywords for tracking
+SALES_KEYWORDS = [
+    "discount",
+    "% off",
+    "dollars off",
+    "sale",
+    "promotion",
+    "deal",
+    "special offer",
+    "cheaper",
+    "savings",
+    "reduced price",
+    "original price",
+    "regular price",
+    "save money"
+]
+
 class FriedChickenMetrics:
-    def __init__(self, experiment_type, discount_value):
+    def __init__(self, discount_value=20):  # Only keep discount_value, default to 20%
         self.daily_metrics = {}
         self.current_day = 1
         self.start_time = datetime.now()
-        self.experiment_type = experiment_type
         self.discount_value = discount_value
         
         # Initialize first day
@@ -32,11 +48,16 @@ class FriedChickenMetrics:
             },
             'word_of_mouth': {
                 'total_mentions': 0,
-                'positive': [],  # List of {speaker, listener, location, time, content}
-                'neutral': [],
-                'negative': [],
-                'influencers': {},  # Track who spreads the word most effectively
-                'spread_chains': []  # Track how information spreads (A told B who told C...)
+                'positive': [],  # Happy about discounts/savings
+                'neutral': [],   # Just sharing discount info
+                'negative': [],  # Complaints about discount terms
+                'influencers': {},
+                'spread_chains': [],
+                'sale_mentions': {
+                    'discount_awareness': [],  # People who know about discounts
+                    'discount_sharing': [],    # People who told others
+                    'price_discussion': []     # Price comparison discussions
+                }
             },
             'customer_segments': {
                 'new_customers': [],
@@ -51,7 +72,16 @@ class FriedChickenMetrics:
         }
 
     def record_interaction(self, agent_name, location, event_type, details=None):
-        """Record interactions with enhanced tracking"""
+        """Standardize the details parameter across all event types"""
+        if details is None:
+            details = {}
+        
+        # Ensure required fields exist
+        if event_type == "word_of_mouth":
+            details.setdefault('sentiment', 'neutral')
+            details.setdefault('listener', 'unknown')
+            details.setdefault('content', '')
+        
         current_time = datetime.now()
         metrics = self.daily_metrics[self.current_day]
         
@@ -75,7 +105,7 @@ class FriedChickenMetrics:
             used_discount = self.is_discount_day()
             
             if used_discount:
-                if self.experiment_type == "percentage":
+                if self.discount_value == "percentage":
                     discount_amount = original_price * (self.discount_value / 100)
                 else:  # fixed amount
                     discount_amount = self.discount_value
@@ -206,7 +236,6 @@ class FriedChickenMetrics:
         
         metrics = self.daily_metrics[day]
         print(f"\n=== Day {day} Fried Chicken Shop Activity ===")
-        print(f"Experiment Type: {self.experiment_type}")
         print(f"Discount Value: {self.discount_value}")
         
         # Visit Statistics
@@ -283,7 +312,12 @@ class FriedChickenMetrics:
                 'neutral': [],
                 'negative': [],
                 'influencers': {},
-                'spread_chains': []
+                'spread_chains': [],
+                'sale_mentions': {
+                    'discount_awareness': [],
+                    'discount_sharing': [],
+                    'price_discussion': []
+                }
             },
             'customer_segments': {
                 'new_customers': [],
@@ -303,28 +337,62 @@ class FriedChickenMetrics:
 
     def is_discount_day(self):
         """Check if current day is a discount day (2 days per week)"""
-        return self.current_day % 7 in [3, 5]  # Discount on Wednesday and Friday
+        return self.current_day % 7 in [3, 4]  # Discount on Wednesday and Thursday
 
-    def save_metrics(self):
-        """Save metrics in the memory_records directory"""
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        records_dir = os.path.join(base_dir, 'memory_records')
-        os.makedirs(records_dir, exist_ok=True)
+    def save_to_file(self):
+        """Save metrics to file"""
+        try:
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            metrics_dir = os.path.join(base_dir, 'memory_records', 'simulation_metrics')  # Correct path
+            os.makedirs(metrics_dir, exist_ok=True)
+            
+            timestamp = self.start_time.strftime('%Y%m%d_%H%M%S')
+            filepath = os.path.join(metrics_dir, f'metrics_{timestamp}.json')
+            
+            metrics_data = {
+                'simulation_start': self.start_time.strftime('%Y-%m-%d %H:%M:%S'),
+                'simulation_end': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'daily_metrics': self.daily_metrics
+            }
+            
+            with open(filepath, 'w') as f:
+                json.dump(metrics_data, f, indent=2)
+                
+            print(f"Metrics saved to: {filepath}")
+            return filepath
+            
+        except Exception as e:
+            print(f"Error saving metrics: {str(e)}")
+            return None
 
-        filename = f"fried_chicken_metrics_{self.experiment_type}_{self.discount_value}_{self.start_time.strftime('%Y%m%d_%H%M%S')}.json"
-        filepath = os.path.join(records_dir, filename)
-
-        metrics_data = {
-            'simulation_start': self.start_time.strftime('%Y-%m-%d %H:%M:%S'),
-            'simulation_end': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'total_days': self.current_day,
-            'experiment_type': self.experiment_type,
-            'discount_value': self.discount_value,
-            'daily_metrics': self.daily_metrics
-        }
-
-        with open(filepath, 'w') as f:
-            json.dump(metrics_data, f, indent=2)
-
-        print(f"Fried chicken metrics saved to {filepath}")
-        return filepath 
+    def get_final_statistics(self):
+        """Get final statistics summary"""
+        stats = "\nFried Chicken Shop Statistics:\n"
+        stats += "-" * 30 + "\n"
+        
+        # Aggregate data from all days
+        total_visits = sum(day['store_visits']['total_count'] for day in self.daily_metrics.values())
+        total_revenue = sum(day['sales']['total_amount'] for day in self.daily_metrics.values())
+        total_meals = sum(day['sales']['meals_sold'] for day in self.daily_metrics.values())
+        total_discount_usage = sum(day['discount_usage']['total_count'] for day in self.daily_metrics.values())
+        total_discount_savings = sum(day['discount_usage']['total_savings'] for day in self.daily_metrics.values())
+        
+        # Calculate unique customers across all days
+        unique_customers = set()
+        for day in self.daily_metrics.values():
+            unique_customers.update(day['customer_segments']['new_customers'])
+            unique_customers.update(day['customer_segments']['returning_customers'])
+        
+        # Generate statistics
+        stats += f"Total visits: {total_visits}\n"
+        stats += f"Total meals sold: {total_meals}\n"
+        stats += f"Unique customers: {len(unique_customers)}\n"
+        stats += f"Total revenue: ${total_revenue:.2f}\n"
+        stats += f"Discount usage: {total_discount_usage} times\n"
+        stats += f"Total customer savings: ${total_discount_savings:.2f}\n"
+        
+        # Word of mouth impact
+        total_mentions = sum(day['word_of_mouth']['total_mentions'] for day in self.daily_metrics.values())
+        stats += f"Word of mouth mentions: {total_mentions}\n"
+        
+        return stats 

@@ -1,0 +1,62 @@
+=== Simulation Started at 22:51:32 ===
+Day 1 begins
+
+
+Time now: Day 1, 09:00
+
+Time now: Day 1, 14:00
+
+Time now: Day 1, 20:00
+
+Time now: Day 2, 09:00
+
+Time now: Day 2, 14:00
+
+Time now: Day 2, 20:00
+
+Time now: Day 3, 09:00
+
+=== Special 2-Day Discount Starting Now! ===
+
+Time now: Day 3, 14:00
+
+Time now: Day 3, 20:00
+
+Time now: Day 4, 09:00
+
+Time now: Day 4, 14:00
+
+Time now: Day 4, 20:00
+
+Time now: Day 5, 09:00
+
+Time now: Day 5, 14:00
+
+Time now: Day 5, 20:00
+
+Time now: Day 6, 09:00
+
+Time now: Day 6, 14:00
+
+Time now: Day 6, 20:00
+
+Time now: Day 7, 09:00
+
+Time now: Day 7, 14:00
+
+Time now: Day 7, 20:00
+
+=== Simulation Complete ===
+
+=== Final Statistics ===
+
+Fried Chicken Shop Statistics:
+------------------------------
+Total visits: 0
+Total meals sold: 0
+Unique customers: 0
+Total revenue: $0.00
+Discount usage: 0 times
+Total customer savings: $0.00
+Word of mouth mentions: 0
+
