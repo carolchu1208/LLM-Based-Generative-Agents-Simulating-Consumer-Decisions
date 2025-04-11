@@ -1,18 +1,9 @@
 {
     "town_areas": {
         "retail_and_grocery": {
-            "Target": {
-                "type": "retail",
-                "opening_hours": {"start": 8, "end": 22}
-            },
-            "Local Market": {
-                "type": "retail",
-                "opening_hours": {"start": 7, "end": 21}
-            },
-            "Main Street Shops": {
-                "type": "commercial",
-                "opening_hours": {"start": 10, "end": 21}
-            },
+            "Target": "Department store offering clothing, home goods, and everyday essentials",
+            "Local Market": "Family-owned grocery store with fresh produce and everyday essentials",
+            "Main Street Shops": "Local retail district with small businesses and restaurants",
             "Pharmacy": "Local drugstore with prescription services and health products"
         },
         "residences": {
@@ -34,16 +25,8 @@
             "Fried Chicken Shop": "A popular fast-food restaurant known for its crispy chicken meals"
         },
         "education": {
-            "Town Public High School": {
-                "type": "school",
-                "opening_hours": {"start": 8, "end": 15},
-                "age_range": [14, 18]
-            },
-            "Elementary School": {
-                "type": "school",
-                "opening_hours": {"start": 8, "end": 15},
-                "age_range": [5, 11]
-            },
+            "Town Public High School": "The main high school serving the local community, with strong academic programs and sports facilities",
+            "Elementary School": "Local public elementary school with dedicated teachers and after-school programs",
             "Sunshine Daycare Center": "Affordable local daycare center providing quality childcare services",
             "Town Community College": "Local college offering associate degrees and continuing education programs"
         },
@@ -498,57 +481,6 @@
                     "household_members": ["parents", "sister"]
                 }
             }
-        }
-    },
-    "places": {
-        "Elementary School": {
-            "type": "school",
-            "description": "Local elementary school",
-            "age_range": [5, 11],
-            "opening_hours": {
-                "start": 8,
-                "end": 15
-            }
-        },
-        "Happy Kids Daycare": {
-            "type": "daycare",
-            "description": "Daycare center for young children",
-            "age_range": [0, 5],
-            "opening_hours": {
-                "start": 7,
-                "end": 18
-            }
-        },
-        "Fried Chicken Shop": {
-            "type": "restaurant",
-            "description": "Popular fried chicken restaurant",
-            "opening_hours": {
-                "start": 10,
-                "end": 22
-            },
-            "menu": {
-                "Fried Chicken": 15.99
-            }
-        }
-    },
-    "agents": {
-        "John Smith": {
-            "role": "Father",
-            "occupation": "Office Worker",
-            "monthly_income": 5000,
-            "family": ["Mary Smith", "Tommy Smith"]
-        },
-        "Mary Smith": {
-            "role": "Mother",
-            "occupation": "Teacher",
-            "monthly_income": 4000,
-            "family": ["John Smith", "Tommy Smith"]
-        },
-        "Tommy Smith": {
-            "role": "Child",
-            "occupation": "Student",
-            "monthly_income": 0,
-            "family": ["John Smith", "Mary Smith"]
         }
     }
 }

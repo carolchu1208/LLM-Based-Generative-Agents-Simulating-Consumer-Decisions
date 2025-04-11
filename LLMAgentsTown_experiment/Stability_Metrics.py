@@ -339,60 +339,26 @@ class FriedChickenMetrics:
         """Check if current day is a discount day (2 days per week)"""
         return self.current_day % 7 in [3, 4]  # Discount on Wednesday and Thursday
 
-    def save_to_file(self):
-        """Save metrics to file"""
-        try:
-            base_dir = os.path.dirname(os.path.abspath(__file__))
-            metrics_dir = os.path.join(base_dir, 'memory_records', 'simulation_metrics')  # Correct path
-            os.makedirs(metrics_dir, exist_ok=True)
-            
-            timestamp = self.start_time.strftime('%Y%m%d_%H%M%S')
-            filepath = os.path.join(metrics_dir, f'metrics_{timestamp}.json')
-            
-            metrics_data = {
-                'simulation_start': self.start_time.strftime('%Y-%m-%d %H:%M:%S'),
-                'simulation_end': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                'daily_metrics': self.daily_metrics
-            }
-            
-            with open(filepath, 'w') as f:
-                json.dump(metrics_data, f, indent=2)
-                
-            print(f"Metrics saved to: {filepath}")
-            return filepath
-            
-        except Exception as e:
-            print(f"Error saving metrics: {str(e)}")
-            return None
+    def save_metrics(self):
+        """Save metrics in the memory_records directory"""
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        records_dir = os.path.join(base_dir, 'Stability_Memory_Records')
+        os.makedirs(records_dir, exist_ok=True)
 
-    def get_final_statistics(self):
-        """Get final statistics summary"""
-        stats = "\nFried Chicken Shop Statistics:\n"
-        stats += "-" * 30 + "\n"
-        
-        # Aggregate data from all days
-        total_visits = sum(day['store_visits']['total_count'] for day in self.daily_metrics.values())
-        total_revenue = sum(day['sales']['total_amount'] for day in self.daily_metrics.values())
-        total_meals = sum(day['sales']['meals_sold'] for day in self.daily_metrics.values())
-        total_discount_usage = sum(day['discount_usage']['total_count'] for day in self.daily_metrics.values())
-        total_discount_savings = sum(day['discount_usage']['total_savings'] for day in self.daily_metrics.values())
-        
-        # Calculate unique customers across all days
-        unique_customers = set()
-        for day in self.daily_metrics.values():
-            unique_customers.update(day['customer_segments']['new_customers'])
-            unique_customers.update(day['customer_segments']['returning_customers'])
-        
-        # Generate statistics
-        stats += f"Total visits: {total_visits}\n"
-        stats += f"Total meals sold: {total_meals}\n"
-        stats += f"Unique customers: {len(unique_customers)}\n"
-        stats += f"Total revenue: ${total_revenue:.2f}\n"
-        stats += f"Discount usage: {total_discount_usage} times\n"
-        stats += f"Total customer savings: ${total_discount_savings:.2f}\n"
-        
-        # Word of mouth impact
-        total_mentions = sum(day['word_of_mouth']['total_mentions'] for day in self.daily_metrics.values())
-        stats += f"Word of mouth mentions: {total_mentions}\n"
-        
-        return stats 
+        filename = f"fried_chicken_metrics_{self.discount_value}_{self.start_time.strftime('%Y%m%d_%H%M%S')}.jsonl"
+        filepath = os.path.join(records_dir, filename)
+
+        metrics_data = {
+            'simulation_start': self.start_time.strftime('%Y-%m-%d %H:%M:%S'),
+            'simulation_end': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'total_days': self.current_day,
+            'discount_value': self.discount_value,
+            'daily_metrics': self.daily_metrics
+        }
+
+        with open(filepath, 'w') as f:
+            for metric in metrics_data:
+                f.write(json.dumps(metric) + '\n')
+
+        print(f"Fried chicken metrics saved to {filepath}")
+        return filepath 

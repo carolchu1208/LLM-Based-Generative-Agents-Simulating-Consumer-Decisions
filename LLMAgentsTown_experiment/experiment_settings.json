@@ -2,13 +2,14 @@
     "simulation": {
         "duration_days": 7,
         "start_day": "Monday",
-        "start_hour": 5
+        "time_step": 30,
+        "daily_hours": {
+            "start": "10:00",
+            "end": "22:00"
+        }
     },
     "fried_chicken_shop": {
-        "base_price": 15.99,
-        "discount_type": "percentage",
-        "discount_value": 20,
-        "discount_days": ["Wednesday", "Thursday"],
+        "base_price": 20.0,
         "operating_hours": {
             "weekday": {
                 "open": "10:00",
@@ -18,6 +19,14 @@
                 "open": "11:00",
                 "close": "23:00"
             }
+        }
+    },
+    "experiments": {
+        "stability_test": {
+            "discount_days": ["Wednesday", "Thursday"],
+            "discount_type": "percentage",
+            "discount_value": 20,
+            "duration": 7
         }
     }
 } 

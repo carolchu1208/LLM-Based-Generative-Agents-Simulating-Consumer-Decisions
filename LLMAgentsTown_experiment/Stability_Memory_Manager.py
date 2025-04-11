@@ -22,16 +22,16 @@ class MemoryManager:
         current_time = datetime.now()
         
         if event_type == "store_visit":
-            # Expects specific format for store visits
+            # Enhanced satisfaction tracking
             satisfaction_data = {
-                'overall_rating': details.get('satisfaction', None),
-                'food_quality': details.get('food_quality', None),
-                'price_satisfaction': details.get('price_satisfaction', None),
-                'service': details.get('service_rating', None),
-                'wait_time': details.get('wait_time', None),
-                'specific_feedback': details.get('feedback', ''),
-                'would_recommend': details.get('would_recommend', None),
-                'return_intention': details.get('return_intention', None)
+                'overall_rating': details.get('satisfaction', None),  # 1-5 scale
+                'food_quality': details.get('food_quality', None),    # 1-5 scale
+                'price_satisfaction': details.get('price_satisfaction', None),  # 1-5 scale
+                'service': details.get('service_rating', None),       # 1-5 scale
+                'wait_time': details.get('wait_time', None),         # in minutes
+                'specific_feedback': details.get('feedback', ''),     # text feedback
+                'would_recommend': details.get('would_recommend', None),  # boolean
+                'return_intention': details.get('return_intention', None)  # 1-5 scale
             }
 
             memory = {
@@ -53,15 +53,14 @@ class MemoryManager:
             self.memory_id_counter += 1
 
         elif event_type == "received_recommendation":
-            # Expects specific format for recommendations
             memory = {
                 'id': self.memory_id_counter,
                 'type': 'received_info',
                 'source': details['from_agent'],
                 'content': details['message'],
                 'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
-                'acted_upon': False,
-                'feedback_given': False,
+                'acted_upon': False,  # Will be updated if they visit
+                'feedback_given': False,  # Will be updated if they report back
                 'importance': self.determine_memory_importance(agent_name, details['message'])
             }
             
@@ -289,45 +288,36 @@ class MemoryManager:
         self.memories[agent_name] = memories[:self.memory_limit]
 
     def save_to_file(self):
-        """Save memories in JSONL format"""
-        try:
-            # Current path
-            base_dir = "/Users/carolchu/Desktop/AI_Village/LLMAgentsTown_Stability"
-            records_dir = os.path.join(base_dir, 'memory_records')
-            os.makedirs(records_dir, exist_ok=True)
+        """Save memories in JSONL format for better space efficiency"""
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        records_dir = os.path.join(base_dir, 'memory_records')
+        os.makedirs(records_dir, exist_ok=True)
 
-            timestamp = self.start_time.strftime('%Y%m%d_%H%M%S')
-            
-            # Saves to: /memory_records/simulation_agents/agent_memories_{timestamp}.jsonl
-            agents_file = os.path.join(records_dir, 'simulation_agents', f'agent_memories_{timestamp}.jsonl')
-            os.makedirs(os.path.dirname(agents_file), exist_ok=True)
-            
-            with open(agents_file, 'w') as f:
-                # Write metadata
-                f.write(json.dumps({
-                    'type': 'metadata',
-                    'simulation_start': self.start_time.strftime('%Y-%m-%d %H:%M:%S'),
-                    'simulation_end': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                }) + '\n')
-                
-                # Write memories for each agent
-                for agent_name, memories in self.memories.items():
-                    if memories:  # Only write if there are memories
-                        grouped_memories = {
-                            'type': 'agent_memories',
-                            'agent': agent_name,
-                            'store_visits': [m for m in memories if m['type'] == 'store_visit'],
-                            'received_info': [m for m in memories if m['type'] == 'received_info'],
-                            'shared_info': [m for m in memories if m['type'] == 'shared_info']
-                        }
-                        f.write(json.dumps(grouped_memories) + '\n')
+        filename = f"agent_memories_{self.start_time.strftime('%Y%m%d_%H%M%S')}.jsonl"
+        filepath = os.path.join(records_dir, filename)
 
-            print(f"\nAgent memories saved to: {agents_file}")
-            return agents_file
+        with open(filepath, 'w') as f:
+            # Write simulation metadata as first line
+            f.write(json.dumps({
+                'type': 'metadata',
+                'simulation_start': self.start_time.strftime('%Y-%m-%d %H:%M:%S'),
+                'simulation_end': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }) + '\n')
             
-        except Exception as e:
-            print(f"Error saving memories: {str(e)}")
-            return None
+            # Write each agent's memories as separate lines
+            for agent_name, memories in self.memories.items():
+                # Group memories by type for better organization
+                grouped_memories = {
+                    'type': 'agent_memories',
+                    'agent': agent_name,
+                    'store_visits': [m for m in memories if m['type'] == 'store_visit'],
+                    'received_info': [m for m in memories if m['type'] == 'received_info'],
+                    'shared_info': [m for m in memories if m['type'] == 'shared_info']
+                }
+                f.write(json.dumps(grouped_memories) + '\n')
+
+        print(f"\nAgent memories saved to: {filepath}")
+        return filepath
 
     def timestep_to_realtime(self, timestep):
         """Convert a timestep to real datetime"""
@@ -367,23 +357,3 @@ class MemoryManager:
             memory for memory in self.memories[agent_name]
             if memory['importance'] >= importance_threshold
         ]
-
-    def get_family_schedule(self, agent_name, current_time):
-        """Get family members' schedules from recent memories"""
-        day = (current_time // 24) + 1
-        family_members = self.get_family_members(agent_name)
-        family_schedule = {}
-        
-        # Look through recent memories (last 24 hours) for schedule information
-        for member in family_members:
-            member_memories = [m for m in self.memories[member] 
-                             if current_time - m['time'] <= 24]
-            schedule_info = {}
-            for memory in member_memories:
-                if "going to work" in memory['content']:
-                    schedule_info['work'] = (9, 17)  # Example work hours
-                elif "at school" in memory['content']:
-                    schedule_info['school'] = (8, 15)  # Example school hours
-            family_schedule[member] = schedule_info
-        
-        return family_schedule
