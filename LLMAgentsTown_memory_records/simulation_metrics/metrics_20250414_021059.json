@@ -1,0 +1,1533 @@
+{
+  "simulation_start": "2025-04-14 02:10:59",
+  "simulation_end": "2025-04-14 10:50:06",
+  "discount_type": "percentage",
+  "discount_value": 20,
+  "discount_days": [
+    3,
+    4
+  ],
+  "daily_metrics": {
+    "1": {
+      "store_visits": {
+        "total_count": 0,
+        "visitors": [],
+        "peak_hours": {}
+      },
+      "sales": {
+        "total_amount": 0.0,
+        "transactions": [],
+        "meals_sold": 0,
+        "average_transaction": 0.0,
+        "repeat_customers": {}
+      },
+      "discount_usage": {
+        "total_count": 0,
+        "total_savings": 0.0,
+        "transactions": [],
+        "conversion_rate": 0.0
+      },
+      "word_of_mouth": {
+        "total_mentions": 12,
+        "positive": [
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "02:51",
+            "content": "I'm feeling a bit peckish after a long morning of work. I think I'll head out to get some lunch at the Fried Chicken Shop. It's just around the corner from my apartment, so it won't take me too long to get there.\n\nFirst, I'll quickly check in with the other agents here in Maple Street Apartments to see if anyone needs anything or has any updates on their cases. Maybe someone wants to join me for lunch?\n\nAfter that, I'll grab my jacket and head out to the Fried Chicken Shop. 9:00 is a good time to go as it's not too busy yet, and I can get my favorite chicken parmesan sandwich.\n\nNext, I'll find a spot to eat and catch up on some work or scroll through social media for a bit. Lunchtime always feels like a nice break from the daily grind!"
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "02:51",
+            "content": "I'd like to take a break from the day's activities and recharge. Since I'm in Pine Grove Houses, which is our residence, I can rest for a bit.\n\nFirst, I'll head to Fried Chicken Shop, my favorite place to grab a quick bite. The aroma of fried chicken and the lively atmosphere will be a great pick-me-up after a long morning of meetings and planning with my fellow agents.\n\nI'll take a seat at the counter and order my usual - extra crispy chicken pieces with a side of mashed potatoes and gravy. Maybe I'll even try their new spicy sauce!\n\nWhile waiting for my food, I can catch up on some reading or scroll through social media to stay connected with the team. It's essential to maintain a positive and relaxed mindset, especially during these challenging times.\n\nOnce my order is ready, I'll take a few bites to refuel and then return to Pine Grove Houses, feeling refreshed and ready to tackle the rest of the day's tasks with my fellow agents."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "02:54",
+            "content": "I wake up from my cozy bed in the Maple Street Apartments, feeling refreshed after a good night's sleep. It's 10:00 AM, which means I still have some time before I need to head out for work at the Fried Chicken Shop.\n\nFirst things first, I get dressed in comfortable clothes and head to the kitchen to start my day with a nutritious breakfast. I pour myself a bowl of oatmeal with fresh fruits and a splash of milk, enjoying the quiet morning moment to myself.\n\nAfter fueling up, I grab my bag and head out to meet the other agents for our daily briefing. We usually gather in the community room to discuss our tasks, share updates, and get assigned new cases or missions.\n\nAs we chat about our plans, I notice that some of my colleagues seem a bit tired, while others are more energetic than usual. It's likely due to the upcoming deadline for our project, but I'm determined to stay focused and productive throughout the day.\n\nAfter the briefing, I head back home to grab my lunch and take a short power nap before heading out to work at the Fried Chicken Shop. It'll be another busy day of serving delicious fried chicken to our customers, so I want to make sure I'm well-rested and ready for the challenge.\n\nMy next action is to head out to the Fried Chicken Shop and get settled in for my shift."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "03:03",
+            "content": "It's 1:00 PM, which means it's almost lunchtime at the Fried Chicken Shop. As someone who loves fried chicken, I feel a strong urge to get there and grab some food before my shift starts.\n\nConsidering my current context as an agent in Pine Grove Houses, I'll also make sure to keep an eye on my fellow agents while I'm out. Maybe we can even catch up over lunch?\n\nNext action: Head to the Fried Chicken Shop for lunch and keep an ear out for any potential missions or updates from our team leader."
+          }
+        ],
+        "neutral": [
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "02:54",
+            "content": "It's a new day in Pine Grove Houses. I need to get some work done to support myself while I'm here.\n\nFirst things first, I head out of my residence at 10:00 AM to grab some breakfast at the Fried Chicken Shop, which is just around the corner. I've been craving their spicy chicken and waffles all morning.\n\nAfter fueling up, I take a few minutes to review my schedule for the day. Since I don't have any specific commitments or meetings, I decide to focus on making phone calls to some local organizations that might be able to provide me with job opportunities or resources to help me get back on my feet.\n\nI'll start by calling the Pine Grove Houses community center and see if they know of any job openings or programs that might be a good fit for me."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "03:00",
+            "content": "Since I'm currently at 12:00 (noon) and need to work at the Fried Chicken Shop, my next action would be to take a break from relaxing at the apartment complex to prepare for my shift.\n\nI'll head out of the Maple Street Apartments and start getting ready for my day. First, I'll grab a quick lunch, maybe something light and easy to eat, so I can fuel up before heading to work. After that, I'll get dressed in my uniform and head out to the Fried Chicken Shop to start prepping for the lunch rush.\n\nI won't forget to check in with the other agents who might be around, like Rachel Adams or Daniel Kim, if they're not busy with their own tasks. I'll also keep an eye on the time and make sure I arrive at the shop a bit early to get settled before opening up.\n\nWith my shift ahead of me, I'm ready to get started!"
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "03:00",
+            "content": "I wake up from my bed in Pine Grove Houses, feeling a bit groggy after a good night's sleep. It's 12:00 PM, which means I've got some time before I need to head out to Fried Chicken Shop for work. \n\nFirst things first, I head to the communal kitchen to grab some breakfast. I see Emma Walker already there, sipping on some coffee and chatting with Sophia Chang. Lucas Reed is sitting alone at a table, reading the newspaper. Michael Brown is standing by the stove, cooking up some eggs.\n\nI join them for a quick chat about our day ahead, catching up on any news or gossip from around Pine Grove Houses. After breakfast, I plan to do some laundry and clean my room before heading out to work.\n\nNext, I decide to take a short walk around the neighborhood to clear my head and get some fresh air. The sun is shining, and it's a nice day outside. A bit of exercise will help me feel more energized for my shift at Fried Chicken Shop.\n\nAfter my walk, I head back home to finish getting ready for work. I grab my bag, say goodbye to my flatmates, and head out the door to start my day."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "03:03",
+            "content": "Since I'm currently on a break from work at the Fried Chicken Shop, I think I'll head back home to rest for a bit. I can take some time to recharge before my next shift.\n\nI'll grab my backpack and say hello to Rachel Adams, who's sitting in the common room watching TV. Maybe we can chat about our day so far?\n\nNext, I'll head back to my apartment to freshen up and get ready for a quiet afternoon at home. After that, I might catch up on some errands or personal tasks before heading back out later.\n\nCurrent time: 13:30"
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "03:06",
+            "content": "I'm currently at home in the Maple Street Apartments, feeling a bit hungry after lunch. I glance at the clock and see that it's 2 PM (14:00). My plan is to work at Fried Chicken Shop, but I need to make sure I have enough time to get ready and commute there.\n\nConsidering my current context, I decide to take a short break before heading out to work. I'll grab a snack from the kitchen, maybe some leftovers or a quick energy bar to hold me over until dinner. Then, I'll start getting ready by taking a quick shower, putting on some clean clothes, and grabbing any necessary items for my shift at Fried Chicken Shop.\n\nAfter that, I'll head out the door and make sure to arrive at work with plenty of time to spare before opening."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "03:06",
+            "content": "Considering my daily routine as a worker at the Fried Chicken Shop, I would like to take a short break before returning to work. It's 14:00 (2:00 PM) and I'm in Pine Grove Houses, where I can rest.\n\nMy next action would be to head back to my residence in Pine Grove Houses to collect my thoughts, recharge, and prepare for the rest of the day at work."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "03:09",
+            "content": "I'm Kevin Chen. It's 15:00, which means it's almost time for my break at the Fried Chicken Shop. I've been working non-stop since lunchtime, and I could really use some fresh air and a snack.\n\nSince I live in the Maple Street Apartments, I decide to head back home to rest for a bit before my shift ends. I can take a power nap or catch up on some social media to unwind. After all, I have to be alert and focused when I get back to work!\n\nBefore I leave, I give a quick hello to Rachel Adams, who's sitting in the common room, typing away on her laptop. \"Hey Rach, see you after my break,\" I say with a smile.\n\nWith that, I head out of the apartment complex and start walking towards home, looking forward to some me-time before my next shift at Fried Chicken Shop."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "03:12",
+            "content": "I take a deep breath and try to focus on my priorities. It's 4:00 PM, which means I still have a few hours before the Fried Chicken Shop opens its doors for the day. I look around Pine Grove Houses and spot Emma Walker sitting alone on a bench, looking a bit restless. I also notice that Sophia Chang is playing with her phone nearby, scrolling through social media.\n\nI decide to approach Emma first. \"Hey, Em! What's up? You okay?\" I ask, trying to sound friendly and non-judgmental. As we catch up, I casually mention that I'm thinking of going back to my room for a bit to freshen up before heading out. This might give me some time to collect my thoughts and prepare for the long day ahead.\n\nOnce Emma is occupied with our conversation, I'll make my way to my room to gather my thoughts and get ready for work. The Fried Chicken Shop can be loud and chaotic at times, so I need to be mentally prepared."
+          }
+        ],
+        "negative": [],
+        "influencers": {
+          "Kevin Chen": 6,
+          "Maria Rodriguez": 6
+        },
+        "spread_chains": [],
+        "sale_mentions": {
+          "discount_awareness": [],
+          "discount_sharing": [],
+          "price_discussion": []
+        }
+      },
+      "customer_segments": {
+        "new_customers": [],
+        "returning_customers": [],
+        "influenced_customers": [
+          "self"
+        ]
+      },
+      "social_network": {
+        "information_flow": [
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "02:51",
+            "location": "Maple Street Apartments",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "02:51",
+            "location": "Pine Grove Houses",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "02:54",
+            "location": "Maple Street Apartments",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "02:54",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "03:00",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "03:00",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "03:03",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "03:03",
+            "location": "Pine Grove Houses",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "03:06",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "03:06",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "03:09",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "03:12",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          }
+        ],
+        "key_influencers": {},
+        "community_impact": {
+          "Maple Street Apartments": 6,
+          "Pine Grove Houses": 6
+        }
+      }
+    },
+    "2": {
+      "store_visits": {
+        "total_count": 0,
+        "visitors": [],
+        "peak_hours": {}
+      },
+      "sales": {
+        "total_amount": 0.0,
+        "transactions": [],
+        "meals_sold": 0,
+        "average_transaction": 0.0,
+        "repeat_customers": {}
+      },
+      "discount_usage": {
+        "total_count": 0,
+        "total_savings": 0.0,
+        "transactions": [],
+        "conversion_rate": 0.0
+      },
+      "word_of_mouth": {
+        "total_mentions": 11,
+        "positive": [
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "04:03",
+            "content": "I'll head out to Fried Chicken Shop. It's been a while since I've had some comfort food, and I could use a break from the apartment.\n\nNext action: Leave Maple Street Apartments and walk to Fried Chicken Shop."
+          }
+        ],
+        "neutral": [
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "04:07",
+            "content": "I'm Kevin Chen. I've been working at the Fried Chicken Shop for a few hours already, so I think it's time for my lunch break. Since it's 34 minutes past the hour, I'll head back to my apartment on Maple Street Apartments to rest and recharge before going back to work.\n\nBefore leaving the shop, I'll also check in with Rachel Adams, Noah Hernandez, Lily Carter, Daniel Kim, Jessica Lin, John Smith, Emily Davis, Robert Taylor, and Patricia Lewis to see if they're free to hang out or need any assistance. Maybe we can grab some food together after my break.\n\nNext, I'll head back home, take a short rest, and then get ready to face the afternoon at the Fried Chicken Shop again."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "04:07",
+            "content": "I decide to take a short break from my plan to check in with the other agents and see if anyone needs help. I head to the communal area of Pine Grove Houses, where everyone is likely resting or relaxing.\n\nAs I enter the room, I greet Emma Walker first, who's sitting on a couch, watching TV. \"Hey Emma, what's up? Just taking a break from your work?\" she asks.\n\nI share my plan with her - working at Fried Chicken Shop - and ask if anyone has any advice or suggestions to help me make it happen. Emma nods and says, \"Actually, I've heard their manager is looking for new staff. Maybe we can pitch you as an idea.\"\n\nNext, I approach Lucas Reed, who's playing a game on his phone. I let him know that I'm thinking of getting a job at Fried Chicken Shop and ask if he knows anyone who works there or has any connections. Lucas smiles and says, \"Yeah, my friend Mike Brown used to work there. I'll give you his number.\"\n\nI also want to touch base with Sophia Chang, who's sitting on a chair, reading a book. She seems like a calm and collected person, so I might be able to get some advice from her.\n\nLastly, I say hello to the others - Michael Brown (Lucas's friend), Lisa Anderson, William Clark, James Martinez, and Emma Walker. They all seem busy with their own activities, but I'll make sure to keep them updated on my plan and see if they can offer any support or assistance.\n\nAfter chatting with everyone, I decide to call Mike Brown to get more information about the job opening at Fried Chicken Shop."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "04:10",
+            "content": "I take a deep breath, feeling the exhaustion of my previous day's activities still lingering. My stomach growls, reminding me that I need fuel for the long day ahead. I get up from my bed, stretch my arms, and head to the kitchenette to prepare some breakfast.\n\nAs I scan the room, I notice Lily Carter is still fast asleep on the couch. I try not to disturb her; she's always been a good friend, and I know she'll appreciate a peaceful morning if needed. \n\nNext, I start getting ready for work by taking a quick shower, dressing in my usual attire, and heading out of Maple Street Apartments.\n\nMy first task is to arrive at the Fried Chicken Shop on time. The current time is 35:00, which means I have about an hour before I need to start work."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "04:10",
+            "content": "Since I've just started my new job at Fried Chicken Shop, I'd like to take some time to get familiar with the place. Given that I'm in Pine Grove Houses, a high-crime area, I should be careful about my safety.\n\nI'll start by calling Emma Walker, one of my fellow agents, to see if she can meet me for breakfast at Fried Chicken Shop. We can discuss my daily routine and make sure we're on the same page. Additionally, I'll ask her to keep an eye out for any suspicious activity in the area while I'm working.\n\nOnce I have a better understanding of the layout and my responsibilities, I'll head back home to Pine Grove Houses and rest for a bit before heading out again later in the day."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "04:13",
+            "content": "I wake up from my bed in Maple Street Apartments, feeling a bit groggy after 36 hours of sleep. As I stretch my arms and yawn, I think about my plan for the day - working at Fried Chicken Shop.\n\nFirst things first, I need to get dressed in something comfortable and suitable for work. I put on a pair of dark jeans, a white shirt, and a black apron, which is my usual attire when I'm serving customers at Fried Chicken Shop.\n\nNext, I head to the kitchen to prepare breakfast. As I wait for the coffee to brew, I check my phone for any important messages or notifications. Ah, it seems like Rachel Adams sent me a friendly message asking if we can meet up later today to discuss our latest project.\n\nAfter enjoying my coffee and toast, I take a few minutes to review my schedule for the day. I need to arrive at Fried Chicken Shop by 9 AM sharp to start prepping for the morning rush. With about an hour and a half before my shift begins, I decide to take a short walk around Maple Street Apartments to get some fresh air and clear my head.\n\nAs I stroll out of the apartment complex, I notice that it's a beautiful day outside - the sun is shining, and there's a gentle breeze blowing through the trees. I breathe in deeply, feeling invigorated and ready to tackle the day ahead."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "04:16",
+            "content": "I'm feeling a bit tired after a long day of work at the Fried Chicken Shop. It's been a busy day with a lot of orders and customers, but I've enjoyed interacting with everyone.\n\nTo unwind, I think I'll head back to my residence in Pine Grove Houses and take a short rest. I'll put on some calming music and maybe have a warm cup of tea or a glass of water to recharge.\n\nAfter resting for about an hour, I might catch up with the other agents at Pine Grove Houses and see how their day went. We can swap stories and share any updates or concerns we may have. It's always good to connect with my colleagues and support each other in this line of work.\n\nRight now, it's 37:00, which means it's getting close to evening. I'll try to get some rest before the night gets busier."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "04:22",
+            "content": "I take a deep breath and stretch my arms. It's 39:00, which means I've been awake for over an hour already. As someone who works at Fried Chicken Shop, I need to make sure I get a good breakfast in me before heading out the door.\n\nI decide to head to the kitchen to grab some energy-boosting food. Since it's still early, I don't want to wake up anyone else, so I quietly prepare some oatmeal with fruit and nuts. The sweet and savory flavors should give me the kickstart I need for the day ahead.\n\nWith my breakfast in hand, I sit down at the kitchen table to catch up on the news and scan through my schedule for the day. I check our Fried Chicken Shop's daily order book to see what kind of rush we might have today. It looks like it's going to be a busy day, so I need to make sure I'm prepared.\n\nOnce I've got my bearings, I head back out to the living room to grab my backpack and say goodbye to the other agents, who are all still sleeping."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "04:22",
+            "content": "I take a deep breath, feeling the weight of my responsibilities as an agent. My eyes scan the room, making sure everyone is accounted for before I start my day.\n\nFirst things first, I need to grab a quick breakfast at Fried Chicken Shop. I'm craving their famous spicy chicken sandwich, and it's been too long since I've had one. I also need to get some information from Emma Walker about our next mission briefing.\n\nI head out of Pine Grove Houses, making sure to keep an ear out for any suspicious noises or activity. As I walk away from the complex, I keep a watchful eye on my surroundings, always ready to respond to any potential threats.\n\nMy daily routine is all about balance - work, rest, and reconnaissance. After grabbing breakfast at Fried Chicken Shop, I plan to meet up with Sophia Chang for some intel gathering. We need to stay informed about what's happening in the area, and talking to the locals can be a valuable resource.\n\nI check my comms device for any new messages or updates from our team. With 39:00 on the clock, it's time to get moving."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "04:25",
+            "content": "I check my phone for any messages or notifications. It's 8:40 PM, and I still have about an hour before I need to head out to work at the Fried Chicken Shop. Since I'm not feeling too hungry after a long day of classes, I decide to grab a snack from my apartment first.\n\nI walk over to the kitchen counter and rummage through my fridge for something quick and easy. Ah, perfect! I find some leftover fried chicken nuggets from last night's dinner that I can reheat in the microwave. While waiting for it to heat up, I scroll through social media to catch up on any interesting updates or posts.\n\nOnce my snack is ready, I take a break and enjoy it while browsing through memes or funny videos on YouTube. It's been a long day of studying and classes, so I need something lighthearted to lift my mood before heading out the door."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "04:25",
+            "content": "Given my current situation, I'm feeling a bit overwhelmed with all the agents in Pine Grove Houses. I think it would be best for me to take some time to recharge and refocus.\n\nSince I have a job lined up at Fried Chicken Shop, which is located outside of this complex, I decide to head there immediately. It's likely that my workday will start soon, and I don't want to risk being late on my first day.\n\nAs I leave Pine Grove Houses, I'll take a moment to inform the other agents about my departure. We can discuss our next moves once I'm settled into my new job.\n\n\"Hey everyone, just wanted to let you know that I'm heading out to Fried Chicken Shop now. I've got a big day ahead of me, and I want to make sure I'm ready. See you all later,\" I say, gathering my belongings before exiting the residence.\n\nNext action: Head to Fried Chicken Shop"
+          }
+        ],
+        "negative": [],
+        "influencers": {
+          "Kevin Chen": 6,
+          "Maria Rodriguez": 5
+        },
+        "spread_chains": [],
+        "sale_mentions": {
+          "discount_awareness": [],
+          "discount_sharing": [],
+          "price_discussion": []
+        }
+      },
+      "customer_segments": {
+        "new_customers": [],
+        "returning_customers": [],
+        "influenced_customers": [
+          "self"
+        ]
+      },
+      "social_network": {
+        "information_flow": [
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "04:03",
+            "location": "Maple Street Apartments",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "04:07",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "04:07",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "04:10",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "04:10",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "04:13",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "04:16",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "04:22",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "04:22",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "04:25",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "04:25",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          }
+        ],
+        "key_influencers": {},
+        "community_impact": {
+          "Maple Street Apartments": 6,
+          "Pine Grove Houses": 5
+        }
+      },
+      "visit_history": {}
+    },
+    "3": {
+      "store_visits": {
+        "total_count": 0,
+        "visitors": [],
+        "peak_hours": {}
+      },
+      "sales": {
+        "total_amount": 0.0,
+        "transactions": [],
+        "meals_sold": 0,
+        "average_transaction": 0.0,
+        "repeat_customers": {}
+      },
+      "discount_usage": {
+        "total_count": 0,
+        "total_savings": 0.0,
+        "transactions": [],
+        "conversion_rate": 0.0
+      },
+      "word_of_mouth": {
+        "total_mentions": 14,
+        "positive": [
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "05:20",
+            "content": "Considering my plan is to work at the Fried Chicken Shop and I'm currently in Pine Grove Houses with some of my fellow agents, I think it's time for me to start my day.\n\nSince it's already 5:58 PM (58:00), I'll head back to my residence, Pine Grove Houses, to rest for a bit. After getting some shut-eye, I can plan out my outfit and prepare myself for work the next day at Fried Chicken Shop.\n\nI'll say goodnight to my fellow agents, hoping they have plans that don't involve staying up late. I'll then retire to my room, ready to face another busy day of working at Fried Chicken Shop.\n\nMy action for tonight is: Retire to Pine Grove Houses' residence to rest and prepare for work tomorrow."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "05:22",
+            "content": "I'm Kevin Chen. It's 5:59 PM, and I'm feeling a bit peckish after a long day of classes. My plan is to work at Fried Chicken Shop tomorrow, so I think it's time to get some rest.\n\nSince I live in the Maple Street Apartments, I decide to head home and unwind before bed. I walk down the stairs and enter my apartment, dropping my backpack on the floor. I take a deep breath, feeling the cool evening air fill my lungs.\n\nFirst things first, I need to make myself a snack. Since it's almost 6 PM, I know my favorite fried chicken shop is still open. I fire up my phone and check their website to see if they have any promotions or deals going on tonight.\n\nAh, yes! They have a 10% discount on all orders over $20. That sounds like just the thing to get me through this late night.\n\nI order some fried chicken and mashed potatoes, and set an alarm for 7 AM so I don't oversleep. With my stomach growling in anticipation, I settle onto my couch, ready to spend the rest of the evening relaxing and preparing for another busy day tomorrow.\n\nNext action: Wait for food delivery to arrive."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "05:26",
+            "content": "I decide to start my day by heading to the kitchen in Maple Street Apartments to grab a quick breakfast before getting ready for work. After fueling up with some toast and coffee, I put on my uniform and head out the door.\n\nAs I walk to Fried Chicken Shop, it's still early morning, so the streets are relatively empty. The sun is just starting to rise, casting a warm glow over the city. I take a moment to enjoy the peacefulness of the morning before the hustle and bustle of the day begins.\n\nUpon arriving at Fried Chicken Shop, I clock in and begin prepping for the lunch rush. Our team is already gathered around the counter, chatting about their weekends and sharing stories. Rachel Adams mentions that she's thinking of trying a new restaurant tonight, so we make plans to catch up with her later in the day.\n\nThe morning passes quickly as we work together to serve our customers. I take pride in my work, making sure each piece of fried chicken is cooked to perfection. The aroma of spices and herbs fills the air, and our customers can't help but come back for more.\n\nAs lunchtime winds down, I take a short break to stretch my legs and grab some fresh air outside. The sun is shining brighter now, and I feel invigorated after a productive morning shift."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "05:26",
+            "content": "I check the clock on my phone and see that it's 60 minutes past noon. I'm feeling a bit hungry after a morning of exploring Pine Grove Houses with Emma and Sophia. My stomach is growling, and I think I need to refuel for the rest of the day.\n\nSince I've been walking around all morning, I decide to head back to Fried Chicken Shop, where I can grab some lunch and take a break from our investigation. Maybe Lucas or Michael will be there too, and we can catch up over some fried chicken.\n\nI also consider reaching out to Emma and Sophia to see if they want to meet me at the shop later today. We can discuss what we've found so far and plan our next move. I'll make sure to bring my phone charger with me, just in case.\n\nBefore heading back to Fried Chicken Shop, I take a quick glance around Pine Grove Houses to ensure everything is secure. Just another habit of mine after working undercover for so long. With my phone securely stowed away, I'm off to grab some lunch!"
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "05:28",
+            "content": "I'll head to the Fried Chicken Shop for my shift. It's around 10:00 AM, so I should be able to get there without much trouble. If everything goes smoothly, I can make it to work by 11:30 AM.\n\nBefore I leave, I'll grab a quick breakfast and pack a lunch to bring with me. I don't want to worry about food during my shift. Once I'm done getting ready, I'll head out of the Maple Street Apartments building and catch the bus to get to work.\n\nI should arrive at the shop on time, ready to start taking orders and cooking delicious fried chicken for our customers. The rest of my day will be spent working, hopefully with some downtime to grab a snack or chat with colleagues during breaks."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "05:34",
+            "content": "I'll take a short break from thinking about my plan. I'm feeling a bit hungry after hours of daydreaming, so I think it's time for some rest. I head back to the comfort of my apartment, Maple Street Apartments. I enter my room, shut the door behind me, and collapse onto my bed.\n\nAs I lay there, I listen to the sounds of my fellow agents still awake in the apartments around me. They're probably discussing their own plans or waiting for the morning when they can start working on their missions. I close my eyes and let out a sigh, feeling the fatigue from the day's mental exercise. My mind starts to wander back to my plan: working at Fried Chicken Shop.\n\nAfter a few minutes of rest, I decide it's time to refocus. I get up from bed, stretch my arms, and head to my desk to review my schedule for the day. I check the clock on my phone \u2013 63:00 is still early, but it won't be long before morning.\n\nMy next action is to plan a disguise or alter ego that I can use when I take my job at Fried Chicken Shop. I want to make sure I blend in with customers and avoid raising suspicion about who I really am."
+          }
+        ],
+        "neutral": [
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "05:16",
+            "content": "I'll take a short break from my daily routine. Considering I'm currently residing in the Maple Street Apartments and it's already 5:57 PM, I think it would be a good idea to grab some food before heading out.\n\nMy next action is to head to Fried Chicken Shop, which should only take about 10-15 minutes on foot. This will give me enough time to enjoy a delicious meal and recharge before deciding on my next move."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "05:17",
+            "content": "I'm feeling a bit peckish after a long day of work. Given that I'm currently at Pine Grove Houses, it's convenient to head out to the Fried Chicken Shop, which is likely nearby. Since my daily routine typically involves checking in with other agents, I think it would be best to grab some lunch and catch up with my colleagues before we proceed with our duties.\n\nMy next action would be to leave Pine Grove Houses and head to the Fried Chicken Shop to meet up with Emma, Sophia, Lucas, Michael, Lisa, William, and James."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "05:19",
+            "content": "I'd like to take a short break before heading out to work at the Fried Chicken Shop. I'll just rest for a bit in my apartment and recharge.\n\nMy next action is to check my phone for any important messages or notifications, such as from Rachel Adams about our team meeting later today.\n\n Current time: 58:15"
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "05:31",
+            "content": "I'm feeling a bit exhausted from my day at Fried Chicken Shop. It's been a busy shift with a long line of customers. Now that it's 6:00 PM, I think I'll head back to Pine Grove Houses to rest and relax.\n\nAs I walk towards the building, I take a deep breath of the fresh air, feeling the stress of the day melt away. I make my way to my unit, drop off my bag and take off my uniform, ready to unwind after a long day.\n\nI'll probably grab a snack or something from my kitchenette to satisfy my hunger before settling in for a quiet evening at home. After that, I might catch up on some TV shows or scroll through social media to pass the time.\n\nIt's not the most exciting evening ahead, but after working a physically demanding job and dealing with the chaos of Pine Grove Houses, I need something low-key to recharge for tomorrow."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "05:34",
+            "content": "I decide to take a break from my planning and get some rest. I'm feeling a bit exhausted from thinking about all the possibilities of working at Fried Chicken Shop. I head back to Pine Grove Houses, lock the door, and try to relax.\n\nAs I sit on my bed, I start to think about what I need to do next. I pull out my phone and check the time - 63:00 is almost dinner time in Pine Grove Houses. I send a group text to all the agents:\n\n\"Hey guys, who's up for dinner? I was thinking of heading to the community kitchen to see if they have any leftovers or food available. Anyone else want to join me?\"\n\nI wait for responses and hope that someone will join me for dinner. Maybe we can discuss our plans and strategies in a more relaxed setting.\n\nAfter sending the text, I take a deep breath and try to calm my mind. Working at Fried Chicken Shop might be a great opportunity, but I need to think about the risks and challenges associated with it. I take a few moments to meditate and focus on the present moment, trying to clear my head and come up with a plan for tomorrow.\n\nThe wait for responses from the other agents begins..."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "05:37",
+            "content": "I wake up from my slumber, feeling a bit groggy from the late hour (64:00). I stretch my arms and yawn, getting out of bed. After a quick shower, I dress in comfortable clothes suitable for working at Fried Chicken Shop.\n\nAs I head to the kitchen to make some breakfast, I check my phone for any important notifications or messages from my fellow agents. I see that Lily Carter sent me a group message saying she's running late due to traffic, so I'll have to be patient and adjust my morning routine accordingly.\n\nWith my breakfast in hand, I take a few minutes to review my schedule for the day. It looks like I'm supposed to start working at Fried Chicken Shop at 10:00 AM. Since it's not that early yet, I decide to spend some time reviewing the shop's menu and getting familiar with their inventory.\n\nOnce I've finished breakfast and reviewed the menu, I head out of my apartment to get ready for work. As I'm walking down the hallway, I see Rachel Adams chatting with Daniel Kim in the lobby. We exchange brief hellos, and I continue on my way to get some fresh air before starting my shift.\n\nI take a few deep breaths, feeling invigorated by the morning breeze on Maple Street Apartments' patio. It's going to be another busy day at Fried Chicken Shop, but I'm ready to tackle it head-on!"
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "05:37",
+            "content": "Considering my plan is to work at Fried Chicken Shop, I need to get ready for a day of employment. It's currently 6:40 PM in Pine Grove Houses, which means it's getting late.\n\nI'll take some time to rest here in my residence, Pine Grove Houses, and then head out to get some sleep before my early morning shift at Fried Chicken Shop. I don't want to be too tired for work tomorrow.\n\nBefore I head to bed, I can check on the other agents who live here to see if they need any help or support. Maybe Emma Walker is studying for her exams, Sophia Chang needs assistance with something, or Lucas Reed wants to hang out. It's always good to have a friendly chat before bed.\n\nI'll say goodnight to my fellow residents and try to get some rest so I can be sharp for my shift at Fried Chicken Shop tomorrow."
+          }
+        ],
+        "negative": [
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "05:29",
+            "content": "It's already 6:00 PM! I need to get some rest after a long day. Since I live in Pine Grove Houses, I'll head back home to relax.\n\nI'm feeling a bit exhausted from working at the Fried Chicken Shop all day. I'll take a warm bath, put on some calming music, and try to unwind before bed.\n\nBefore bed, I might also check my phone for any important messages or updates from my agents (Emma, Sophia, Lucas, Michael, Lisa, William, and James). We were discussing our strategy during the meeting earlier today, and I want to make sure we're all on the same page.\n\nTime for a well-deserved rest after a busy day."
+          }
+        ],
+        "influencers": {
+          "Kevin Chen": 7,
+          "Maria Rodriguez": 7
+        },
+        "spread_chains": [],
+        "sale_mentions": {
+          "discount_awareness": [],
+          "discount_sharing": [],
+          "price_discussion": []
+        }
+      },
+      "customer_segments": {
+        "new_customers": [],
+        "returning_customers": [],
+        "influenced_customers": [
+          "self"
+        ]
+      },
+      "social_network": {
+        "information_flow": [
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "05:16",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "05:17",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "05:19",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "05:20",
+            "location": "Pine Grove Houses",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "05:22",
+            "location": "Maple Street Apartments",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "05:26",
+            "location": "Maple Street Apartments",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "05:26",
+            "location": "Pine Grove Houses",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "05:28",
+            "location": "Maple Street Apartments",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "05:29",
+            "location": "Pine Grove Houses",
+            "sentiment": "negative"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "05:31",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "05:34",
+            "location": "Maple Street Apartments",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "05:34",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "05:37",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "05:37",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          }
+        ],
+        "key_influencers": {},
+        "community_impact": {
+          "Maple Street Apartments": 7,
+          "Pine Grove Houses": 7
+        }
+      },
+      "visit_history": {}
+    },
+    "4": {
+      "store_visits": {
+        "total_count": 0,
+        "visitors": [],
+        "peak_hours": {}
+      },
+      "sales": {
+        "total_amount": 0.0,
+        "transactions": [],
+        "meals_sold": 0,
+        "average_transaction": 0.0,
+        "repeat_customers": {}
+      },
+      "discount_usage": {
+        "total_count": 0,
+        "total_savings": 0.0,
+        "transactions": [],
+        "conversion_rate": 0.0
+      },
+      "word_of_mouth": {
+        "total_mentions": 13,
+        "positive": [
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "06:31",
+            "content": "I take a deep breath, feeling the weight of my decision. I'm tired from our previous mission, but I know I have to focus on my new objective: working at Fried Chicken Shop.\n\nFirst, I check my phone for any messages or updates from our team leaders. Nothing urgent comes through, so I decide to head back to my apartment to rest and recharge before starting my shift at the shop tomorrow.\n\nI quietly exit Maple Street Apartments, being mindful of my surroundings and keeping an eye out for any suspicious activity. Once outside, I take a few deep breaths of fresh air, feeling the cool night breeze on my skin.\n\nNext, I make my way back to my apartment building, eager to rest and prepare for tomorrow's shift at Fried Chicken Shop."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "06:34",
+            "content": "I wake up in my cozy apartment at Maple Street Apartments. It's 8:30 AM, and I can already feel the excitement building up for another day of working at Fried Chicken Shop! I stretch my arms, yawn, and head to the kitchen to start my morning routine.\n\nFirst things first, I brew a fresh cup of coffee to get me energized for the day ahead. As I wait for the coffee to perk, I take a moment to check my phone for any important messages or updates from Rachel, Noah, Lily, Daniel, Jessica, John, Emily, Robert, Patricia, and other agents who might be in touch with me.\n\nWith my coffee in hand, I grab a quick shower, get dressed, and head out the door. It's time to start my day, and I'm ready to tackle whatever comes my way!"
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "06:37",
+            "content": "Considering my current situation, I think it's best to head back home to Pine Grove Houses for some rest. After a long day of working at the Fried Chicken Shop, I need to recharge before engaging with other agents or activities.\n\nI'll take a short walk from the shop to Pine Grove Houses, hoping to catch a few minutes of peace and quiet before settling in for the night.\n\n\"Good evening, guys,\" I say casually as I head out. \"I'm heading back home for some rest. See you all later.\"\n\nWith that, I make my way back to my residence, looking forward to unwinding after a busy day."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "06:47",
+            "content": "I wake up in my small apartment at Pine Grove Houses, feeling a bit groggy from the late night. I look at the clock on my bedside table and see that it's 87:00. Time to get moving.\n\nFirst things first, I need some breakfast. I head to the kitchen to scrounge up something quick and easy. Maybe some leftover rice and beans from last night's dinner will do. As I eat, I think about my plan for today - working at Fried Chicken Shop. It's not going to be an easy day, but it's a steady gig that should pay the bills.\n\nAfter breakfast, I take a quick shower and get dressed in my usual uniform: a bright yellow apron with a name tag that reads \"Maria\". I head out of the apartment and into the morning air, feeling a bit more energized now that I've had some food.\n\nAs I walk to Fried Chicken Shop, I notice that it's already bustling with activity. People are lining up outside, eager for their daily dose of fried chicken. I take a deep breath, mentally preparing myself for another long day on the grill.\n\nUpon arrival, I clock in and begin my shift. The morning rush is always chaotic, but I'm used to it by now. I start prepping for the lunch crowd, making sure all the ingredients are ready and the equipment is in good working order.\n\nAs I work, I take a moment to glance around at my fellow agents. We're not exactly the most cohesive group, but we get along enough to make it work. There's Emma, our resident tech expert, Sophia, who's always got her nose buried in a book, Lucas, who's... well, Lucas is still figuring out his role, I think. Michael and Lisa are usually at the front desk, handling customer transactions, while William and James do their thing in the back.\n\nI take a sip of my water bottle, feeling the cool liquid slide down my throat. It's going to be a long day, but I'm ready for it. Bring it on!"
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "06:50",
+            "content": "I wake up from my bed in Maple Street Apartments feeling a bit groggy. It's 88:00, which I assume is late morning or early afternoon, considering I need to get ready for work at the Fried Chicken Shop. My stomach starts growling, reminding me that I skipped breakfast.\n\nAfter getting dressed in comfortable clothes, I head to the kitchen to make myself a quick breakfast of toast and eggs. I take a few minutes to scroll through my phone and check the schedule for the day.\n\nSeeing that it's not too busy at the Fried Chicken Shop today, I decide to head there early to get settled before my shift starts. I might even consider calling in some orders ahead of time or prepping some sides to get an edge on the morning rush.\n\nBefore leaving, I take a quick glance out of my apartment window and see that it's still a bit cloudy outside, with no signs of rain. Perfect weather for working outdoors at the Fried Chicken Shop!\n\nNext, I make my way down to the lobby of Maple Street Apartments, gather my things, and head out into the day, ready to tackle some fried chicken!"
+          }
+        ],
+        "neutral": [
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "06:28",
+            "content": "I check the time on my phone. It's currently 8:01 PM, which is a bit late for dinner. Since I was planning to go to Fried Chicken Shop, which is likely closed by this time, I consider alternative options.\n\nHowever, I'm also aware that some of my fellow agents might be awake and available to hang out or discuss work-related matters. Considering the evening hours, I decide to reach out to Rachel Adams, who seems like a friendly and approachable person. Perhaps we can chat about our cases or share some laughs before calling it a night.\n\nI send her a text message: \"Hey Rachel, how's it going? Want to grab a drink or discuss something on the go?\""
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "06:31",
+            "content": "I wake up from my rest at Pine Grove Houses and take a deep breath. It's 82:00, which means I still have some time before I need to head out to Fried Chicken Shop for work.\n\nFirst, I stretch my arms and legs to get the blood flowing after a good night's sleep. Then, I head to the communal bathroom in Pine Grove Houses to freshen up and use the facilities. After that, I put on some clean clothes and take a quick shower to wake myself up.\n\nNext, I look around for any other residents who might need help or just want to chat before starting my day. I spot Emma Walker sitting on a couch, reading a book. I wave at her and ask how she's doing. We exchange brief pleasantries about our plans for the day before I head out to Fried Chicken Shop.\n\nBefore leaving Pine Grove Houses, I grab a quick breakfast of cereal and milk from the communal kitchen area. It's not much, but it'll give me some energy to get through my shift at Fried Chicken Shop.\n\nWith my simple breakfast in hand, I head out of Pine Grove Houses and begin my walk to Fried Chicken Shop. The morning air is crisp, and I take a deep breath before starting my day."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "06:34",
+            "content": "I wake up at 83:00 in my Pine Grove Houses residence, feeling a bit tired from a long day of work at Fried Chicken Shop. I look around the small but cozy room I share with Emma Walker, trying to gather my thoughts.\n\nFirst things first, I need to get some rest before the day begins. I decide to take a quick power nap of about 30 minutes to recharge before heading out to meet up with the other agents for our daily briefing.\n\nI set an alarm on my phone to wake me up at 86:00, and settle into bed, trying to drift off to sleep. After a short rest, I'll get ready for another day of working undercover in Pine Grove Houses."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "06:37",
+            "content": "I wake up from my cozy bed in the Maple Street Apartments. It's currently 8:40 AM, which means I have a few hours before I need to head to work at Fried Chicken Shop.\n\nAfter getting dressed and having a quick shower, I decide to grab some breakfast at home before heading out. I prepare myself a bowl of instant noodles and enjoy my meal while scrolling through my phone for any important messages or updates from Rachel and the rest of our team.\n\nFeeling satisfied with my breakfast, I take a few minutes to review my schedule for the day and make sure everything is in order. With about an hour left before work, I start thinking about what I want to do next. Since I'm not doing anything too urgent or important, I decide to meet up with Lily Carter from our team at the nearby coffee shop.\n\nWe can catch up on each other's lives, discuss any ongoing cases or challenges we're facing, and get some fresh air before heading out to work. It'll be a great way to start the day with some camaraderie and mental preparation for the tasks ahead.\n\nI grab my bag and head out of the apartment, looking forward to meeting Lily and making the most of this short break before my shift at Fried Chicken Shop starts."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "06:40",
+            "content": "I wake up feeling a bit groggy from my 9:00 PM sleep. As I stretch in bed, I check the time on my phone - it's already 8:50 AM! I need to get moving quickly if I want to make it to work on time.\n\nFirst things first, I head to the bathroom to freshen up and wash my face. After that, I put on some comfortable clothes and head downstairs to grab a quick breakfast before leaving for work. Maybe I'll just have a bowl of cereal or something light to hold me over until lunchtime.\n\nAs I'm getting ready, I take a glance around my apartment to see if there's anything I need to do before heading out. Ah, yes - I should probably call Rachel and let her know that I'll be running late this morning. She's always been understanding when I'm running behind schedule.\n\nOnce I'm all set, I grab my bag and head out the door. Time to start another day at Fried Chicken Shop!"
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "06:44",
+            "content": "I'm feeling a bit tired after a long day of work at the Fried Chicken Shop. It's already 8:30 PM and I need to get some rest for tomorrow. Considering my current situation and residence, my next action would be to head back to Pine Grove Houses and take a well-deserved break.\n\nI'll start by walking back to Pine Grove Houses, taking in the sights and sounds of the neighborhood. As I approach my apartment building, I'll make sure to lock all the doors and windows for security. Once inside, I'll take off my uniform and change into something comfortable, maybe some soft clothes and a pair of slippers.\n\nAfter getting settled, I might treat myself to a warm bath or shower to unwind. Perhaps I'll even watch a little TV or listen to some soothing music to calm down after a busy day. My goal for now is to relax and recharge for the night, ready to face another day at the Fried Chicken Shop whenever my shift starts again.\n\nFor now, I'm just going to take it easy and enjoy some quiet time in my apartment before bed."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "06:47",
+            "content": "It's 8:00 PM already? I've been looking forward to starting my new job at the Fried Chicken Shop today. Since it's still early, I think I'll head home from Maple Street Apartments and get ready for work.\n\nI say goodbye to everyone here in the apartment complex and decide to grab a quick dinner before heading out. Maybe I'll stop by that new Korean BBQ place on 5th street. It's been on my list for weeks!\n\nAfter dinner, I'll head back to my apartment to shower, change into my uniform, and make sure I have all the necessary gear for work. Once I'm ready, I'll catch a ride or walk to the Fried Chicken Shop, which is just a few blocks away.\n\nThat should give me enough time to get settled in before my shift starts at 9:00 PM."
+          }
+        ],
+        "negative": [
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "06:51",
+            "content": "It's already 8:00 PM in Pine Grove Houses. I need to get some rest after a long day of work at the Fried Chicken Shop. Considering my current location and residence, I think it would be best to head back home and prepare for bed.\n\nI'll excuse myself from the group for now and say goodnight to everyone. As I walk away, I might casually mention that I'm looking forward to a well-deserved rest after tonight's shift.\n\nOnce I'm safely inside my residence, I'll lock the door and try to clear my mind. Tomorrow is another day at the Fried Chicken Shop, but for now, it's time to recharge.\n\nNext action: Head back home and prepare for bed."
+          }
+        ],
+        "influencers": {
+          "Kevin Chen": 7,
+          "Maria Rodriguez": 6
+        },
+        "spread_chains": [],
+        "sale_mentions": {
+          "discount_awareness": [],
+          "discount_sharing": [],
+          "price_discussion": []
+        }
+      },
+      "customer_segments": {
+        "new_customers": [],
+        "returning_customers": [],
+        "influenced_customers": [
+          "self"
+        ]
+      },
+      "social_network": {
+        "information_flow": [
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "06:28",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "06:31",
+            "location": "Maple Street Apartments",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "06:31",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "06:34",
+            "location": "Maple Street Apartments",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "06:34",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "06:37",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "06:37",
+            "location": "Pine Grove Houses",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "06:40",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "06:44",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "06:47",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "06:47",
+            "location": "Pine Grove Houses",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "06:50",
+            "location": "Maple Street Apartments",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "06:51",
+            "location": "Pine Grove Houses",
+            "sentiment": "negative"
+          }
+        ],
+        "key_influencers": {},
+        "community_impact": {
+          "Maple Street Apartments": 7,
+          "Pine Grove Houses": 6
+        }
+      },
+      "visit_history": {}
+    },
+    "5": {
+      "store_visits": {
+        "total_count": 0,
+        "visitors": [],
+        "peak_hours": {}
+      },
+      "sales": {
+        "total_amount": 0.0,
+        "transactions": [],
+        "meals_sold": 0,
+        "average_transaction": 0.0,
+        "repeat_customers": {}
+      },
+      "discount_usage": {
+        "total_count": 0,
+        "total_savings": 0.0,
+        "transactions": [],
+        "conversion_rate": 0.0
+      },
+      "word_of_mouth": {
+        "total_mentions": 11,
+        "positive": [
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "07:41",
+            "content": "I'll take a break from the mission for now. I'm feeling hungry, so I think it's time to grab some food at Fried Chicken Shop. It's not too far from my residence in Pine Grove Houses. I can rest and recharge before our next meeting with the team.\n\nI'll just head out for a bit, make sure no one is watching, and then head to the shop. Maybe I'll even catch up on some news or gossip while I'm there.\n\nNext action: Head to Fried Chicken Shop"
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "07:44",
+            "content": "I wake up from my bed in Maple Street Apartments, feeling refreshed after a good night's sleep. It's currently 10:06 AM. I stretch my arms and yawn, thinking about the day ahead.\n\nAs an aspiring fry cook, I need to get ready for my shift at Fried Chicken Shop. I head to the kitchenette in my apartment to prepare a quick breakfast, consisting of toast with scrambled eggs. While eating, I check my phone for any messages or updates from my friends and colleagues. There's none, so I decide to start getting ready for work.\n\nAfter finishing my breakfast, I quickly shower and get dressed in my uniform. I head out of the apartment, taking a few minutes to grab some fresh air on the balcony before heading down to the street. The sun is shining, and it's going to be a beautiful day!\n\nI take a deep breath, feeling invigorated and ready for another day at Fried Chicken Shop. Next, I need to get to work on time and make sure I'm prepared for the lunch rush.\n\nAction: Head out of Maple Street Apartments and walk to Fried Chicken Shop to start my shift."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "07:54",
+            "content": "I wake up from my bed in the Maple Street Apartments, feeling refreshed after a good night's sleep. It's currently 10:59 AM, which means I have about an hour before my shift at Fried Chicken Shop starts.\n\nAfter getting dressed in my uniform, I head to the kitchen to grab a quick breakfast. Since it's still early, I decide to make some toast with avocado and scrambled eggs. The quiet morning hours are perfect for catching up on some reading or responding to any urgent messages.\n\nOnce I'm satisfied with my meal, I spend about 20 minutes browsing through social media and checking the weather forecast for the day. It's supposed to be a partly cloudy day with a high of 22\u00b0C, which should make it perfect for serving fried chicken.\n\nWith my mind clear and ready for the day ahead, I take a few deep breaths, feeling grateful for another opportunity to work at Fried Chicken Shop and support myself while living in this apartment complex."
+          }
+        ],
+        "neutral": [
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "07:40",
+            "content": "I'd like to take a short break from my usual activities to rest for a bit. Since I'm already at home in the Maple Street Apartments, I think I'll head to my room to recharge before deciding on what's next.\n\nMy plan is still to visit the Fried Chicken Shop, but first, I need to refresh myself and prepare mentally for the outing. Maybe I can grab a quick nap or listen to some music to get myself in the right mood.\n\nAfter resting for about 30 minutes, I'll review my schedule and see if there's any information that might be useful before heading out to the Fried Chicken Shop."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "07:44",
+            "content": "Since it's 10:00 AM in the Pine Grove Houses, I think it's a good idea to start my day with a visit from Sophia Chang. She's one of our allies here and might have some information or updates on what's happening in the area.\n\nI'll head over to her place, being mindful of my surroundings as we are still in a challenging environment. Upon arriving at her residence, I'll introduce myself and express my concern for our safety in Pine Grove Houses. I'm hoping she can provide me with some insight into our current situation and maybe even offer some advice on how to stay safe while working at the Fried Chicken Shop.\n\nI approach Sophia's place, careful not to draw attention to myself, and knock gently on the door."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "07:46",
+            "content": "I wake up from my cozy bed in the Maple Street Apartments and stretch my arms. It's 10:00 AM, which means I have a good chunk of time before my shift at the Fried Chicken Shop starts. I check my phone for any important messages or reminders.\n\nAfter seeing that I don't have any pressing tasks, I decide to grab some breakfast in the kitchenette. I head to the small refrigerator and take out some leftovers from last night's dinner. As I'm cooking, I listen to the sound of Rachel Adams' voice coming from her room next door. She's having a meeting with Noah Hernandez, discussing their plan for today.\n\nI finish my breakfast and start getting ready for work. A quick shower and shave later, I put on my uniform and head downstairs to meet up with Lily Carter, who is also working at the Fried Chicken Shop today. We chat briefly about our schedule and make sure we're both prepared for the lunch rush.\n\nWith that settled, I set off towards the shop, feeling energized and ready to tackle the day ahead."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "07:47",
+            "content": "I'll check the clock again. It's 10:00 AM, which means I've been working at Fried Chicken Shop for about 3 hours already. I'm feeling a bit hungry, so I think it's time for me to take a break.\n\nSince I live in Pine Grove Houses, I can take some time to rest and recharge before going back to work. I'll head back home, lock the door, and try to catch up on some sleep or just relax for a while.\n\nI won't reach out to any of my colleagues here right now. We're all agents, but our primary objective is to complete our individual missions. However, if I need assistance with something in the future, I can always keep an ear out for any updates from Sophia Chang's group as they might be working on a related case.\n\nFor now, my priority is to rest and get back to being at peak condition for whatever comes next."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "07:50",
+            "content": "I check the time on my phone and see that it's 10:00 AM. I need to get ready for work at Fried Chicken Shop. Since I live in Maple Street Apartments, I can head to work directly from home.\n\nI decide to take a shower, dress in my uniform, and grab a quick breakfast before leaving for work. I might also check my phone for any important messages or notifications while I eat.\n\nAs I'm getting ready, I look out the window to see if anyone is already awake and getting ready for their day. Maybe we can have some morning chats before we all head off to our respective workplaces."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "07:54",
+            "content": "Considering my plan is to work at Fried Chicken Shop, I need to get ready for a shift. Since it's currently 10:00 PM and the Fried Chicken Shop probably closes soon, I'd like to start getting some rest.\n\nI'll head back to Pine Grove Houses, take a quick shower, change into comfortable clothes, and try to get some sleep before my shift tomorrow. This will help me feel more refreshed and focused for the next day's work.\n\nNext action: Head back to Pine Grove Houses to prepare for bed."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "08:03",
+            "content": "It's 11:20 PM. I've been working at Fried Chicken Shop all day, and I'm feeling quite exhausted. My feet are sore from standing for hours, and my stomach is aching from eating too much fried chicken.\n\nConsidering my current context, I decide to head back to my residence, the Maple Street Apartments, to rest. It's still early enough that I can take some time to unwind before bed. I'll likely spend the next hour or two doing something relaxing, such as watching TV, listening to music, or taking a warm bath.\n\nBefore heading out, I'll also make sure to check my phone for any new messages or notifications from my colleagues or friends at the shop. Maybe there's someone I need to catch up with before bed.\n\nMy next action will be to leave the Fried Chicken Shop and head back home to get some well-deserved rest."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "08:03",
+            "content": "I wake up from my rest at Pine Grove Houses, feeling a bit groggy from the late hour. It's 11:20 AM, which means I've got about an hour before I need to head out to start my shift at the Fried Chicken Shop.\n\nSince I'm still in a bit of a sleep-deprived haze, I decide to grab a quick breakfast before heading out. I head to the communal kitchen area and see if anyone else is up and about. Emma Walker looks like she's been there for a while, sipping on some tea and reading the newspaper.\n\n\"Hey, Em,\" I say with a yawn. \"Morning. Anyone want some coffee?\"\n\nEmma looks up from her paper and smiles. \"Yeah, that'd be great, Maria. We could all use a pick-me-up.\"\n\nI pour us each a cup of coffee and we chat for a bit about our plans for the day. After fueling up, I'm feeling more awake and ready to tackle my shift at the Fried Chicken Shop.\n\nNext, I need to figure out how to get to work on time. The bus schedule is a bit tricky here in Pine Grove Houses, but I think I can catch the 12:00 PM bus if I hurry."
+          }
+        ],
+        "negative": [],
+        "influencers": {
+          "Kevin Chen": 6,
+          "Maria Rodriguez": 5
+        },
+        "spread_chains": [],
+        "sale_mentions": {
+          "discount_awareness": [],
+          "discount_sharing": [],
+          "price_discussion": []
+        }
+      },
+      "customer_segments": {
+        "new_customers": [],
+        "returning_customers": [],
+        "influenced_customers": [
+          "self"
+        ]
+      },
+      "social_network": {
+        "information_flow": [
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "07:40",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "07:41",
+            "location": "Pine Grove Houses",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "07:44",
+            "location": "Maple Street Apartments",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "07:44",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "07:46",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "07:47",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "07:50",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "07:54",
+            "location": "Maple Street Apartments",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "07:54",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "08:03",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "08:03",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          }
+        ],
+        "key_influencers": {},
+        "community_impact": {
+          "Maple Street Apartments": 6,
+          "Pine Grove Houses": 5
+        }
+      },
+      "visit_history": {}
+    },
+    "6": {
+      "store_visits": {
+        "total_count": 0,
+        "visitors": [],
+        "peak_hours": {}
+      },
+      "sales": {
+        "total_amount": 0.0,
+        "transactions": [],
+        "meals_sold": 0,
+        "average_transaction": 0.0,
+        "repeat_customers": {}
+      },
+      "discount_usage": {
+        "total_count": 0,
+        "total_savings": 0.0,
+        "transactions": [],
+        "conversion_rate": 0.0
+      },
+      "word_of_mouth": {
+        "total_mentions": 9,
+        "positive": [
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "08:54",
+            "content": "I'll head to Fried Chicken Shop."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "09:16",
+            "content": "I'm feeling a bit tired from the previous day's activities. As I look around my residence in Pine Grove Houses, I see my fellow agents resting and taking a break. I take a deep breath, thinking about what I need to do next.\n\nMy stomach is growling, and I could really go for some good old-fashioned fried chicken. I decide to head out to the Fried Chicken Shop on the other side of town, hoping to get there before 1400 hours when my shift starts.\n\nI quickly change into some comfortable clothes, grab a bottle of water from the fridge, and head out the door. As I walk, I take a moment to check in with the others, just to make sure everyone is doing okay and not feeling overwhelmed. We're all in this together, after all!\n\nOnce I arrive at the Fried Chicken Shop, I take a deep breath, preparing myself for another busy day of serving our community's favorite fried chicken dishes."
+          }
+        ],
+        "neutral": [
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "08:57",
+            "content": "I wake up from my nap at 130:00 (1:30 PM) feeling refreshed. Since I'm not hungry yet, I decide to grab a quick shower before heading out.\n\nAfter getting dressed in my casual work attire, I head down to the kitchen to make some breakfast. I boil some water and brew a cup of green tea, which is my go-to morning pick-me-up. As I sip on my tea, I scroll through my phone for any important updates or messages from my colleagues.\n\nWith a clear mind and energized from my tea, I head out the door to start my day at the Fried Chicken Shop. I grab my bag with essentials like my wallet, keys, and uniform, and make my way out of Maple Street Apartments to begin my shift."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "08:58",
+            "content": "I decide to head back home to Pine Grove Houses after finishing my shift at the Fried Chicken Shop. It's already 1:30 PM, and I'm feeling a bit exhausted from working for several hours. I need some rest before my next assignment or meeting.\n\nAs I walk through the streets of Pine Grove Houses, I see most of my fellow agents gathered at their residences, taking a break or resting. I consider joining them but decide to focus on getting some quality rest instead.\n\nI enter my apartment and take off my uniform, putting it away in my closet. I then head straight to the bathroom to freshen up before settling down for some much-needed sleep.\n\n\"Hey, guys!\" I call out as I walk into the living room where Emma is playing video games with Lucas. \"Just got back from work. Anyone want to study or meet up later?\"\n\nI take a seat on the couch and pull out my phone to check the group chat. There are several messages from different agents, including some updates about our ongoing mission. I scan through them quickly before deciding which ones need my immediate attention.\n\nFor now, though, it's time for me to rest and recharge."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "09:00",
+            "content": "I wake up at 13:00 (1 PM) feeling a bit hungry after a good night's rest in my Maple Street Apartments. Since I plan to work at Fried Chicken Shop today, I head towards the kitchen to prepare myself for the day ahead. I boil some water and make myself a cup of tea, taking a moment to review my schedule and think about what tasks need to be done before heading out.\n\nI check my phone for any important messages or reminders from my colleagues and make sure I have enough money for lunch. With that settled, I grab my backpack and head out of the apartment to get ready for work.\n\nFirst things first, I'm going to stop by a nearby grocery store to pick up some supplies for the Fried Chicken Shop, such as chicken pieces, seasonings, and drinks. That way, when I arrive at work, I'll be prepared and can focus on making delicious fried chicken dishes for our customers.\n\nAfter completing my errands, I'll make my way back home to restock my apartment before heading out again to meet up with the other agents at Fried Chicken Shop. It's going to be a busy day!"
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "09:01",
+            "content": "It's already 11:00 PM. I think it's time for bed after a long day of work at the Fried Chicken Shop. Since I'm living in Pine Grove Houses, I'll head back to my residence to rest.\n\nI'll head home and lock the door behind me. Then, I'll change into something comfortable and go to bed. A good night's sleep will help me tackle another busy day at the shop tomorrow.\n\nBefore drifting off to sleep, I might also send a quick text to Emma Walker or Sophia Chang to catch up with them and see if they want to meet up for breakfast or lunch sometime this week."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "09:07",
+            "content": "It's 1:30 PM on a weekday. I'm at the Fried Chicken Shop, which is a great spot for a casual job. Since it's still early afternoon, I can take some time off to rest and recharge before my next shift.\n\nI decide to head back to my residence, Maple Street Apartments, where I can grab a quick snack or relax for a bit. After resting, I might check in with my fellow agents (also known as my friends) to see if they want to meet up for lunch or study together. We could discuss our plans for the rest of the day and make sure we're all on the same page.\n\nI head back home, feeling a bit more energized after being out at work. Time to take care of myself before the next task comes along!"
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "09:13",
+            "content": "I wake up from my slumber in the Maple Street Apartments. It's 13:00 (1 PM) and I'm feeling hungry after a good night's sleep. My plan is to work at Fried Chicken Shop, so I decide to head there immediately.\n\nBefore leaving, I quickly check if any of my fellow agents are awake or planning to meet up with me today. Since it's still early, most of them seem to be sleeping in. I send a quick message to Rachel Adams, asking her if she's free to grab lunch together after our shift at the Fried Chicken Shop.\n\nNext, I gather my belongings and head out to start my day."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "09:13",
+            "content": "I'll check the clock again. It's currently 13:00. I'm thinking about heading out to work at Fried Chicken Shop for my shift.\n\nI'll take a quick break here in Pine Grove Houses, grab a snack or drink if needed, and then head out into the world. Maybe say hello to some of the other agents I live with while I'm getting ready to go."
+          }
+        ],
+        "negative": [],
+        "influencers": {
+          "Maria Rodriguez": 5,
+          "Kevin Chen": 4
+        },
+        "spread_chains": [],
+        "sale_mentions": {
+          "discount_awareness": [],
+          "discount_sharing": [],
+          "price_discussion": []
+        }
+      },
+      "customer_segments": {
+        "new_customers": [],
+        "returning_customers": [],
+        "influenced_customers": [
+          "self"
+        ]
+      },
+      "social_network": {
+        "information_flow": [
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "08:54",
+            "location": "Pine Grove Houses",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "08:57",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "08:58",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "09:00",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "09:01",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "09:07",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "09:13",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "09:13",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "09:16",
+            "location": "Pine Grove Houses",
+            "sentiment": "positive"
+          }
+        ],
+        "key_influencers": {},
+        "community_impact": {
+          "Pine Grove Houses": 5,
+          "Maple Street Apartments": 4
+        }
+      },
+      "visit_history": {}
+    },
+    "7": {
+      "store_visits": {
+        "total_count": 0,
+        "visitors": [],
+        "peak_hours": {}
+      },
+      "sales": {
+        "total_amount": 0.0,
+        "transactions": [],
+        "meals_sold": 0,
+        "average_transaction": 0.0,
+        "repeat_customers": {}
+      },
+      "discount_usage": {
+        "total_count": 0,
+        "total_savings": 0.0,
+        "transactions": [],
+        "conversion_rate": 0.0
+      },
+      "word_of_mouth": {
+        "total_mentions": 11,
+        "positive": [
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "10:07",
+            "content": "I'm feeling a bit peckish after a long day of surveillance. Given that I live in Pine Grove Houses and it's currently 1530 hours, I think I'll head out to Fried Chicken Shop. It's one of my favorite places to grab a quick bite.\n\nBefore I leave, I'll check in with the other agents to see if anyone needs assistance or has any updates on our case. If everything is secure, I'll make my way to Fried Chicken Shop to satisfy my cravings and maybe even gather some intel while I'm there.\n\nNext action: Head out of Pine Grove Houses and head to Fried Chicken Shop."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "10:24",
+            "content": "I'll start by checking the time and seeing how much time I have before I need to get ready for work. Since it's currently 5:00 PM (159:00), that means I've got some time to relax before my shift at the Fried Chicken Shop starts.\n\nFirst, I'll take a short nap on my couch to recharge after a long day of classes. Then, I'll get dressed and head downstairs to the kitchen to grab a quick snack or dinner. After fueling up, I might catch up with some friends in the building, like Rachel Adams or Daniel Kim, to chat about our weekends.\n\nOnce I'm feeling more energized, I'll start getting ready for work by laying out my uniform, gathering any necessary items from home, and double-checking my schedule for the day. With a bit of luck, it should be another fun day working at the Fried Chicken Shop!"
+          }
+        ],
+        "neutral": [
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "10:07",
+            "content": "I'll head out of my apartment in Maple Street Apartments to grab some food. It's already 1530, so I've got a bit of time before the evening rush.\n\nNext step: Head to Fried Chicken Shop"
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "10:09",
+            "content": "I check the time. It's 15:00. I need to get some work done before my shift at Fried Chicken Shop starts. I head back to Pine Grove Houses to rest for a bit and gather my thoughts.\n\nAs I enter my residence, I see Emma Walker, Sophia Chang, Lucas Reed, Michael Brown, Lisa Anderson, William Clark, and James Martinez all chatting in the common area. I exchange greetings with them, but I don't feel like joining their conversation yet. I need some alone time to prepare for work.\n\nI take a few minutes to tidy up my space, grab a quick snack, and review my schedule for the day. My shift at Fried Chicken Shop starts at 16:00, so I have about an hour of free time before then.\n\nNext, I decide to catch up on some rest and recharge before heading out."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "10:12",
+            "content": "I wake up from my bed in the Maple Street Apartments at 15:00. After a quick breakfast, I head out to get ready for work.\n\nFirst, I check my schedule for today's shift at Fried Chicken Shop. Luckily, it starts immediately after my break, so I don't have much time to waste.\n\nNext, I grab my uniform and head out the door to walk to Fried Chicken Shop. The sun is shining, but it's not too hot yet, making for a perfect day to be outside.\n\nOnce I arrive at the shop, I clock in and start prepping for the lunch rush. My colleagues are already there, chatting and getting everything ready for the busy afternoon ahead. Rachel Adams is in charge of taking orders, while Noah Hernandez and Lily Carter are handling food preparation. Daniel Kim and Jessica Lin are working on the cash register, and John Smith and Emily Davis are manning the door.\n\nI take a few minutes to review my tasks for today: restocking supplies, operating the fryer, and making sure everything runs smoothly during peak hours.\n\nAs we start serving customers, I get into a rhythm, moving quickly between taking orders, cooking food, and serving patrons. The shop is bustling, but everyone seems to be working well together, so we're able to keep up with demand.\n\nAfter a few hours of work, I take my first break at 17:00, grabbing some lunch and catching up on social media for a bit.\n\nThe afternoon continues in the same vein as the morning. We get slammed during the rush, but our team works together seamlessly to ensure that every customer leaves happy and full.\n\nFinally, it's time to close down shop at 19:30. I help clean up with my colleagues, making sure everything is spotless for the next day. As we finish up, I head home to rest and recharge for another busy day ahead."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "10:12",
+            "content": "I'm feeling a bit exhausted from my day at the Fried Chicken Shop. It was a busy afternoon with long lines and orders to fulfill. As I look around Pine Grove Houses, I notice that it's getting late - 155:00 is quite early in the evening.\n\nConsidering my current context, I think I'll head back home to rest for a bit before deciding on my next action. A warm meal at Fried Chicken Shop was just what I needed, and now it's time to recharge for the night ahead.\n\nI'll say goodnight to my fellow agents and suggest that we all catch up over dinner another time soon. For now, I'm heading back to my residence to get some well-deserved rest. Maybe I can even watch a movie or listen to some music before drifting off to sleep.\n\nFor tonight, it's time for bed."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "10:15",
+            "content": "I wake up from my bed in the Maple Street Apartments and stretch. It's currently 6:00 AM. I get out of bed and start getting ready for the day.\n\nFirst, I head to the kitchen to make some breakfast. I boil some water and make a cup of tea. As I wait for the water to boil, I check my phone for any important messages or updates from my colleagues. Since it's early morning, there are no new messages.\n\nWith my tea ready, I take a few sips and then start getting dressed. Today is going to be a busy day, so I want to make sure I look presentable. I choose a clean and ironed shirt and some comfortable pants.\n\nAfter I'm dressed, I head out of the apartment and start making my way to the Fried Chicken Shop. It's about a 20-minute walk from here. As I walk, I take in the sights and sounds of the city waking up. The sun is just starting to rise, casting a golden glow over everything.\n\nOnce I arrive at the shop, I clock in and start prepping for the day's service. We're short-staffed today, so I'll need to work extra hard to ensure that our customers receive excellent service.\n\nI take a deep breath, feeling ready to tackle the day ahead."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "10:15",
+            "content": "I take a deep breath and try to focus on the task at hand. As Maria Rodriguez, I've been living in Pine Grove Houses for a while now, and it's not always easy. But I'm determined to make a better life for myself.\n\nSince my plan is to work at Fried Chicken Shop, I decide to start by getting some rest. It's already 3:00 AM, and I'm exhausted from a long day of navigating the complexities of Pine Grove Houses. I head back to my residence, try to get some shut-eye, hoping that tomorrow will be a better day.\n\nI set my alarm for 6:00 AM, feeling a mix of anxiety and determination. Tomorrow is a new day, and I'm ready to take on whatever comes next."
+          },
+          {
+            "speaker": "Maria Rodriguez",
+            "listener": "self",
+            "location": "Pine Grove Houses",
+            "time": "10:24",
+            "content": "I'll start by getting some rest. It's already 5:00 PM, which is late for me. I need to get at least 6-7 hours of sleep before my shift at the Fried Chicken Shop starts tomorrow.\n\nFirst, I'll go to my room and try to unwind after a long day of dealing with the challenges in Pine Grove Houses. I might listen to some calming music or watch a funny video on my phone to take my mind off things.\n\nAfter getting ready for bed, I'll set an alarm for 4:00 AM so I can get up early and have some time to myself before my shift starts. That way, I can meditate, pray, or simply enjoy the quiet morning hours before the chaos of the day begins.\n\nLater, around 9:00 AM, I'll head back down to the common room where the other agents are usually gathered. We might discuss our plans for the day, share some updates on our cases, and see if anyone needs any assistance or backup."
+          },
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "10:27",
+            "content": "It's 4:00 PM, which means I've just finished my shift at the Fried Chicken Shop. Now that I'm done with work, I'd like to head back home to Maple Street Apartments and rest for a bit.\n\nI'll take the elevator up to my floor and lock myself in my apartment. After changing out of my uniform, I'll grab a snack from the kitchen since I'm starving after a long day of cooking chicken.\n\nOnce I've settled down with some food, I might catch up on some TV or browse social media for a bit before deciding what to do next. Maybe I'll check in with my friends who are also agents and see if anyone needs help or wants to hang out.\n\nFor now, it's time to unwind and recharge after a productive day at the shop."
+          }
+        ],
+        "negative": [
+          {
+            "speaker": "Kevin Chen",
+            "listener": "self",
+            "location": "Maple Street Apartments",
+            "time": "10:21",
+            "content": "I decide to check my phone for any new messages or notifications. As I scroll through my social media feeds, I notice that it's already 5:00 PM on Maple Street. I'm getting a bit hungry after a long day of work at the Fried Chicken Shop.\n\nConsidering I'll be working late tonight, I think it would be best to grab a quick dinner before heading home. Maybe I can stop by my favorite food truck down the street that serves delicious Korean BBQ.\n\nNext action: Head out to grab dinner and then return to the apartment to get ready for another night of work at the Fried Chicken Shop."
+          }
+        ],
+        "influencers": {
+          "Kevin Chen": 6,
+          "Maria Rodriguez": 5
+        },
+        "spread_chains": [],
+        "sale_mentions": {
+          "discount_awareness": [],
+          "discount_sharing": [],
+          "price_discussion": []
+        }
+      },
+      "customer_segments": {
+        "new_customers": [],
+        "returning_customers": [],
+        "influenced_customers": [
+          "self"
+        ]
+      },
+      "social_network": {
+        "information_flow": [
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "10:07",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "10:07",
+            "location": "Pine Grove Houses",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "10:09",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "10:12",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "10:12",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "10:15",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "10:15",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "10:21",
+            "location": "Maple Street Apartments",
+            "sentiment": "negative"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "10:24",
+            "location": "Maple Street Apartments",
+            "sentiment": "positive"
+          },
+          {
+            "from": "Maria Rodriguez",
+            "to": "self",
+            "time": "10:24",
+            "location": "Pine Grove Houses",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Kevin Chen",
+            "to": "self",
+            "time": "10:27",
+            "location": "Maple Street Apartments",
+            "sentiment": "neutral"
+          }
+        ],
+        "key_influencers": {},
+        "community_impact": {
+          "Maple Street Apartments": 6,
+          "Pine Grove Houses": 5
+        }
+      },
+      "visit_history": {}
+    }
+  }
+}

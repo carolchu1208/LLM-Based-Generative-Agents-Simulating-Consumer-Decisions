@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import datetime
+import time
 
 class MemoryManager:
     def __init__(self, memory_limit=200, time_unit=0.5):  # 1 unit = 0.5 seconds
@@ -46,7 +47,7 @@ class MemoryManager:
                 'price_paid': details.get('price_paid', None),
                 'was_discount': details.get('used_discount', False),
                 'satisfaction': satisfaction_data,
-                'importance': self.determine_memory_importance(agent_name, details.get('experience', ''))
+                'importance': self.determine_memory_importance(agent_name, event_type, details)
             }
             
             self.memories[agent_name].append(memory)
@@ -61,7 +62,7 @@ class MemoryManager:
                 'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
                 'acted_upon': False,  # Will be updated if they visit
                 'feedback_given': False,  # Will be updated if they report back
-                'importance': self.determine_memory_importance(agent_name, details['message'])
+                'importance': self.determine_memory_importance(agent_name, event_type, details)
             }
             
             self.memories[agent_name].append(memory)
@@ -76,7 +77,7 @@ class MemoryManager:
                 'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
                 'about_visit': details.get('visit_number'),
                 'response': details.get('response', None),
-                'importance': self.determine_memory_importance(agent_name, details['message'])
+                'importance': self.determine_memory_importance(agent_name, event_type, details)
             }
             
             # Update the original visit memory's shared_with list
@@ -97,10 +98,68 @@ class MemoryManager:
                     'content': str(details)  # Convert old format to new
                 }
             
+        elif event_type == "social":
+            # Add specific handling for food-related social interactions
+            memory = {
+                'id': self.memory_id_counter,
+                'type': 'social',
+                'subtype': details.get('topic', 'general'),  # 'food', 'general', etc.
+                'location': details['location'],
+                'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
+                'content': details['content'],
+                'participants': details.get('participants', []),
+                'influence': details.get('influence', False),
+                'food_related': 'food' in details.get('topic', '').lower(),
+                'plan_generated': False,  # Track if this memory led to a plan
+                'importance': self.determine_memory_importance(agent_name, event_type, details)
+            }
+            
+            self.memories[agent_name].append(memory)
+            self.memory_id_counter += 1
+
         # Consolidate memories if over limit
         if len(self.memories[agent_name]) > self.memory_limit:
             self.consolidate_memories(agent_name)
+    def add_store_visit_memory(self, agent_name, details):
+        """Handle store visit memories"""
+        # Get visit history
+        previous_visits = self.get_visit_history(agent_name)
+        
+        visit_details = {
+            **details,  # Include basic details
+            'type': 'store_visit',
+            'visit_number': len(previous_visits) + 1,
+            'is_return_customer': len(previous_visits) > 0,
+            'last_visit_time': previous_visits[-1]['time'] if previous_visits else None,
+            'satisfaction': self.initialize_satisfaction_tracking()
+        }
+        
+        importance = self.determine_memory_importance(agent_name, "store_visit", visit_details)
+        visit_details['importance'] = importance
+        
+        self.add_memory(agent_name, "store_visit", visit_details)
 
+    def add_social_memory(self, agent_name, details):
+        """Handle social interaction memories"""
+        # Extract participants
+        content = details['content']
+        participants = []
+        if "with" in content:
+            participants = [name.strip() for name in content.split("with")[1].split("and")]
+            
+        social_details = {
+            **details,
+            'type': 'social',
+            'participants': participants,
+            'food_related': 'food' in content.lower() or 'restaurant' in content.lower(),
+            'about_location': 'Fried Chicken Shop' if 'Fried Chicken Shop' in content else None
+        }
+        
+        importance = self.determine_memory_importance(agent_name, "social", social_details)
+        social_details['importance'] = importance
+        
+        self.add_memory(agent_name, "social", social_details) 
+        
     def get_visit_count(self, agent_name):
         """Get the number of times an agent has visited the shop"""
         return len([m for m in self.memories.get(agent_name, []) 
@@ -140,8 +199,7 @@ class MemoryManager:
                 })
                 
                 # Update memory importance based on new feedback
-                memory['importance'] = self.determine_memory_importance(agent_name, 
-                    f"{memory['experience']} {memory['satisfaction']['specific_feedback']}")
+                memory['importance'] = self.determine_memory_importance(agent_name, event_type, feedback_details)
                 break
 
     def get_satisfaction_history(self, agent_name):
@@ -251,19 +309,54 @@ class MemoryManager:
         scored_memories.sort(key=lambda x: x[1], reverse=True)
         return [m for m, _ in scored_memories[:limit]]
 
-    def determine_memory_importance(self, agent_name, content):
-        """Determine memory importance"""
-        # For now, use a simple heuristic
-        importance = 0.5  # default importance
+    def determine_memory_importance(self, agent_name, event_type, details):
+        """Calculate memory importance using principles from the Generative Agents paper"""
+        base_importance = 0.5
+        importance_score = base_importance
         
-        # Increase importance for certain keywords
-        keywords = ['discount', 'delicious', 'terrible', 'amazing', 'recommend']
-        content_lower = content.lower()
-        for keyword in keywords:
-            if keyword in content_lower:
-                importance += 0.1
+        # 1. Emotional Significance
+        emotional_keywords = {
+            "high": ["excited", "happy", "loved", "amazing", "delicious"],
+            "low": ["disappointed", "frustrated", "disliked", "terrible"]
+        }
+        content = details.get('content', '').lower()
         
-        return min(max(importance, 0.1), 1.0)
+        for emotion in emotional_keywords["high"]:
+            if emotion in content:
+                importance_score += 0.15
+                break
+        for emotion in emotional_keywords["low"]:
+            if emotion in content:
+                importance_score += 0.1  # Negative experiences are also memorable
+                break
+            
+        # 2. Social Significance
+        if details.get('participants', []):
+            importance_score += 0.1 * min(len(details['participants']), 3)  # Up to 0.3 for group interactions
+        
+        # 3. Novelty/First Time Experiences
+        if details.get('first_time', False):
+            importance_score += 0.2
+        
+        # 4. Goal Relevance
+        if "fried chicken" in content:  # Related to main simulation focus
+            importance_score += 0.15
+        if "discount" in content or "deal" in content:  # Financial opportunities
+            importance_score += 0.1
+        
+        # 5. Action Triggers
+        if "plan" in content or "tomorrow" in content:
+            importance_score += 0.15  # Future-oriented memories
+        if "need to" in content or "should" in content:
+            importance_score += 0.1  # Action-oriented memories
+        
+        # 6. Location Significance
+        significant_locations = ["Fried Chicken Shop", "home", "workplace"]
+        if details.get('location') in significant_locations:
+            importance_score += 0.1
+        
+        # Cap importance between 0.1 and 1.0
+        return min(max(importance_score, 0.1), 1.0)
 
     def calculate_semantic_similarity(self, text1, text2):
         """Calculate semantic similarity between two texts"""
@@ -288,9 +381,12 @@ class MemoryManager:
         self.memories[agent_name] = memories[:self.memory_limit]
 
     def save_to_file(self):
-        """Save memories in JSONL format for better space efficiency"""
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        records_dir = os.path.join(base_dir, 'memory_records')
+        """Save memories in JSONL format with updated path structure"""
+        # Get parent directory (LLMAgentsTown_Stability)
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        
+        # Path to records directory
+        records_dir = os.path.join(base_dir, 'LLMAgentsTown_memory_records', 'simulation_agents')
         os.makedirs(records_dir, exist_ok=True)
 
         filename = f"agent_memories_{self.start_time.strftime('%Y%m%d_%H%M%S')}.jsonl"
@@ -357,3 +453,91 @@ class MemoryManager:
             memory for memory in self.memories[agent_name]
             if memory['importance'] >= importance_threshold
         ]
+
+    def get_food_related_memories(self, agent_name, recency_weight=0.7, relevance_weight=0.3):
+        """Get memories related to food with weighted scoring"""
+        if agent_name not in self.memories:
+            return []
+        
+        food_keywords = ["food", "eat", "meal", "restaurant", "chicken", "hungry", "lunch", "dinner"]
+        
+        scored_memories = []
+        current_time = time.time()  # Use current time as reference
+        
+        for memory in self.memories[agent_name]:
+            # Check if memory is related to food
+            is_food_related = any(keyword in memory['content'].lower() for keyword in food_keywords)
+            
+            if is_food_related:
+                # Calculate recency score (normalized 0-1)
+                time_diff = current_time - memory['timestamp']
+                recency_score = max(0, 1 - (time_diff / (7 * 24 * 60 * 60)))  # Within last week
+                
+                # Calculate relevance score based on how many food keywords appear
+                keyword_count = sum(1 for keyword in food_keywords if keyword in memory['content'].lower())
+                relevance_score = min(1.0, keyword_count / 3)  # Cap at 1.0
+                
+                # Calculate combined score
+                total_score = (recency_weight * recency_score) + (relevance_weight * relevance_score)
+                
+                scored_memories.append((memory, total_score))
+        
+        # Sort by score
+        scored_memories.sort(key=lambda x: x[1], reverse=True)
+        
+        # Return just the memories, not the scores
+        return [memory for memory, _ in scored_memories]
+
+    def mark_memory_as_planned(self, agent_name, memory_id):
+        """Mark a memory as having generated a plan"""
+        if agent_name not in self.memories:
+            return
+            
+        for memory in self.memories[agent_name]:
+            if memory['id'] == memory_id:
+                memory['plan_generated'] = True
+                break
+
+    def retrieve_memories(self, agent_name, current_time, context=None, limit=5, importance_threshold=None):
+        """Unified memory retrieval with optional importance threshold"""
+        if agent_name not in self.memories:
+            return []
+        
+        memories = self.memories[agent_name]
+        scored_memories = []
+        
+        for memory in memories:
+            # Skip memories below importance threshold if specified
+            if importance_threshold and memory.get('importance', 0) < importance_threshold:
+                continue
+            
+            score = self.calculate_memory_score(
+                memory,
+                current_time,
+                context
+            )
+            scored_memories.append((memory, score))
+        
+        # Sort by score and return top memories
+        scored_memories.sort(key=lambda x: x[1], reverse=True)
+        return [m for m, _ in scored_memories[:limit]]
+
+    def calculate_memory_score(self, memory, current_time, context=None):
+        """Calculate unified memory score"""
+        # Base importance
+        score = memory.get('importance', 0.5)
+        
+        # Time decay
+        time_diff = current_time - memory.get('timestamp', 0)
+        recency = 1.0 / (1 + (time_diff / 24))  # Decay over days
+        score += recency * 0.3
+        
+        # Context relevance if provided
+        if context:
+            relevance = self.calculate_semantic_similarity(
+                memory.get('content', ''),
+                context
+            )
+            score += relevance * 0.2
+        
+        return score

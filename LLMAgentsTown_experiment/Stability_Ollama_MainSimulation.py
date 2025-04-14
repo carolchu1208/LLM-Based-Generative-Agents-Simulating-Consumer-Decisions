@@ -135,42 +135,50 @@ class Agent:
         else:  # Late night
             return f"Return to {self.residence} for rest"
 
-    def execute_action(self, all_agents, current_location, global_time):
-        """Execute an action based on the current plan"""
-        # Get list of other agents in same location
-        others_here = [agent.name for agent in all_agents if agent.location == self.location and agent != self]
+    def execute_action(self, all_agents, current_location, current_time):
+        """Execute an action based on the agent's current plan"""
+        # Find nearby agents (only those in the same location)
+        nearby_agents = [agent for agent in all_agents if agent.location == current_location and agent.name != self.name]
         
-        # Get the latest plan
-        current_plan = self.plans[-1] if self.plans else "No plan yet"
+        # Now use these nearby agents for interactions
+        hour = current_time % 24
         
-        # Add context about residence
-        residence_context = ""
-        if self.location == self.residence:
-            residence_context = " This is your residence where you can rest."
-        elif global_time >= experiment_settings['simulation']['daily_hours']['end'] or \
-             global_time <= experiment_settings['simulation']['daily_hours']['start']:
-            residence_context = f" It's {global_time}:00. Consider returning to your residence at {self.residence} for rest if you haven't recently."
+        try:
+            # Get the latest plan
+            current_plan = self.plans[-1] if self.plans else "No plan yet"
+            
+            # Add context about residence
+            residence_context = ""
+            if current_location == self.residence:
+                residence_context = " This is your residence where you can rest."
+            elif current_time >= experiment_settings['simulation']['daily_hours']['end'] or \
+                 current_time <= experiment_settings['simulation']['daily_hours']['start']:
+                residence_context = f" It's {current_time}:00. Consider returning to your residence at {self.residence} for rest if you haven't recently."
+            
+            # Add context about educational facilities
+            education_context = ""
+            is_educational = any(edu_term in current_location.lower() for edu_term in ["school", "academy", "preschool", "daycare", "learning center"])
+            
+            if is_educational:
+                if self.has_children:
+                    education_context = f" This is an educational facility where your child(ren) might attend."
+                else:
+                    education_context = f" This is an educational facility for children."
+            
+            prompt = f"""You are {self.name}. Your plan is: {current_plan}. 
+            You are in {current_location}{residence_context}{education_context}
+            Current time: {current_time}:00
+            Other agents here: {', '.join([agent.name for agent in nearby_agents])}
+            
+            Consider your daily routine, preferences, and current context to decide your next action.
+            What do you do?"""
+            
+            action = generate(prompt_meta.format(prompt))
+            return action if action else f"Stayed at {current_location}"
         
-        # Add context about educational facilities
-        education_context = ""
-        is_educational = any(edu_term in self.location.lower() for edu_term in ["school", "academy", "preschool", "daycare", "learning center"])
-        
-        if is_educational:
-            if self.has_children:
-                education_context = f" This is an educational facility where your child(ren) might attend."
-            else:
-                education_context = f" This is an educational facility for children."
-        
-        prompt = f"""You are {self.name}. Your plan is: {current_plan}. 
-        You are in {self.location}{residence_context}{education_context}
-        Current time: {global_time}:00
-        Other agents here: {', '.join(others_here)}
-        
-        Consider your daily routine, preferences, and current context to decide your next action.
-        What do you do?"""
-        
-        action = generate(prompt_meta.format(prompt))
-        return action if action else f"Stayed at {self.location}"
+        except Exception as e:
+            print(f"Error executing action: {e}")
+            return f"Stayed at {current_location}"
 
     def update_memory(self, action, time):
         """Update agent's own memory with their action"""
@@ -264,11 +272,6 @@ for town_area in town_areas.keys():
 # Complete the cycle
 world_graph.add_edge(list(town_areas.keys())[0], last_town_area)
 
-# Initialize metrics (simpler now)
-metrics = FriedChickenMetrics(
-    discount_value=experiment_settings['experiments']['stability_test']['discount_value']
-)
-
 # Create ONE memory manager for all agents
 memory_mgr = MemoryManager()
 
@@ -280,7 +283,7 @@ for name, info in town_data['town_people'].items():
         description=info['basics'],
         starting_location=info['basics'].get('residence', 'Main Street Shops'),  # Add default
         residence=info['basics'].get('residence', 'Main Street Shops'),  # Add default
-        metrics=metrics,
+        metrics=FriedChickenMetrics(settings=experiment_settings['discount_settings']),
         memory_manager=memory_mgr  # Use the same memory manager for all agents
     )
     agents.append(agent)
@@ -290,7 +293,12 @@ for name, info in town_data['town_people'].items():
 def run_simulation():
     try:
         global global_time
+        whole_simulation_output = ""  # Initialize output storage
+        
         print(f"\n=== Simulation Started at {datetime.now().strftime('%H:%M:%S')} ===")
+        # Add this to the output
+        whole_simulation_output += f"=== Simulation Started at {datetime.now().strftime('%H:%M:%S')} ===\n"
+        
         print("Day 1 begins")
         print("\nFried Chicken Shop Regular Hours: 10:00-22:00")
         print(f"Simulation will run for 7 days ({7 * 24} hours)")
@@ -310,7 +318,7 @@ def run_simulation():
             # Discount announcements only on Days 3-4
             if current_day == 3 and global_time % 24 == 9:  # Day 3 (Wednesday) morning
                 print("\n=== Special 2-Day Discount Starting Now! ===")
-                print(f"Get {experiment_settings['experiments']['stability_test']['discount_value']}% off on all meals!")
+                print(f"Get {experiment_settings['discount_settings']['discount_value']}% off on all meals!")
                 print("Valid today and tomorrow only!")
             
             # End of discount announcement
@@ -320,20 +328,36 @@ def run_simulation():
             
             # Day transition
             if global_time % 24 == 0 and global_time > 0:
-                print(f"\n=== Day {global_time//24} Completed ===")
-                metrics.print_daily_summary(global_time//24)
-                metrics.new_day()
-                next_day = (global_time//24) + 1
-                print(f"\nDay {next_day} begins at {datetime.now().strftime('%H:%M:%S')}")
+                day_num = global_time // 24
                 
-                # Announce upcoming discount at end of Day 2
-                if next_day == 3:
-                    print("\nAnnouncement: Special discount promotion starting tomorrow morning!")
+                # Get daily summary
+                day_summary = f"\n=== Day {day_num} Completed ===\n"
+                metrics_summary = metrics.get_daily_summary_str(day_num)
+                day_summary += metrics_summary + "\n"
+                
+                # Print to console
+                print(day_summary)
+                
+                # Add to whole simulation output
+                whole_simulation_output += day_summary
+                
+                # Also save as separate daily summary file
+                base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                daily_dir = os.path.join(base_dir, 'LLMAgentsTown_memory_records', 'simulation_memory')
+                os.makedirs(daily_dir, exist_ok=True)
+                
+                daily_path = os.path.join(daily_dir, f'day_{day_num}_summary_{metrics.start_time.strftime("%Y%m%d_%H%M%S")}.txt')
+                with open(daily_path, 'w') as f:
+                    f.write(day_summary)
+                
+                # Start new day
+                metrics.new_day()
             
             # Run simulation
             for agent in agents:
                 plan = agent.plan(global_time)
-                action = agent.execute_action(agents, agent.location, global_time)
+                nearby_agents = [a for a in agents if a.location == agent.location and a.name != agent.name]
+                action = agent.execute_action(nearby_agents, agent.location, global_time)
                 agent.update_memory(action, global_time)
             
             time.sleep(1)
@@ -341,26 +365,24 @@ def run_simulation():
             
         print("\n=== Simulation Complete ===")
         
-    except Exception as e:
-        print(f"\nError occurred: {str(e)}")
-        
     finally:
-        print(f"Simulation ended at time: Day {(global_time//24)+1}, Hour {global_time%24}")
-        
-        # Move the file saving to the main execution block
-        output_dir = os.path.join(base_dir, 'simulation_outputs')
+        # Get parent directory (LLMAgentsTown_Stability)
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        output_dir = os.path.join(base_dir, 'LLMAgentsTown_memory_records', 'simulation_memory')
         os.makedirs(output_dir, exist_ok=True)
+        
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_path = os.path.join(output_dir, f'simulation_{timestamp}.txt')
+        output_path = os.path.join(output_dir, f'simulation_summary_{timestamp}.txt')
         
         with open(output_path, 'w') as f:
             f.write(whole_simulation_output)
         
+        print(f"Simulation summary saved to: {output_path}")
         return output_path
 
 # Add validation for experiment settings
 def validate_experiment_settings():
-    required_fields = ['simulation', 'fried_chicken_shop', 'experiments']
+    required_fields = ['simulation', 'fried_chicken_shop', 'discount_settings']
     with open('experiment_settings.json', 'r') as f:
         settings = json.load(f)
         
@@ -379,8 +401,12 @@ if __name__ == "__main__":
 
         # Initialize global variables
         global_time = 0
-        SIMULATION_DURATION_DAYS = 7
+        SIMULATION_DURATION_DAYS = experiment_settings['simulation']['duration_days']
         TIME_STEP = experiment_settings['simulation']['time_step']
+
+        # Initialize metrics and memory manager ONCE
+        metrics = FriedChickenMetrics(settings=experiment_settings['discount_settings'])
+        memory_mgr = MemoryManager()
 
         # Get configuration path
         base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -390,18 +416,13 @@ if __name__ == "__main__":
         with open(config_path, 'r') as f:
             town_data = json.load(f)
 
-        # Initialize metrics and memory manager ONCE
-        metrics = FriedChickenMetrics(
-            discount_value=experiment_settings['experiments']['stability_test']['discount_value']
-        )
-        memory_mgr = MemoryManager()
-
-        # Initialize locations and agents
+        # Initialize locations
         locations = {}
         for category, category_locations in town_data['town_areas'].items():
             for location_name, description in category_locations.items():
                 locations[location_name] = Location(location_name, description)
 
+        # Initialize agents using the shared metrics instance
         agents = []
         for name, info in town_data['town_people'].items():
             agent = Agent(
@@ -409,13 +430,13 @@ if __name__ == "__main__":
                 description=info['basics'],
                 starting_location=info['basics']['residence'],
                 residence=info['basics']['residence'],
-                metrics=metrics,
-                memory_manager=memory_mgr  # Use the same memory manager for all agents
+                metrics=metrics,  # Use the shared metrics instance
+                memory_manager=memory_mgr
             )
             agents.append(agent)
             locations[info['basics']['residence']].add_agent(agent)
 
-        # Start simulation
+        # Run simulation
         run_simulation()
 
     except Exception as e:
@@ -425,115 +446,3 @@ if __name__ == "__main__":
             memory_file = memory_mgr.save_to_file()
         if 'metrics' in locals():
             metrics_file = metrics.save_metrics()
-
-def run_single_experiment(experiment_type, discount_value, model='llama3.2'):
-    """Run a single experiment with specified parameters"""
-    # Initialize metrics and memory manager
-    metrics = FriedChickenMetrics(discount_value)
-    memory_manager = MemoryManager()
-    
-    # Load configuration
-    with open('Stability_Agents_Config.json', 'r') as f:
-        town_data = json.load(f)
-    
-    # Process nested location structure
-    locations = {}
-    for category, category_locations in town_data['town_areas'].items():
-        for location_name, description in category_locations.items():
-            locations[location_name] = Location(location_name, description)
-    
-    # Create world graph
-    world_graph = nx.Graph()
-    last_town_area = None
-    for town_area in town_data['town_areas'].keys():
-        world_graph.add_node(town_area)
-        if last_town_area is not None:
-            world_graph.add_edge(town_area, last_town_area)
-        last_town_area = town_area
-    
-    # Complete the cycle
-    world_graph.add_edge(list(town_data['town_areas'].keys())[0], last_town_area)
-    
-    # Initialize agents
-    agents = []
-    for name, info in town_data['town_people'].items():
-        # Everyone starts at their residence in the morning
-        starting_location = info['basics']['residence']
-        
-        agent = Agent(
-            name=name,
-            description=info['basics'],
-            starting_location=starting_location,  # Start at residence
-            residence=info['basics']['residence'],
-            metrics=metrics,
-            memory_manager=memory_manager
-        )
-        agents.append(agent)
-        locations[starting_location].add_agent(agent)  # Add to their starting location
-    
-    print(f"\n=== Starting Experiment ===")
-    print(f"Type: {experiment_type}")
-    print(f"Discount Value: {discount_value}")
-    print(f"Duration: {SIMULATION_DURATION_DAYS} days")
-    print(f"Discount Days: {', '.join(experiment_settings['experiments'][experiment_type]['discount_days'])}")
-    
-    # Run simulation for specified duration
-    for day in range(1, SIMULATION_DURATION_DAYS + 1):
-        print(f"\n=== Day {day} ({datetime.now().strftime('%A')}) ===")
-        
-        for hour in range(24):
-            global_time = hour
-            
-            # Each agent plans and executes their action
-            for agent in agents:
-                # Remove agent from current location
-                locations[agent.location].remove_agent(agent)
-                
-                # Generate and execute plan
-                plan = agent.plan(global_time)
-                action = agent.execute_action(agents, agent.location, global_time)
-                
-                # Update agent's location based on action
-                if "go to" in action.lower():
-                    for location in locations:
-                        if location.lower() in action.lower():
-                            agent.location = location
-                            break
-                
-                # Add agent to new location
-                locations[agent.location].add_agent(agent)
-            
-            # Print current state at key times
-            if hour in [7, 12, 18]:  # Meal times
-                print(f"\nTime: {hour:02d}:00")
-                for location in locations:
-                    if locations[location].agents:
-                        print(f"{location}: {', '.join([agent.name for agent in locations[location].agents])}")
-        
-        # Print daily summary
-        metrics.print_daily_summary(day)
-        
-        # Check for significant changes or repeated conversations
-        for agent in agents:
-            if len(agent.conversation_history) > 1:
-                last_conversation = agent.conversation_history[-1]
-                prev_conversation = agent.conversation_history[-2]
-                if (last_conversation['location'] == prev_conversation['location'] and
-                    set(last_conversation['participants']) == set(prev_conversation['participants'])):
-                    print(f"\nRepeated conversation detected at {last_conversation['location']} between {', '.join(last_conversation['participants'])}")
-        
-        # Start new day
-        metrics.new_day()
-        
-        # Save memories and metrics at the end of each day
-        memory_manager.save_to_file()
-        metrics.save_metrics()
-    
-    print("\n=== Experiment Complete ===")
-    print("All metrics and memories have been saved to the memory_records folder")
-
-if __name__ == "__main__":
-    # Example usage:
-    # run_single_experiment("stability_test", 10)  # 10% off
-    # run_single_experiment("ab_test", 5)         # $5 off
-    pass

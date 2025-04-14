@@ -6,7 +6,10 @@
         "daily_hours": {
             "start": "10:00",
             "end": "22:00"
-        }
+        },
+        "base_price": 20.00,
+        "simulation_speed": 1,
+        "use_predefined_agents_only": true
     },
     "fried_chicken_shop": {
         "base_price": 20.0,
@@ -21,12 +24,9 @@
             }
         }
     },
-    "experiments": {
-        "stability_test": {
-            "discount_days": ["Wednesday", "Thursday"],
-            "discount_type": "percentage",
-            "discount_value": 20,
-            "duration": 7
-        }
+    "discount_settings": {
+        "discount_type": "percentage",
+        "discount_value": 20,
+        "discount_days": [3, 4]
     }
 } 

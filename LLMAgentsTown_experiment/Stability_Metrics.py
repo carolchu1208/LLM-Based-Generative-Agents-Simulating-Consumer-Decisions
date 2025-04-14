@@ -20,11 +20,21 @@ SALES_KEYWORDS = [
 ]
 
 class FriedChickenMetrics:
-    def __init__(self, discount_value=20):  # Only keep discount_value, default to 20%
+    def __init__(self, settings):
+        """
+        Initialize metrics with settings from experiment_settings.json
+        
+        Args:
+            settings: Dict containing experiment settings
+        """
         self.daily_metrics = {}
         self.current_day = 1
         self.start_time = datetime.now()
-        self.discount_value = discount_value
+        
+        # Get discount settings from experiment settings
+        self.discount_type = settings['discount_type']
+        self.discount_value = settings['discount_value']
+        self.discount_days = settings['discount_days']
         
         # Initialize first day
         self.daily_metrics[self.current_day] = {
@@ -105,10 +115,7 @@ class FriedChickenMetrics:
             used_discount = self.is_discount_day()
             
             if used_discount:
-                if self.discount_value == "percentage":
-                    discount_amount = original_price * (self.discount_value / 100)
-                else:  # fixed amount
-                    discount_amount = self.discount_value
+                discount_amount = self.calculate_discount(original_price)
                 final_price = original_price - discount_amount
                 
                 # Record discount usage
@@ -236,6 +243,7 @@ class FriedChickenMetrics:
         
         metrics = self.daily_metrics[day]
         print(f"\n=== Day {day} Fried Chicken Shop Activity ===")
+        print(f"Discount Type: {self.discount_type}")
         print(f"Discount Value: {self.discount_value}")
         
         # Visit Statistics
@@ -336,29 +344,96 @@ class FriedChickenMetrics:
         self.print_daily_summary(self.current_day - 1)
 
     def is_discount_day(self):
-        """Check if current day is a discount day (2 days per week)"""
-        return self.current_day % 7 in [3, 4]  # Discount on Wednesday and Thursday
+        """Check if current day is a discount day based on settings"""
+        # Convert current_day to day name
+        day_index = (self.current_day - 1) % 7
+        day_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        current_day_name = day_names[day_index]
+        
+        # Check against configured discount days
+        return current_day_name in self.discount_days
+
+    def calculate_discount(self, original_price):
+        """Calculate discount amount based on type and value"""
+        if self.discount_type == "percentage":
+            return original_price * (self.discount_value / 100)
+        else:  # fixed amount
+            return self.discount_value
 
     def save_metrics(self):
-        """Save metrics in the memory_records directory"""
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        records_dir = os.path.join(base_dir, 'Stability_Memory_Records')
+        """Save metrics to file"""
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        records_dir = os.path.join(base_dir, 'LLMAgentsTown_memory_records', 'simulation_metrics')
         os.makedirs(records_dir, exist_ok=True)
-
-        filename = f"fried_chicken_metrics_{self.discount_value}_{self.start_time.strftime('%Y%m%d_%H%M%S')}.jsonl"
+        
+        filename = f"metrics_{self.start_time.strftime('%Y%m%d_%H%M%S')}.json"
         filepath = os.path.join(records_dir, filename)
-
+        
         metrics_data = {
             'simulation_start': self.start_time.strftime('%Y-%m-%d %H:%M:%S'),
             'simulation_end': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'total_days': self.current_day,
+            'discount_type': self.discount_type,
             'discount_value': self.discount_value,
+            'discount_days': self.discount_days,
             'daily_metrics': self.daily_metrics
         }
-
+        
         with open(filepath, 'w') as f:
-            for metric in metrics_data:
-                f.write(json.dumps(metric) + '\n')
+            json.dump(metrics_data, f, indent=2)
+        
+        print(f"\nMetrics saved to: {filepath}")
+        return filepath
 
-        print(f"Fried chicken metrics saved to {filepath}")
-        return filepath 
+    def get_daily_summary(self, day):
+        """Generate a formatted summary for a specific day"""
+        if day not in self.daily_metrics:
+            return f"No data available for day {day}"
+        
+        day_data = self.daily_metrics[day]
+        summary = []
+        
+        summary.append(f"=== Day {day} Metrics ===")
+        summary.append(f"Total Visits: {day_data.get('total_visits', 0)}")
+        summary.append(f"Total Revenue: ${day_data.get('revenue', 0):.2f}")
+        
+        if 'discount_sales' in day_data:
+            summary.append(f"Discount Sales: {day_data['discount_sales']}")
+        
+        if 'total_discount_amount' in day_data:
+            summary.append(f"Total Discount Amount: ${day_data['total_discount_amount']:.2f}")
+        
+        summary.append("\nVisitor Breakdown:")
+        for visitor_type, count in day_data.get('visitor_types', {}).items():
+            summary.append(f"- {visitor_type}: {count}")
+        
+        summary.append("\nTop Customers:")
+        for i, (customer, visits) in enumerate(day_data.get('top_customers', {}).items(), 1):
+            if i <= 5:  # Top 5
+                summary.append(f"- {customer}: {visits} visits")
+        
+        return "\n".join(summary)
+
+    def get_daily_summary_str(self, day):
+        """Get a formatted string with the daily summary"""
+        if day not in self.daily_metrics:
+            return "No data available for this day."
+        
+        data = self.daily_metrics[day]
+        
+        summary = []
+        summary.append(f"=== Day {day} Metrics ===")
+        summary.append(f"Total Visits: {data.get('total_visits', 0)}")
+        summary.append(f"Total Revenue: ${data.get('revenue', 0):.2f}")
+        
+        if 'discount_sales' in data:
+            summary.append(f"Discount Sales: {data.get('discount_sales', 0)}")
+        
+        if 'word_of_mouth' in data:
+            summary.append(f"Word of Mouth Mentions: {data.get('word_of_mouth', 0)}")
+        
+        if 'visitor_types' in data:
+            summary.append("\nVisitor Types:")
+            for visitor_type, count in data['visitor_types'].items():
+                summary.append(f"- {visitor_type}: {count}")
+        
+        return "\n".join(summary) 
