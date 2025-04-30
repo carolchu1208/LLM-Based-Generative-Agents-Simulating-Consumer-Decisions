@@ -1,0 +1,108 @@
+{
+  "simulation_start": "2025-04-29 01:33:07",
+  "simulation_end": "2025-04-29 01:34:45",
+  "discount_type": "percentage",
+  "discount_value": 20,
+  "discount_days": [
+    3,
+    4
+  ],
+  "daily_metrics": {
+    "1": {
+      "store_visits": {
+        "total_count": 0,
+        "visitors": [],
+        "peak_hours": {}
+      },
+      "sales": {
+        "total_amount": 0.0,
+        "transactions": [],
+        "meals_sold": 0,
+        "average_transaction": 0.0,
+        "repeat_customers": {}
+      },
+      "discount_usage": {
+        "total_count": 0,
+        "total_savings": 0.0,
+        "transactions": [],
+        "conversion_rate": 0.0
+      },
+      "word_of_mouth": {
+        "total_mentions": 3,
+        "positive": [],
+        "neutral": [
+          {
+            "speaker": "Emma Walker",
+            "listener": "self",
+            "location": "Fried Chicken Shop",
+            "time": "01:34",
+            "content": "Stayed at Fried Chicken Shop"
+          },
+          {
+            "speaker": "Sophia Chang",
+            "listener": "self",
+            "location": "Fried Chicken Shop",
+            "time": "01:34",
+            "content": "Stayed at Fried Chicken Shop"
+          },
+          {
+            "speaker": "Lucas Reed",
+            "listener": "self",
+            "location": "Fried Chicken Shop",
+            "time": "01:34",
+            "content": "Stayed at Fried Chicken Shop"
+          }
+        ],
+        "negative": [],
+        "influencers": {
+          "Emma Walker": 1,
+          "Sophia Chang": 1,
+          "Lucas Reed": 1
+        },
+        "spread_chains": [],
+        "sale_mentions": {
+          "discount_awareness": [],
+          "discount_sharing": [],
+          "price_discussion": []
+        }
+      },
+      "customer_segments": {
+        "new_customers": [],
+        "returning_customers": [],
+        "influenced_customers": [
+          "self"
+        ]
+      },
+      "social_network": {
+        "information_flow": [
+          {
+            "from": "Emma Walker",
+            "to": "self",
+            "time": "01:34",
+            "location": "Fried Chicken Shop",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Sophia Chang",
+            "to": "self",
+            "time": "01:34",
+            "location": "Fried Chicken Shop",
+            "sentiment": "neutral"
+          },
+          {
+            "from": "Lucas Reed",
+            "to": "self",
+            "time": "01:34",
+            "location": "Fried Chicken Shop",
+            "sentiment": "neutral"
+          }
+        ],
+        "key_influencers": {},
+        "community_impact": {
+          "Fried Chicken Shop": 3
+        }
+      },
+      "other_purchases": []
+    }
+  }
+}

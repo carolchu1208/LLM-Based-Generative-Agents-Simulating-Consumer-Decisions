@@ -20,7 +20,7 @@ SALES_KEYWORDS = [
 ]
 
 class FriedChickenMetrics:
-    def __init__(self, settings):
+    def __init__(self, settings=None):
         """
         Initialize metrics with settings from experiment_settings.json
         
@@ -31,10 +31,18 @@ class FriedChickenMetrics:
         self.current_day = 1
         self.start_time = datetime.now()
         
-        # Get discount settings from experiment settings
-        self.discount_type = settings['discount_type']
-        self.discount_value = settings['discount_value']
-        self.discount_days = settings['discount_days']
+        # Use default settings if none provided
+        if settings is None:
+            settings = {
+                'type': 'percentage',
+                'value': 20,
+                'days': [3, 4]
+            }
+        
+        # Get discount settings using the correct keys
+        self.discount_type = settings.get('type', 'percentage')
+        self.discount_value = settings.get('value', 20)
+        self.discount_days = settings.get('days', [3, 4])
         
         # Initialize first day
         self.daily_metrics[self.current_day] = {
@@ -78,120 +86,74 @@ class FriedChickenMetrics:
                 'information_flow': [],  # Track how discount info spreads
                 'key_influencers': {},   # Track most effective message spreaders
                 'community_impact': {}    # Track impact by community/location
-            }
+            },
+            'other_purchases': []  # Track other purchases
         }
+        
+        self.all_time_customers = set()  # Track all customers ever
+        self.daily_customers = set()     # Reset each day
+        self.total_revenue = 0.0
+        self.total_meals_sold = 0
+        self.total_visits = 0
+        self.unique_visitors = set()
 
     def record_interaction(self, agent_name, location, event_type, details=None):
-        """Standardize the details parameter across all event types"""
+        """Record interactions with proper tracking"""
         if details is None:
             details = {}
-        
-        # Ensure required fields exist
-        if event_type == "word_of_mouth":
-            details.setdefault('sentiment', 'neutral')
-            details.setdefault('listener', 'unknown')
-            details.setdefault('content', '')
-        
-        current_time = datetime.now()
+            
         metrics = self.daily_metrics[self.current_day]
         
         if event_type == "store_visit":
-            # Record visit with timing
-            visit_hour = current_time.hour
+            # Update visit counts
             metrics['store_visits']['total_count'] += 1
-            metrics['store_visits']['peak_hours'][visit_hour] = metrics['store_visits']['peak_hours'].get(visit_hour, 0) + 1
+            self.total_visits += 1  # Update global counter
             
-            # Track if this is a repeat visit
-            is_repeat = any(v['agent'] == agent_name for v in metrics['store_visits']['visitors'])
-            metrics['store_visits']['visitors'].append({
-                'agent': agent_name,
-                'time': current_time.strftime('%H:%M'),
-                'repeat_visit': is_repeat
-            })
+            hour = int(details.get('time', 0)) % 24
+            metrics['store_visits']['peak_hours'][hour] = metrics['store_visits']['peak_hours'].get(hour, 0) + 1
             
-        elif event_type == "purchase":
-            # Calculate pricing
-            original_price = 20.0
-            used_discount = self.is_discount_day()
-            
-            if used_discount:
-                discount_amount = self.calculate_discount(original_price)
-                final_price = original_price - discount_amount
-                
-                # Record discount usage
-                metrics['discount_usage']['total_count'] += 1
-                metrics['discount_usage']['total_savings'] += discount_amount
-                metrics['discount_usage']['transactions'].append({
-                    'customer': agent_name,
-                    'original_price': original_price,
-                    'discount_amount': discount_amount,
-                    'final_price': final_price
+            # Track unique visitors
+            if agent_name not in [v['agent'] for v in metrics['store_visits']['visitors']]:
+                metrics['store_visits']['visitors'].append({
+                    'agent': agent_name,
+                    'time': details.get('time'),
+                    'repeat_visit': agent_name in self.all_time_customers
                 })
-            else:
-                final_price = original_price
-                discount_amount = 0
+                self.unique_visitors.add(agent_name)
             
-            # Record sale
-            metrics['sales']['total_amount'] += final_price
+        elif event_type == "purchase" and location == "Fried Chicken Shop":
+            # Update revenue and sales counts
+            price = details.get('price', 20.0)  # Default price if not specified
+            metrics['sales']['total_amount'] += price
             metrics['sales']['meals_sold'] += 1
+            self.total_revenue += price  # Update global revenue
+            
+            # Record transaction
             metrics['sales']['transactions'].append({
                 'customer': agent_name,
-                'amount': final_price,
-                'time': current_time.strftime('%H:%M'),
-                'used_discount': used_discount
+                'amount': price,
+                'time': details.get('time'),
+                'used_discount': details.get('used_discount', False),
+                'influenced_by': details.get('influenced_by')
             })
             
-            # Update customer segments
-            if agent_name not in metrics['customer_segments']['new_customers'] and \
-               agent_name not in metrics['customer_segments']['returning_customers']:
+            # Update customer segmentation
+            if agent_name not in self.all_time_customers:
+                self.all_time_customers.add(agent_name)
                 metrics['customer_segments']['new_customers'].append(agent_name)
-            elif agent_name in metrics['customer_segments']['new_customers']:
-                metrics['customer_segments']['new_customers'].remove(agent_name)
+            else:
                 metrics['customer_segments']['returning_customers'].append(agent_name)
-            
-            # Update repeat customer tracking
-            metrics['sales']['repeat_customers'][agent_name] = \
-                metrics['sales']['repeat_customers'].get(agent_name, 0) + 1
-                
-        elif event_type == "word_of_mouth":
-            if not details or 'sentiment' not in details or 'listener' not in details:
-                return
-                
-            sentiment = details['sentiment']
-            listener = details['listener']
-            content = details.get('content', '')
-            
-            if sentiment in ['positive', 'neutral', 'negative']:
-                metrics['word_of_mouth']['total_mentions'] += 1
-                mention_data = {
-                    'speaker': agent_name,
-                    'listener': listener,
-                    'location': location,
-                    'time': current_time.strftime('%H:%M'),
-                    'content': content
-                }
-                metrics['word_of_mouth'][sentiment].append(mention_data)
-                
-                # Track influencer impact
-                metrics['word_of_mouth']['influencers'][agent_name] = \
-                    metrics['word_of_mouth']['influencers'].get(agent_name, 0) + 1
-                    
-                # Track information spread
-                metrics['social_network']['information_flow'].append({
-                    'from': agent_name,
-                    'to': listener,
-                    'time': current_time.strftime('%H:%M'),
-                    'location': location,
-                    'sentiment': sentiment
+
+            # Update discount usage if applicable
+            if details.get('used_discount'):
+                metrics['discount_usage']['total_count'] += 1
+                metrics['discount_usage']['total_savings'] += details.get('discount_amount', 0)
+                metrics['discount_usage']['transactions'].append({
+                    'customer': agent_name,
+                    'original_price': details.get('original_price', price),
+                    'discount_amount': details.get('discount_amount', 0),
+                    'final_price': price
                 })
-                
-                # Update community impact
-                metrics['social_network']['community_impact'][location] = \
-                    metrics['social_network']['community_impact'].get(location, 0) + 1
-                    
-                # If the listener later visits/purchases, they'll be marked as influenced
-                if listener not in metrics['customer_segments']['influenced_customers']:
-                    metrics['customer_segments']['influenced_customers'].append(listener)
         
         # Update conversion rates
         if metrics['store_visits']['total_count'] > 0:
@@ -237,11 +199,12 @@ class FriedChickenMetrics:
         return spread_chains
 
     def print_daily_summary(self, day=None):
-        """Print enhanced daily summary"""
+        """Print daily summary with accurate metrics"""
         if day is None:
             day = self.current_day
-        
+            
         metrics = self.daily_metrics[day]
+        
         print(f"\n=== Day {day} Fried Chicken Shop Activity ===")
         print(f"Discount Type: {self.discount_type}")
         print(f"Discount Value: {self.discount_value}")
@@ -249,37 +212,31 @@ class FriedChickenMetrics:
         # Visit Statistics
         print("\nVisit Statistics:")
         print(f"- Total Visits: {metrics['store_visits']['total_count']}")
-        print(f"- Unique Visitors: {len(metrics['store_visits']['visitors'])}")
+        print(f"- Unique Visitors: {len(set(v['agent'] for v in metrics['store_visits']['visitors']))}")
+        
+        # Peak Hours
         print("\nPeak Hours:")
-        peak_hours = sorted(metrics['store_visits']['peak_hours'].items(), key=lambda x: x[1], reverse=True)
-        for hour, count in peak_hours[:3]:
-            print(f"- {hour}:00 - {count} visits")
+        peak_hours = sorted(metrics['store_visits']['peak_hours'].items(), 
+                          key=lambda x: x[1], reverse=True)[:3]
+        for hour, count in peak_hours:
+            if count > 0:  # Only show hours with visits
+                print(f"- {hour}:00 - {count} visits")
         
         # Sales Statistics
         print("\nSales Statistics:")
         print(f"- Total Revenue: ${metrics['sales']['total_amount']:.2f}")
         print(f"- Meals Sold: {metrics['sales']['meals_sold']}")
-        print(f"- Average Transaction: ${metrics['sales']['average_transaction']:.2f}")
-        print(f"- Repeat Customers: {len(metrics['sales']['repeat_customers'])}")
-        
-        # Discount Performance
-        if self.is_discount_day():
-            print("\nDiscount Performance:")
-            print(f"- Usage Count: {metrics['discount_usage']['total_count']}")
-            print(f"- Total Savings: ${metrics['discount_usage']['total_savings']:.2f}")
-            print(f"- Conversion Rate: {metrics['discount_usage']['conversion_rate']:.1f}%")
+        if metrics['sales']['meals_sold'] > 0:
+            avg_transaction = metrics['sales']['total_amount'] / metrics['sales']['meals_sold']
+            print(f"- Average Transaction: ${avg_transaction:.2f}")
+        print(f"- Repeat Customers: {len(metrics['customer_segments']['returning_customers'])}")
         
         # Word of Mouth Impact
         print("\nWord of Mouth Impact:")
         print(f"- Total Mentions: {metrics['word_of_mouth']['total_mentions']}")
-        for sentiment in ['positive', 'neutral', 'negative']:
-            print(f"- {sentiment.title()} Mentions: {len(metrics['word_of_mouth'][sentiment])}")
-        
-        # Top Influencers
-        print("\nTop Influencers:")
-        top_influencers = self.get_key_influencers()
-        for influencer, count in top_influencers:
-            print(f"- {influencer}: {count} mentions")
+        print(f"- Positive Mentions: {len(metrics['word_of_mouth']['positive'])}")
+        print(f"- Neutral Mentions: {len(metrics['word_of_mouth']['neutral'])}")
+        print(f"- Negative Mentions: {len(metrics['word_of_mouth']['negative'])}")
         
         # Customer Segments
         print("\nCustomer Segments:")
@@ -293,8 +250,15 @@ class FriedChickenMetrics:
             print(f"- {location}: {count} interactions")
 
     def new_day(self):
-        """Initialize a new day with the enhanced metrics structure"""
+        """Reset daily metrics while preserving cumulative data"""
         self.current_day += 1
+        
+        # Print previous day summary
+        if self.current_day > 1:
+            self.print_daily_summary(self.current_day - 1)
+        
+        # Reset daily tracking while keeping cumulative data
+        self.daily_customers = set()
         self.daily_metrics[self.current_day] = {
             'store_visits': {
                 'total_count': 0,
@@ -337,11 +301,11 @@ class FriedChickenMetrics:
                 'key_influencers': {},
                 'community_impact': {}
             },
-            'visit_history': {}  # Track visit counts per agent
+            'visit_history': {},  # Track visit counts per agent
+            'other_purchases': []  # Track other purchases
         }
-        
-        # Print summary of the previous day
-        self.print_daily_summary(self.current_day - 1)
+        self.total_visits = 0
+        self.unique_visitors = set()
 
     def is_discount_day(self):
         """Check if current day is a discount day based on settings"""
@@ -411,6 +375,10 @@ class FriedChickenMetrics:
             if i <= 5:  # Top 5
                 summary.append(f"- {customer}: {visits} visits")
         
+        summary.append("\nVisit Statistics:")
+        summary.append(f"- Total Visits: {day_data['store_visits']['total_count']}")
+        summary.append(f"- Unique Visitors: {len(day_data['store_visits']['visitors'])}")
+        
         return "\n".join(summary)
 
     def get_daily_summary_str(self, day):
@@ -436,4 +404,101 @@ class FriedChickenMetrics:
             for visitor_type, count in data['visitor_types'].items():
                 summary.append(f"- {visitor_type}: {count}")
         
-        return "\n".join(summary) 
+        return "\n".join(summary)
+
+    def analyze_social_impact(self):
+        """Analyze how social interactions affect sales patterns"""
+        metrics = self.daily_metrics[self.current_day]
+        
+        # Track purchase clusters (purchases happening close together)
+        purchase_clusters = []
+        current_cluster = []
+        
+        for transaction in sorted(metrics['sales']['transactions'], key=lambda x: x['time']):
+            if current_cluster and (datetime.strptime(transaction['time'], '%H:%M') - 
+                                  datetime.strptime(current_cluster[-1]['time'], '%H:%M')).minutes > 30:
+                purchase_clusters.append(current_cluster)
+                current_cluster = []
+            current_cluster.append(transaction)
+        
+        if current_cluster:
+            purchase_clusters.append(current_cluster)
+        
+        # Analyze social patterns
+        social_impact_data = {
+            'group_purchases': len([c for c in purchase_clusters if len(c) > 1]),
+            'influenced_purchases': len([t for t in metrics['sales']['transactions'] 
+                                       if t.get('influenced_by')]),
+            'recommendation_conversions': len([t for t in metrics['sales']['transactions']
+                                             if any(r in str(t.get('influenced_by', '')) 
+                                                   for r in ['recommended', 'positive review'])]),
+            'average_group_size': sum(len(c) for c in purchase_clusters) / len(purchase_clusters) 
+                                 if purchase_clusters else 0
+        }
+        
+        return social_impact_data 
+
+    def update_customer_segments(self, agent_name, was_influenced=False):
+        if agent_name not in self.all_time_customers:
+            self.new_customers += 1
+            self.all_time_customers.add(agent_name)
+        else:
+            self.returning_customers += 1
+        
+        if was_influenced:
+            self.influenced_customers += 1
+
+    def record_visit(self, agent_name):
+        """Record a visit to the shop"""
+        self.total_visits += 1
+        self.unique_visitors.add(agent_name)
+
+    def reset_daily_metrics(self):
+        """Reset daily metrics"""
+        self.daily_metrics[self.current_day] = {
+            'store_visits': {
+                'total_count': 0,
+                'visitors': [],
+                'peak_hours': {}
+            },
+            'sales': {
+                'total_amount': 0.0,
+                'transactions': [],
+                'meals_sold': 0,
+                'average_transaction': 0.0,
+                'repeat_customers': {}
+            },
+            'discount_usage': {
+                'total_count': 0,
+                'total_savings': 0.0,
+                'transactions': [],
+                'conversion_rate': 0.0
+            },
+            'word_of_mouth': {
+                'total_mentions': 0,
+                'positive': [],
+                'neutral': [],
+                'negative': [],
+                'influencers': {},
+                'spread_chains': [],
+                'sale_mentions': {
+                    'discount_awareness': [],
+                    'discount_sharing': [],
+                    'price_discussion': []
+                }
+            },
+            'customer_segments': {
+                'new_customers': [],
+                'returning_customers': [],
+                'influenced_customers': []
+            },
+            'social_network': {
+                'information_flow': [],
+                'key_influencers': {},
+                'community_impact': {}
+            },
+            'visit_history': {},  # Track visit counts per agent
+            'other_purchases': []  # Track other purchases
+        }
+        self.total_visits = 0
+        self.unique_visitors = set()

@@ -3,30 +3,18 @@
         "duration_days": 7,
         "start_day": "Monday",
         "time_step": 30,
-        "daily_hours": {
-            "start": "10:00",
-            "end": "22:00"
-        },
-        "base_price": 20.00,
-        "simulation_speed": 1,
-        "use_predefined_agents_only": true
+        "simulation_speed": 1
     },
-    "fried_chicken_shop": {
-        "base_price": 20.0,
-        "operating_hours": {
-            "weekday": {
-                "open": "10:00",
-                "close": "22:00"
-            },
-            "weekend": {
-                "open": "11:00",
-                "close": "23:00"
+    "location_prices": {
+        "dining": {
+            "Fried Chicken Shop": {
+                "base_price": 20.0,
+                "discount": {
+                    "type": "percentage",
+                    "value": 20,
+                    "days": [3, 4]
+                }
             }
         }
-    },
-    "discount_settings": {
-        "discount_type": "percentage",
-        "discount_value": 20,
-        "discount_days": [3, 4]
     }
 } 

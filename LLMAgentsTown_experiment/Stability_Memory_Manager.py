@@ -4,7 +4,7 @@ from datetime import datetime
 import time
 
 class MemoryManager:
-    def __init__(self, memory_limit=200, time_unit=0.5):  # 1 unit = 0.5 seconds
+    def __init__(self, memory_limit=1000, time_unit=0.5):  # 1 unit = 0.5 seconds
         self.memory_limit = memory_limit
         self.memories = {}
         self.compressed_memories = {}
@@ -16,13 +16,86 @@ class MemoryManager:
         print(f"Simulation started at: {self.start_time.strftime('%H:%M:%S')}")
 
     def add_memory(self, agent_name, event_type, details):
-        """Add a new memory for an agent"""
+        """Record agent memories of interactions and purchases"""
         if agent_name not in self.memories:
             self.memories[agent_name] = []
             
         current_time = datetime.now()
         
-        if event_type == "store_visit":
+        # Family planning and routine memories
+        if event_type == "family_planning":
+            memory = {
+                'id': self.memory_id_counter,
+                'type': 'family_planning',
+                'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
+                'schedule': details.get('schedule', {}),
+                'participants': details.get('participants', []),
+                'conversation': details.get('conversation', ''),
+                'decisions': {
+                    'school_transport': details.get('school_transport', {}),
+                    'dinner_plans': details.get('dinner_plans', {}),
+                    'evening_activities': details.get('evening_activities', {})
+                },
+                'importance': self.determine_memory_importance(agent_name, event_type, details)
+            }
+            
+        elif event_type == "family_meal":
+            memory = {
+                'id': self.memory_id_counter,
+                'type': 'family_meal',
+                'meal_type': details.get('meal_type', 'breakfast'),  # breakfast, lunch, dinner
+                'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
+                'location': details.get('location', 'residence'),
+                'participants': details.get('participants', []),
+                'conversation': details.get('conversation', ''),
+                'coordinated_schedule': details.get('coordinated_schedule', {}),
+                'discussion_points': details.get('discussion_points', {}),
+                'grocery_used': details.get('grocery_used', 0),
+                'importance': self.determine_memory_importance(agent_name, event_type, details)
+            }
+            
+        elif event_type == "daily_planning":
+            memory = {
+                'id': self.memory_id_counter,
+                'type': 'daily_planning',
+                'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
+                'plan': details.get('plan', {}),
+                'is_first_day': details.get('is_first_day', False),
+                'coordinated_with_family': details.get('coordinated_with_family', False),
+                'morning_routine': details.get('morning_routine', {}),
+                'school_schedule': details.get('school_schedule', {}),
+                'work_schedule': details.get('work_schedule', {}),
+                'importance': self.determine_memory_importance(agent_name, event_type, details)
+            }
+            
+        elif event_type == "morning_routine":
+            memory = {
+                'id': self.memory_id_counter,
+                'type': 'morning_routine',
+                'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
+                'activity': details.get('activity', ''),
+                'location': details.get('location', ''),
+                'with_parent': details.get('with_parent', False),
+                'supervised': details.get('supervised', False),
+                'breakfast_status': details.get('breakfast_status', {}),
+                'school_prep': details.get('school_prep', {}),
+                'importance': self.determine_memory_importance(agent_name, event_type, details)
+            }
+            
+        elif event_type == "schedule_coordination":
+            memory = {
+                'id': self.memory_id_counter,
+                'type': 'schedule_coordination',
+                'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
+                'coordinated_with': details.get('coordinated_with', []),
+                'updated_schedule': details.get('updated_schedule', {}),
+                'transport_arrangements': details.get('transport_arrangements', {}),
+                'meal_plans': details.get('meal_plans', {}),
+                'importance': self.determine_memory_importance(agent_name, event_type, details)
+            }
+        
+        # Handle existing memory types
+        elif event_type == "store_visit":
             # Enhanced satisfaction tracking
             satisfaction_data = {
                 'overall_rating': details.get('satisfaction', None),  # 1-5 scale
@@ -117,9 +190,29 @@ class MemoryManager:
             self.memories[agent_name].append(memory)
             self.memory_id_counter += 1
 
+        # Add grocery-specific memory handling
+        elif event_type == "grocery_update":
+            memory = {
+                'id': self.memory_id_counter,
+                'type': 'grocery_update',
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M'),
+                'content': details['content'],
+                'grocery_level': details.get('grocery_level', 0),
+                'location': details.get('location'),
+                'importance': 0.6 if details.get('grocery_level', 100) <= 30 else 0.3  # Higher importance when low
+            }
+            
+            self.memories[agent_name].append(memory)
+            self.memory_id_counter += 1
+
+        # Add the memory to the agent's memory list
+        self.memories[agent_name].append(memory)
+        self.memory_id_counter += 1
+        
         # Consolidate memories if over limit
         if len(self.memories[agent_name]) > self.memory_limit:
             self.consolidate_memories(agent_name)
+
     def add_store_visit_memory(self, agent_name, details):
         """Handle store visit memories"""
         # Get visit history
@@ -310,51 +403,36 @@ class MemoryManager:
         return [m for m, _ in scored_memories[:limit]]
 
     def determine_memory_importance(self, agent_name, event_type, details):
-        """Calculate memory importance using principles from the Generative Agents paper"""
+        """Calculate memory importance with added family and routine factors"""
         base_importance = 0.5
         importance_score = base_importance
         
-        # 1. Emotional Significance
-        emotional_keywords = {
-            "high": ["excited", "happy", "loved", "amazing", "delicious"],
-            "low": ["disappointed", "frustrated", "disliked", "terrible"]
-        }
-        content = details.get('content', '').lower()
-        
-        for emotion in emotional_keywords["high"]:
-            if emotion in content:
-                importance_score += 0.15
-                break
-        for emotion in emotional_keywords["low"]:
-            if emotion in content:
-                importance_score += 0.1  # Negative experiences are also memorable
-                break
+        # Family-related importance
+        if event_type in ['family_planning', 'family_meal', 'schedule_coordination']:
+            importance_score += 0.2  # Family interactions are important
             
-        # 2. Social Significance
-        if details.get('participants', []):
-            importance_score += 0.1 * min(len(details['participants']), 3)  # Up to 0.3 for group interactions
-        
-        # 3. Novelty/First Time Experiences
-        if details.get('first_time', False):
-            importance_score += 0.2
-        
-        # 4. Goal Relevance
-        if "fried chicken" in content:  # Related to main simulation focus
-            importance_score += 0.15
-        if "discount" in content or "deal" in content:  # Financial opportunities
-            importance_score += 0.1
-        
-        # 5. Action Triggers
-        if "plan" in content or "tomorrow" in content:
-            importance_score += 0.15  # Future-oriented memories
-        if "need to" in content or "should" in content:
-            importance_score += 0.1  # Action-oriented memories
-        
-        # 6. Location Significance
-        significant_locations = ["Fried Chicken Shop", "home", "workplace"]
-        if details.get('location') in significant_locations:
-            importance_score += 0.1
-        
+            # Additional importance for key decisions
+            if details.get('decisions', {}).get('school_transport'):
+                importance_score += 0.1
+            if details.get('coordinated_schedule'):
+                importance_score += 0.1
+            
+        # Morning routine importance
+        if event_type == 'morning_routine':
+            if details.get('supervised'):  # Supervised activities for young children
+                importance_score += 0.15
+            if details.get('breakfast_status'):  # Meal-related memories
+                importance_score += 0.1
+            if details.get('school_prep'):  # School preparation
+                importance_score += 0.1
+            
+        # Daily planning importance
+        if event_type == 'daily_planning':
+            if details.get('is_first_day'):  # First day is more memorable
+                importance_score += 0.2
+            if details.get('coordinated_with_family'):
+                importance_score += 0.15
+            
         # Cap importance between 0.1 and 1.0
         return min(max(importance_score, 0.1), 1.0)
 
@@ -374,11 +452,60 @@ class MemoryManager:
             
         memories = self.memories[agent_name]
         
-        # Sort by importance and recency
-        memories.sort(key=lambda x: (x.get('importance', 0.5), x['timestamp']), reverse=True)
+        # First, remove low-importance memories
+        important_memories = [m for m in memories if m.get('importance', 0.5) >= self.consolidation_threshold]
+        low_importance_memories = [m for m in memories if m.get('importance', 0.5) < self.consolidation_threshold]
         
-        # Keep most important memories
-        self.memories[agent_name] = memories[:self.memory_limit]
+        # If we're still over limit after removing low-importance memories
+        if len(important_memories) > self.memory_limit:
+            # Sort by importance and recency
+            important_memories.sort(key=lambda x: (x.get('importance', 0.5), x['timestamp']), reverse=True)
+            important_memories = important_memories[:self.memory_limit]
+        
+        # Update the agent's memories
+        self.memories[agent_name] = important_memories
+        
+        # Optionally, create a consolidated summary of removed memories
+        if low_importance_memories:
+            summary = self.create_memory_summary(low_importance_memories)
+            if summary:
+                self.memories[agent_name].append(summary)
+
+    def create_memory_summary(self, memories):
+        """Create a summary memory from multiple low-importance memories"""
+        if not memories:
+            return None
+        
+        # Group memories by type
+        grouped = {}
+        for memory in memories:
+            mem_type = memory.get('type', 'general')
+            if mem_type not in grouped:
+                grouped[mem_type] = []
+            grouped[mem_type].append(memory)
+        
+        # Create summary content
+        summary_content = []
+        for mem_type, type_memories in grouped.items():
+            if mem_type == 'store_visit':
+                count = len(type_memories)
+                summary_content.append(f"Made {count} unmemorable visits to the store")
+            elif mem_type == 'social':
+                count = len(type_memories)
+                summary_content.append(f"Had {count} routine social interactions")
+        
+        if not summary_content:
+            return None
+        
+        return {
+            'id': self.memory_id_counter,
+            'type': 'consolidated_summary',
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M'),
+            'content': '. '.join(summary_content),
+            'original_count': len(memories),
+            'importance': self.consolidation_threshold,  # Set at threshold level
+            'is_summary': True
+        }
 
     def save_to_file(self):
         """Save memories in JSONL format with updated path structure"""
@@ -419,20 +546,25 @@ class MemoryManager:
         """Convert a timestep to real datetime"""
         return self.start_time + datetime.timedelta(seconds=timestep * self.time_unit)
 
-    def get_recent_memories(self, agent_name, current_time, time_window=24):
+    def get_recent_memories(self, agent_name, current_time=None, time_window=24, limit=None):
         """Get recent memories within a time window, sorted by importance"""
         if agent_name not in self.memories:
             return []
-            
+        
         recent_memories = [
             memory for memory in self.memories[agent_name]
-            if current_time - memory['timestamp'] <= time_window
+            if not current_time or current_time - memory['timestamp'] <= time_window
         ]
         
         # Sort by importance and timestamp
-        return sorted(recent_memories, 
-                    key=lambda x: (x['importance'], x['timestamp']),
-                    reverse=True)
+        sorted_memories = sorted(recent_memories, 
+                               key=lambda x: (x['importance'], x['timestamp']),
+                               reverse=True)
+        
+        # Apply limit if specified
+        if limit is not None:
+            return sorted_memories[:limit]
+        return sorted_memories
                     
     def update_memory_importance(self, agent_name, memory_id, new_importance):
         """Update the importance of a specific memory"""
@@ -498,8 +630,8 @@ class MemoryManager:
                 memory['plan_generated'] = True
                 break
 
-    def retrieve_memories(self, agent_name, current_time, context=None, limit=5, importance_threshold=None):
-        """Unified memory retrieval with optional importance threshold"""
+    def retrieve_memories(self, agent_name, current_time, memory_type=None, context=None, limit=5):
+        """Get recent memories with optional type and context filtering"""
         if agent_name not in self.memories:
             return []
         
@@ -507,15 +639,12 @@ class MemoryManager:
         scored_memories = []
         
         for memory in memories:
-            # Skip memories below importance threshold if specified
-            if importance_threshold and memory.get('importance', 0) < importance_threshold:
+            # Apply type filter if specified
+            if memory_type and memory.get('type') != memory_type:
                 continue
             
-            score = self.calculate_memory_score(
-                memory,
-                current_time,
-                context
-            )
+            # Calculate comprehensive score
+            score = self.calculate_memory_score(memory, current_time, context)
             scored_memories.append((memory, score))
         
         # Sort by score and return top memories
@@ -528,8 +657,13 @@ class MemoryManager:
         score = memory.get('importance', 0.5)
         
         # Time decay
-        time_diff = current_time - memory.get('timestamp', 0)
-        recency = 1.0 / (1 + (time_diff / 24))  # Decay over days
+        try:
+            memory_time = datetime.strptime(memory['timestamp'], '%Y-%m-%d %H:%M')
+            time_diff = (datetime.now() - memory_time).total_seconds() / 3600  # Convert to hours
+            recency = 1.0 / (1 + (time_diff / 24))  # Decay over days
+        except:
+            recency = 0.5  # Default if timestamp parsing fails
+        
         score += recency * 0.3
         
         # Context relevance if provided
@@ -540,4 +674,26 @@ class MemoryManager:
             )
             score += relevance * 0.2
         
-        return score
+        # Memory type bonus
+        if memory.get('type') in ['store_visit', 'received_recommendation']:
+            score += 0.1
+        
+        # Cap final score at 1.0
+        return min(1.0, score)
+
+    def get_today_memories(self, agent_name):
+        """Get all memories from the current day"""
+        if agent_name not in self.memories:
+            return []
+        
+        # Get current day's start time
+        current_time = datetime.now()
+        day_start = current_time.replace(hour=0, minute=0, second=0, microsecond=0)
+        
+        # Filter memories from today
+        today_memories = [
+            memory for memory in self.memories[agent_name]
+            if datetime.strptime(memory['timestamp'], '%Y-%m-%d %H:%M') >= day_start
+        ]
+        
+        return today_memories

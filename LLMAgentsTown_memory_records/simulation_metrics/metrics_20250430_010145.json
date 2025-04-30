@@ -1,0 +1,70 @@
+{
+  "simulation_start": "2025-04-30 01:01:45",
+  "simulation_end": "2025-04-30 01:12:50",
+  "discount_type": "percentage",
+  "discount_value": 20,
+  "discount_days": [
+    3,
+    4
+  ],
+  "daily_metrics": {
+    "1": {
+      "store_visits": {
+        "total_count": 2,
+        "visitors": [
+          {
+            "agent": "Samantha Chen",
+            "time": 5,
+            "repeat_visit": false
+          },
+          {
+            "agent": "Linda Chen",
+            "time": 8,
+            "repeat_visit": false
+          }
+        ],
+        "peak_hours": {
+          "5": 1,
+          "8": 1
+        }
+      },
+      "sales": {
+        "total_amount": 0.0,
+        "transactions": [],
+        "meals_sold": 0,
+        "average_transaction": 0.0,
+        "repeat_customers": {}
+      },
+      "discount_usage": {
+        "total_count": 0,
+        "total_savings": 0.0,
+        "transactions": [],
+        "conversion_rate": 0.0
+      },
+      "word_of_mouth": {
+        "total_mentions": 0,
+        "positive": [],
+        "neutral": [],
+        "negative": [],
+        "influencers": {},
+        "spread_chains": [],
+        "sale_mentions": {
+          "discount_awareness": [],
+          "discount_sharing": [],
+          "price_discussion": []
+        }
+      },
+      "customer_segments": {
+        "new_customers": [],
+        "returning_customers": [],
+        "influenced_customers": []
+      },
+      "social_network": {
+        "information_flow": [],
+        "key_influencers": {},
+        "community_impact": {}
+      },
+      "other_purchases": []
+    }
+  }
+}

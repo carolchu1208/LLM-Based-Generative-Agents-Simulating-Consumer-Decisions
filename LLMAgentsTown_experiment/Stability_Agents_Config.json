@@ -1,45 +1,513 @@
 {
+    "world_layout": {
+        "major_areas": {
+            "Education": {
+                "position": "north",
+                "locations": ["Town Public High School", "Town Elementary School", "Town Middle School", "Town Community College", "Sunshine Daycare Center"]
+            },
+            "Main_Street": {
+                "position": "central",
+                "locations": ["Target", "Local Market", "The Coffee Shop", "Local Diner", "Fried Chicken Shop"]
+            },
+            "Community": {
+                "position": "east",
+                "locations": ["City Park", "Community Sports Complex Center"]
+            },
+            "Residential": {
+                "position": "west",
+                "locations": ["Maple Street Apartments", "Oak View Condos", "Pine Grove Houses"]
+            },
+            "Work": {
+                "position": "south",
+                "locations": ["Town Office Building", "Tech Hub", "Downtown Business Center", "Financial District"]
+            }
+        }
+    },
     "town_areas": {
         "retail_and_grocery": {
-            "Target": "Department store offering clothing, home goods, and everyday essentials",
-            "Local Market": "Family-owned grocery store with fresh produce and everyday essentials",
-            "Main Street Shops": "Local retail district with small businesses and restaurants",
-            "Pharmacy": "Local drugstore with prescription services and health products"
+            "Target": {
+                "description": "Department store offering clothing, home goods, and everyday essentials",
+                "type": "grocery",
+                "hours": {
+                    "open": 8,
+                    "close": 22
+                },
+                "base_price": 2.0
+            },
+            "Local Market": {
+                "description": "Family-owned grocery store with fresh produce and everyday essentials",
+                "type": "grocery",
+                "hours": {
+                    "open": 7,
+                    "close": 22
+                },
+                "base_price": 1.0
+            }
         },
         "residences": {
-            "Maple Street Apartments": "A modern apartment complex with family-friendly amenities, close to schools and parks",
-            "Oak View Condos": "Mid-range condominiums with good amenities and convenient location",
-            "Pine Grove Houses": "Family-friendly neighborhood with single-family homes",
-            "Riverside Apartments": "Affordable apartment complex popular with young professionals and students"
+            "Maple Street Apartments": {
+                "description": "A modern apartment complex with family-friendly amenities",
+                "type": "residence",
+                "hours": {
+                    "open": 0,
+                    "close": 24
+                }
+            },
+            "Oak View Condos": {
+                "description": "Mid-range condominiums with good amenities and convenient location",
+                "type": "residence",
+                "hours": {
+                    "open": 0,
+                    "close": 24
+                }
+            },
+            "Pine Grove Houses": {
+                "description": "Family-friendly neighborhood with single-family homes",
+                "type": "residence",
+                "hours": {
+                    "open": 0,
+                    "close": 24
+                }
+            }
         },
         "work": {
-            "Town Office Building": "A professional office building housing various local businesses",
-            "Tech Hub": "Modern office space for tech companies and startups",
-            "Downtown Business Center": "Mixed-use building with offices and local businesses",
-            "Financial District": "Area with banks and financial institutions"
+            "Town Office Building": {
+                "description": "A professional office building housing various local businesses",
+                "type": "work_office",
+                "hours": {
+                    "open": 8,
+                    "close": 18
+                }
+            },
+            "Tech Hub": {
+                "description": "Modern office space for tech companies and startups",
+                "type": "work_office",
+                "hours": {
+                    "open": 8,
+                    "close": 18
+                }
+            },
+            "Downtown Business Center": {
+                "description": "Mixed-use building with offices and local businesses",
+                "type": "work_office",
+                "hours": {
+                    "open": 8,
+                    "close": 18
+                }
+            },
+            "Financial District": {
+                "description": "Area with banks and financial institutions",
+                "type": "work_office",
+                "hours": {
+                    "open": 9,
+                    "close": 17
+                }
+            }
         },
         "dining": {
-            "Family Restaurant": "Popular local restaurant serving American comfort food",
-            "The Coffee Shop": "Cozy cafe offering coffee, pastries, and light meals",
-            "Local Diner": "Classic American diner serving breakfast all day",
-            "Fried Chicken Shop": "A popular fast-food restaurant known for its crispy chicken meals"
+            "Fried Chicken Shop": {
+                "description": "A popular fast-food restaurant known for its crispy chicken meals",
+                "type": "local_shop",
+                "hours": {
+                    "open": 10,
+                    "close": 22
+                },
+                "base_price": 20.0,
+                "discount": {
+                    "type": "percentage",
+                    "value": 20,
+                    "days": [3, 4]
+                }
+            },
+            "The Coffee Shop": {
+                "description": "Cozy cafe offering coffee, pastries, and light meals",
+                "type": "local_shop",
+                "hours": {
+                    "open": 6,
+                    "close": 20
+                },
+                "base_price": 5.0
+            },
+            "Local Diner": {
+                "description": "Family-style restaurant serving breakfast, lunch, and dinner all day",
+                "type": "local_shop",
+                "hours": {
+                    "open": 6,
+                    "close": 23
+                },
+                "base_price": 25.0
+            }
         },
         "education": {
-            "Town Public High School": "The main high school serving the local community, with strong academic programs and sports facilities",
-            "Elementary School": "Local public elementary school with dedicated teachers and after-school programs",
-            "Sunshine Daycare Center": "Affordable local daycare center providing quality childcare services",
-            "Town Community College": "Local college offering associate degrees and continuing education programs"
+            "Town Public High School": {
+                "description": "The main high school serving the local community",
+                "type": "education",
+                "hours": {
+                    "open": 7,
+                    "close": 16
+                },
+                "services": ["education"]
+            },
+            "Town Elementary School": {
+                "description": "Primary school serving children from kindergarten through 5th grade",
+                "type": "education",
+                "hours": {
+                    "open": 7,
+                    "close": 15
+                },
+                "services": ["education", "after_school_care"]
+            },
+            "Sunshine Daycare Center": {
+                "description": "Licensed daycare facility for young children",
+                "type": "education",
+                "hours": {
+                    "open": 6,
+                    "close": 18
+                },
+                "services": ["childcare", "early_education"]
+            },
+            "Town Community College": {
+                "description": "Local college offering associate degrees and continuing education",
+                "type": "education",
+                "hours": {
+                    "open": 8,
+                    "close": 22
+                },
+                "services": ["education"]
+            },
+            "Town Middle School": {
+                "description": "Middle school serving students from 6th through 8th grade",
+                "type": "education",
+                "hours": {
+                    "open": 7,
+                    "close": 15
+                },
+                "services": ["education", "after_school_activities"]
+            }
         },
         "community": {
-            "City Park": "Large green space with walking trails, playgrounds, and picnic areas",
-            "Community Sports Complex Center": "Area with basketball courts, soccer fields, and fitness facilities"
+            "City Park": {
+                "description": "Large green space with walking trails, playgrounds, and picnic areas",
+                "type": "community",
+                "hours": {
+                    "open": 6,
+                    "close": 22
+                }
+            },
+            "Community Sports Complex Center": {
+                "description": "Area with basketball courts, soccer fields, and fitness facilities",
+                "type": "community",
+                "hours": {
+                    "open": 6,
+                    "close": 22
+                }
+            }
+        }
+    },
+    "family_units": {
+        "Reed_Family": {
+            "residence": "Pine Grove Houses",
+            "members": {
+                "parents": [
+                    {
+                        "name": "Lucas Reed",
+                        "age": 44,
+                        "occupation": "vice president of private bank",
+                        "workplace": "Financial District",
+                        "income": {
+                            "type": "annual",
+                            "amount": 250000,
+                            "schedule": "full_time"
+                        }
+                    },
+                    {
+                        "name": "Sarah Reed",
+                        "age": 42,
+                        "occupation": "architect",
+                        "workplace": "Town Office Building",
+                        "income": {
+                            "type": "monthly",
+                            "amount": 6000,
+                            "schedule": "full_time",
+                            "pay_frequency": "monthly"
+                        }
+                    }
+                ],
+                "children": [
+                    {
+                        "name": "James Reed",
+                        "age": 10,
+                        "occupation": "student",
+                        "workplace": "Town Elementary School"
+                    },
+                    {
+                        "name": "Emma Reed",
+                        "age": 7,
+                        "occupation": "student",
+                        "workplace": "Town Elementary School"
+                    }
+                ]
+            }
         },
-        "healthcare": {
-            "City Hospital": "Main healthcare facility with emergency services and specialized care",
-            "Community Clinic": "Local healthcare center providing primary care services"
+        "White_Family": {
+            "residence": "Oak View Condos",
+            "members": {
+                "parents": [
+                    {
+                        "name": "Thomas White",
+                        "age": 45,
+                        "occupation": "accountant",
+                        "workplace": "Financial District",
+                        "income": {
+                            "type": "monthly",
+                            "amount": 6500,
+                            "schedule": "full_time",
+                            "pay_frequency": "monthly"
+                        }
+                    },
+                    {
+                        "name": "Katherine White",
+                        "age": 42,
+                        "occupation": "teacher",
+                        "workplace": "Town Elementary School",
+                        "income": {
+                            "type": "monthly",
+                            "amount": 5500,
+                            "schedule": "full_time",
+                            "pay_frequency": "monthly"
+                        }
+                    }
+                ],
+                "children": [
+                    {
+                        "name": "Jennifer White",
+                        "age": 14,
+                        "occupation": "student",
+                        "workplace": "Town Middle School"
+                    }
+                ]
+            }
+        },
+        "Smith_Family": {
+            "residence": "Maple Street Apartments",
+            "members": {
+                "parents": [
+                    {
+                        "name": "John Smith",
+                        "age": 40,
+                        "occupation": "software engineer",
+                        "workplace": "Tech Hub",
+                        "income": {
+                            "type": "monthly",
+                            "amount": 8500,
+                            "schedule": "full_time",
+                            "pay_frequency": "monthly"
+                        }
+                    },
+                    {
+                        "name": "Mary Smith",
+                        "age": 38,
+                        "occupation": "part-time nurse",
+                        "workplace": "Downtown Business Center",
+                        "income": {
+                            "type": "monthly",
+                            "amount": 4500,
+                            "schedule": "part_time",
+                            "pay_frequency": "monthly"
+                        }
+                    }
+                ],
+                "children": [
+                    {
+                        "name": "David Smith",
+                        "age": 8,
+                        "occupation": "student",
+                        "workplace": "Town Elementary School"
+                    },
+                    {
+                        "name": "Lisa Smith",
+                        "age": 5,
+                        "occupation": "student",
+                        "workplace": "Town Elementary School"
+                    }
+                ]
+            }
+        },
+        "Chen_Family": {
+            "residence": "Pine Grove Houses",
+            "members": {
+                "parents": [
+                    {
+                        "name": "Michael Chen",
+                        "age": 45,
+                        "occupation": "dentist",
+                        "workplace": "Downtown Business Center",
+                        "income": {
+                            "type": "monthly",
+                            "amount": 7500,
+                            "schedule": "full_time",
+                            "pay_frequency": "monthly"
+                        }
+                    },
+                    {
+                        "name": "Linda Chen",
+                        "age": 43,
+                        "occupation": "business analyst",
+                        "workplace": "Tech Hub",
+                        "income": {
+                            "type": "monthly",
+                            "amount": 6000,
+                            "schedule": "full_time",
+                            "pay_frequency": "monthly"
+                        }
+                    }
+                ],
+                "children": [
+                    {
+                        "name": "Samantha Chen",
+                        "age": 17,
+                        "occupation": "high school senior",
+                        "workplace": "Town Public High School"
+                    },
+                    {
+                        "name": "Amy Chen",
+                        "age": 15,
+                        "occupation": "high school student",
+                        "workplace": "Town Public High School"
+                    }
+                ]
+            }
+        },
+        "Rodriguez_Family": {
+            "residence": "Pine Grove Houses",
+            "members": {
+                "parents": [
+                    {
+                        "name": "Carlos Rodriguez",
+                        "age": 45,
+                        "occupation": "construction worker",
+                        "workplace": "Downtown Business Center",
+                        "income": {
+                            "type": "hourly",
+                            "amount": 25.00,
+                            "schedule": "full_time",
+                            "pay_frequency": "biweekly"
+                        }
+                    },
+                    {
+                        "name": "Ana Rodriguez",
+                        "age": 42,
+                        "occupation": "office manager",
+                        "workplace": "Town Office Building",
+                        "income": {
+                            "type": "monthly",
+                            "amount": 4500,
+                            "schedule": "full_time",
+                            "pay_frequency": "monthly"
+                        }
+                    }
+                ],
+                "children": [
+                    {
+                        "name": "Maria Rodriguez",
+                        "age": 19,
+                        "occupation": "college student & fried chicken shop crew",
+                        "workplace": ["Town Community College", "Fried Chicken Shop"],
+                        "income": {
+                            "type": "hourly",
+                            "amount": 15.00,
+                            "schedule": "part_time",
+                            "pay_frequency": "biweekly"
+                        }
+                    },
+                    {
+                        "name": "Sofia Rodriguez",
+                        "age": 16,
+                        "occupation": "high school student",
+                        "workplace": "Town Public High School"
+                    }
+                ]
+            }
         }
     },
     "town_people": {
+        "Mia Thompson": {
+            "basics": {
+                "name": "Mia Thompson",
+                "age": 34,
+                "occupation": "coffee shop manager",
+                "residence": "Oak View Condos",
+                "workplace": "The Coffee Shop",
+                "family": {
+                    "status": "single",
+                    "household_members": []
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 6500,
+                    "schedule": "full_time",
+                    "pay_frequency": "monthly"
+                }
+            }
+        },
+        "Kevin Chen": {
+            "basics": {
+                "name": "Kevin Chen",
+                "age": 23,
+                "occupation": "fried chicken shop shift supervisor",
+                "residence": "Maple Street Apartments",
+                "workplace": "Fried Chicken Shop",
+                "family": {
+                    "status": "single",
+                    "household_members": ["roommate"]
+                },
+                "income": {
+                    "type": "hourly",
+                    "amount": 18.50,
+                    "schedule": "full_time",
+                    "pay_frequency": "biweekly"
+                }
+            }
+        },
+        "Maria Rodriguez": {
+            "basics": {
+                "name": "Maria Rodriguez",
+                "age": 19,
+                "occupation": "fried chicken shop crew member",
+                "residence": "Pine Grove Houses",
+                "workplace": "Fried Chicken Shop",
+                "family": {
+                    "status": "single",
+                    "household_members": ["parents", "sister"]
+                },
+                "income": {
+                    "type": "hourly",
+                    "amount": 15.00,
+                    "schedule": "full_time",
+                    "pay_frequency": "biweekly"
+                }
+            }
+        },
+        "Marcus Johnson": {
+            "basics": {
+                "name": "Marcus Johnson",
+                "age": 20,
+                "occupation": "college student & fried chicken shop crew",
+                "residence": "Maple Street Apartments",
+                "workplace": ["Town Community College", "Fried Chicken Shop"],
+                "family": {
+                    "status": "single",
+                    "household_members": ["roommate"]
+                },
+                "income": {
+                    "type": "hourly",
+                    "amount": 15.00,
+                    "schedule": "part_time",
+                    "pay_frequency": "biweekly",
+                    "hours_per_week": 20
+                }
+            }
+        },
         "Emma Walker": {
             "basics": {
                 "name": "Emma Walker",
@@ -55,56 +523,6 @@
                     "type": "annual",
                     "amount": 250000,
                     "schedule": "full_time"
-                }
-            }
-        },
-        "Sophia Chang": {
-            "basics": {
-                "name": "Sophia Chang",
-                "age": 42,
-                "occupation": "stay-at-home mom",
-                "residence": "Pine Grove Houses",
-                "workplace": "Parkview Luxury Residences",
-                "family": {
-                    "status": "married",
-                    "household_members": ["husband", "child_1", "child_2", "child_3"]
-                }
-            }
-        },
-        "Lucas Reed": {
-            "basics": {
-                "name": "Lucas Reed",
-                "age": 44,
-                "occupation": "vice president of private bank",
-                "residence": "Pine Grove Houses",
-                "workplace": "101 Work Building",
-                "family": {
-                    "status": "married",
-                    "household_members": ["wife", "child_10", "child_7"]
-                },
-                "income": {
-                    "type": "annual",
-                    "amount": 250000,
-                    "schedule": "full_time"
-                }
-            }
-        },
-        "Mia Thompson": {
-            "basics": {
-                "name": "Mia Thompson",
-                "age": 34,
-                "occupation": "pharmacy manager",
-                "residence": "Oak View Condos",
-                "workplace": "Pharmacy",
-                "family": {
-                    "status": "single",
-                    "household_members": []
-                },
-                "income": {
-                    "type": "monthly",
-                    "amount": 6500,
-                    "schedule": "full_time",
-                    "pay_frequency": "monthly"
                 }
             }
         },
@@ -127,358 +545,42 @@
                 }
             }
         },
-        "Rachel Adams": {
+        "Tyler Martinez": {
             "basics": {
-                "name": "Rachel Adams",
-                "age": 29,
-                "occupation": "daycare assistant",
+                "name": "Tyler Martinez",
+                "age": 19,
+                "occupation": "college student & coffee shop barista",
                 "residence": "Maple Street Apartments",
-                "workplace": "Sunshine Daycare Center",
-                "family": {
-                    "status": "engaged",
-                    "household_members": ["fiance"]
-                },
-                "income": {
-                    "type": "monthly",
-                    "amount": 3800,
-                    "schedule": "full_time",
-                    "pay_frequency": "monthly"
-                }
-            }
-        },
-        "Noah Hernandez": {
-            "basics": {
-                "name": "Noah Hernandez",
-                "age": 31,
-                "occupation": "personal trainer",
-                "residence": "Maple Street Apartments",
-                "workplace": "Community Sports Complex Center",
-                "family": {
-                    "status": "single",
-                    "household_members": []
-                },
-                "income": {
-                    "type": "monthly",
-                    "amount": 4200,
-                    "schedule": "full_time",
-                    "pay_frequency": "monthly"
-                }
-            }
-        },
-        "Lily Carter": {
-            "basics": {
-                "name": "Lily Carter",
-                "age": 35,
-                "occupation": "fitness instructor",
-                "residence": "Maple Street Apartments",
-                "workplace": "Community Sports Complex Center",
-                "family": {
-                    "status": "married",
-                    "household_members": ["husband"]
-                },
-                "income": {
-                    "type": "monthly",
-                    "amount": 4000,
-                    "schedule": "full_time",
-                    "pay_frequency": "monthly"
-                }
-            }
-        },
-        "Daniel Kim": {
-            "basics": {
-                "name": "Daniel Kim",
-                "age": 27,
-                "occupation": "IT support technician",
-                "residence": "Maple Street Apartments",
-                "workplace": "Tech Hub",
-                "family": {
-                    "status": "single",
-                    "household_members": []
-                },
-                "income": {
-                    "type": "monthly",
-                    "amount": 8500,
-                    "schedule": "full_time",
-                    "pay_frequency": "monthly"
-                }
-            }
-        },
-        "Jessica Lin": {
-            "basics": {
-                "name": "Jessica Lin",
-                "age": 30,
-                "occupation": "retail sales associate",
-                "residence": "Maple Street Apartments",
-                "workplace": "Target",
-                "family": {
-                    "status": "married",
-                    "household_members": ["husband"]
-                },
-                "income": {
-                    "type": "hourly",
-                    "amount": 16.00,
-                    "schedule": "full_time",
-                    "pay_frequency": "biweekly"
-                }
-            }
-        },
-        "John Smith": {
-            "basics": {
-                "name": "John Smith",
-                "age": 38,
-                "occupation": "software engineer",
-                "residence": "Maple Street Apartments",
-                "workplace": "Tech Hub",
-                "family": {
-                    "status": "married",
-                    "household_members": ["wife", "child_8", "child_5"]
-                },
-                "income": {
-                    "type": "monthly",
-                    "amount": 8500,
-                    "schedule": "full_time",
-                    "pay_frequency": "monthly"
-                }
-            }
-        },
-        "Sarah Johnson": {
-            "basics": {
-                "name": "Sarah Johnson",
-                "age": 28,
-                "occupation": "marketing manager",
-                "residence": "Oak View Condos",
-                "workplace": "Tech Hub",
-                "family": {
-                    "status": "single",
-                    "household_members": ["cat"]
-                },
-                "income": {
-                    "type": "monthly",
-                    "amount": 7000,
-                    "schedule": "full_time",
-                    "pay_frequency": "monthly"
-                }
-            }
-        },
-        "Michael Brown": {
-            "basics": {
-                "name": "Michael Brown",
-                "age": 42,
-                "occupation": "financial analyst",
-                "residence": "Pine Grove Houses",
-                "workplace": "Financial District",
-                "family": {
-                    "status": "married",
-                    "household_members": ["wife", "child_12"]
-                },
-                "income": {
-                    "type": "monthly",
-                    "amount": 9000,
-                    "schedule": "full_time",
-                    "pay_frequency": "monthly"
-                }
-            }
-        },
-        "Emily Davis": {
-            "basics": {
-                "name": "Emily Davis",
-                "age": 25,
-                "occupation": "elementary school teacher",
-                "residence": "Maple Street Apartments",
-                "workplace": "Elementary School",
+                "workplace": ["Town Community College", "The Coffee Shop"],
                 "family": {
                     "status": "single",
                     "household_members": ["roommate"]
                 },
                 "income": {
-                    "type": "monthly",
-                    "amount": 8500,
-                    "schedule": "full_time",
-                    "pay_frequency": "monthly"
-                }
-            }
-        },
-        "David Wilson": {
-            "basics": {
-                "name": "David Wilson",
-                "age": 68,
-                "occupation": "retired professor",
-                "residence": "Oak View Condos",
-                "workplace": "Town Community College",
-                "family": {
-                    "status": "married",
-                    "household_members": ["wife"]
-                },
-                "income": {
-                    "type": "monthly",
-                    "amount": 5000,
-                    "schedule": "pension",
-                    "pay_frequency": "monthly"
-                }
-            }
-        },
-        "Lisa Anderson": {
-            "basics": {
-                "name": "Lisa Anderson",
-                "age": 32,
-                "occupation": "medical office receptionist",
-                "residence": "Pine Grove Houses",
-                "workplace": "Community Clinic",
-                "family": {
-                    "status": "married",
-                    "household_members": ["husband", "child_4"]
-                },
-                "income": {
                     "type": "hourly",
-                    "amount": 19.00,
-                    "schedule": "full_time",
-                    "pay_frequency": "biweekly"
+                    "amount": 15.00,
+                    "schedule": "part_time",
+                    "pay_frequency": "biweekly",
+                    "hours_per_week": 20
                 }
             }
         },
-        "Robert Taylor": {
+        "Emily Parker": {
             "basics": {
-                "name": "Robert Taylor",
-                "age": 45,
-                "occupation": "Local Market manager",
-                "residence": "Maple Street Apartments",
-                "workplace": "Local Market",
-                "family": {
-                    "status": "married",
-                    "household_members": ["wife"]
-                },
-                "income": {
-                    "type": "monthly",
-                    "amount": 5200,
-                    "schedule": "full_time",
-                    "pay_frequency": "monthly"
-                }
-            }
-        },
-        "Jennifer White": {
-            "basics": {
-                "name": "Jennifer White",
-                "age": 14,
-                "occupation": "student",
-                "residence": "Oak View Condos",
-                "workplace": "High School",
-                "family": {
-                    "status": "single",
-                    "household_members": ["mother", "father"]
-                }
-            }
-        },
-        "William Clark": {
-            "basics": {
-                "name": "William Clark",
-                "age": 40,
-                "occupation": "high school teacher",
-                "residence": "Pine Grove Houses",
-                "workplace": "High School",
-                "family": {
-                    "status": "married",
-                    "household_members": ["wife"]
-                },
-                "income": {
-                    "type": "monthly",
-                    "amount": 4800,
-                    "schedule": "full_time",
-                    "pay_frequency": "monthly"
-                }
-            }
-        },
-        "Patricia Lewis": {
-            "basics": {
-                "name": "Patricia Lewis",
-                "age": 72,
-                "occupation": "retired retail worker",
-                "residence": "Maple Street Apartments",
-                "workplace": "City Park",
-                "family": {
-                    "status": "single",
-                    "household_members": []
-                },
-                "income": {
-                    "type": "monthly",
-                    "amount": 2000,
-                    "schedule": "pension",
-                    "pay_frequency": "monthly"
-                }
-            }
-        },
-        "James Martinez": {
-            "basics": {
-                "name": "James Martinez",
+                "name": "Emily Parker",
                 "age": 35,
-                "occupation": "community center coordinator",
-                "residence": "Pine Grove Houses",
-                "workplace": "Community Center",
+                "occupation": "retail manager & evening student",
+                "residence": "Oak View Condos",
+                "workplace": ["Target", "Town Community College"],
                 "family": {
                     "status": "married",
-                    "household_members": ["wife", "child_10"]
+                    "household_members": ["husband"]
                 },
                 "income": {
                     "type": "monthly",
                     "amount": 4500,
                     "schedule": "full_time",
                     "pay_frequency": "monthly"
-                }
-            }
-        },
-        "Elizabeth Thompson": {
-            "basics": {
-                "name": "Elizabeth Thompson",
-                "age": 30,
-                "occupation": "industrial engineer",
-                "residence": "Oak View Condos",
-                "workplace": "Tech Hub",
-                "family": {
-                    "status": "single",
-                    "household_members": []
-                },
-                "income": {
-                    "type": "monthly",
-                    "amount": 7500,
-                    "schedule": "full_time",
-                    "pay_frequency": "monthly"
-                }
-            }
-        },
-        "Kevin Chen": {
-            "basics": {
-                "name": "Kevin Chen",
-                "age": 23,
-                "occupation": "fried chicken shop shift supervisor",
-                "income": {
-                    "type": "hourly",
-                    "amount": 18.50,
-                    "schedule": "full_time",
-                    "pay_frequency": "biweekly"
-                },
-                "residence": "Maple Street Apartments",
-                "workplace": "Fried Chicken Shop",
-                "family": {
-                    "status": "single",
-                    "household_members": ["roommate"]
-                }
-            }
-        },
-        "Maria Rodriguez": {
-            "basics": {
-                "name": "Maria Rodriguez",
-                "age": 19,
-                "occupation": "fried chicken shop crew member",
-                "income": {
-                    "type": "hourly",
-                    "amount": 15.00,
-                    "schedule": "full_time",
-                    "pay_frequency": "biweekly"
-                },
-                "residence": "Pine Grove Houses",
-                "workplace": "Fried Chicken Shop",
-                "family": {
-                    "status": "single",
-                    "household_members": ["parents", "sister"]
                 }
             }
         }
