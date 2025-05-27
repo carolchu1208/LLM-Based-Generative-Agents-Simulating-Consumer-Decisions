@@ -1,0 +1,172 @@
+{
+  "simulation_run_timestamp": "20250527_025737",
+  "total_simulated_days": 1,
+  "daily_insights": {
+    "1": {
+      "date": "Day 1",
+      "fried_chicken_shop": {
+        "total_visits": 0,
+        "total_sales": 18,
+        "total_revenue": 360.0,
+        "discount_usage": 0,
+        "customer_details": [
+          {
+            "time": "12:00",
+            "agent": "Mia Thompson",
+            "amount": 20.0,
+            "used_discount": false
+          },
+          {
+            "time": "12:00",
+            "agent": "Alex Johnson",
+            "amount": 20.0,
+            "used_discount": false
+          },
+          {
+            "time": "13:00",
+            "agent": "Mia Thompson",
+            "amount": 20.0,
+            "used_discount": false
+          },
+          {
+            "time": "13:00",
+            "agent": "Kevin Chen",
+            "amount": 20.0,
+            "used_discount": false
+          },
+          {
+            "time": "13:00",
+            "agent": "Maria Rodriguez",
+            "amount": 20.0,
+            "used_discount": false
+          },
+          {
+            "time": "13:00",
+            "agent": "Alex Johnson",
+            "amount": 20.0,
+            "used_discount": false
+          },
+          {
+            "time": "17:00",
+            "agent": "Kevin Chen",
+            "amount": 20.0,
+            "used_discount": false
+          },
+          {
+            "time": "17:00",
+            "agent": "Maria Rodriguez",
+            "amount": 20.0,
+            "used_discount": false
+          },
+          {
+            "time": "17:00",
+            "agent": "Kevin Chen",
+            "amount": 20.0,
+            "used_discount": false
+          },
+          {
+            "time": "17:00",
+            "agent": "Maria Rodriguez",
+            "amount": 20.0,
+            "used_discount": false
+          },
+          {
+            "time": "18:00",
+            "agent": "Kevin Chen",
+            "amount": 20.0,
+            "used_discount": false
+          },
+          {
+            "time": "18:00",
+            "agent": "Maria Rodriguez",
+            "amount": 20.0,
+            "used_discount": false
+          },
+          {
+            "time": "18:00",
+            "agent": "Kevin Chen",
+            "amount": 20.0,
+            "used_discount": false
+          },
+          {
+            "time": "18:00",
+            "agent": "Maria Rodriguez",
+            "amount": 20.0,
+            "used_discount": false
+          },
+          {
+            "time": "19:00",
+            "agent": "Kevin Chen",
+            "amount": 20.0,
+            "used_discount": false
+          },
+          {
+            "time": "19:00",
+            "agent": "Maria Rodriguez",
+            "amount": 20.0,
+            "used_discount": false
+          },
+          {
+            "time": "19:00",
+            "agent": "Kevin Chen",
+            "amount": 20.0,
+            "used_discount": false
+          },
+          {
+            "time": "19:00",
+            "agent": "Maria Rodriguez",
+            "amount": 20.0,
+            "used_discount": false
+          }
+        ]
+      },
+      "social_insights": {
+        "conversation_topics": {},
+        "active_relationships": [],
+        "popular_locations": {
+          "Fried Chicken Shop": {
+            "total_visits": 18,
+            "unique_visitors": 4,
+            "common_activities": {
+              "purchase": 18
+            }
+          },
+          "The Coffee Shop": {
+            "total_visits": 5,
+            "unique_visitors": 1,
+            "common_activities": {
+              "purchase": 5
+            }
+          },
+          "Local Diner": {
+            "total_visits": 6,
+            "unique_visitors": 2,
+            "common_activities": {
+              "purchase": 6
+            }
+          }
+        }
+      },
+      "town_activity": {
+        "total_interactions_recorded": 29,
+        "location_stats": {
+          "Fried Chicken Shop": {
+            "total_visits": 18,
+            "unique_visitors": 4,
+            "peak_hours_display": "13:00, 17:00, 18:00, 19:00"
+          },
+          "The Coffee Shop": {
+            "total_visits": 5,
+            "unique_visitors": 1,
+            "peak_hours_display": "18:00, 19:00"
+          },
+          "Local Diner": {
+            "total_visits": 6,
+            "unique_visitors": 2,
+            "peak_hours_display": "19:00"
+          }
+        }
+      }
+    }
+  }
+}
