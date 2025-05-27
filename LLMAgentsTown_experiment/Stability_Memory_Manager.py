@@ -2,698 +2,407 @@ import json
 import os
 from datetime import datetime
 import time
+from typing import List, Dict, Optional
+import traceback
+import threading
+
+# Import the refined constants
+from simulation_constants import MEMORY_TYPES, ACTIVITY_TYPES # Added ACTIVITY_TYPES for validator
+
+DISCOUNT_KEYWORDS = [
+    # Specific to our 20% discount
+    "20% off",
+    "20 percent off",
+    "twenty percent off",
+    "20% discount",
+    "twenty percent discount",
+    
+    # Day-specific (since it's Wednesday and Thursday)
+    "wednesday special",
+    "thursday special",
+    "midweek special",
+    "wednesday discount",
+    "thursday discount",
+    
+    # General discount terms that might be used
+    "discount",
+    "sale",
+    "special offer",
+    "promotion",
+    
+    # Price-related terms
+    "cheaper",
+    "savings",
+    "reduced price",
+    "save money",
+    
+    # Time-related
+    "today only",
+    "limited time"
+]
 
 class MemoryManager:
     def __init__(self, memory_limit=1000, time_unit=0.5):  # 1 unit = 0.5 seconds
         self.memory_limit = memory_limit
-        self.memories = {}
+        self.memories: Dict[str, List[Dict]] = {}
         self.compressed_memories = {}
         self.memory_ratings = {}
         self.start_time = datetime.now()
         self.time_unit = time_unit
         self.consolidation_threshold = 0.3  # Threshold for memory consolidation
         self.memory_id_counter = 0  # Counter for unique memory IDs
+        self._lock = threading.Lock()
+        
+        # Updated validator dictionary using new MEMORY_TYPES constants
+        self.memory_type_validators = {
+            MEMORY_TYPES['LOCATION_CHANGE_EVENT']: self._validate_location_change,
+            MEMORY_TYPES['CONVERSATION_LOG_EVENT']: self._validate_conversation_log, # Renamed for clarity
+            MEMORY_TYPES['FOOD_PURCHASE_EVENT']: self._validate_food_purchase,
+            MEMORY_TYPES['GROCERY_PURCHASE_EVENT']: self._validate_grocery_purchase,
+            MEMORY_TYPES['ACTIVITY_EVENT']: self._validate_activity_event,
+            MEMORY_TYPES['PLANNING_EVENT']: self._validate_planning_event,
+            MEMORY_TYPES['AGENT_STATE_UPDATE_EVENT']: self._validate_agent_state_update,
+            # ACTION_RAW_OUTPUT, SYSTEM_EVENT, GENERIC_EVENT often just need 'content' and 'time',
+            # so a generic check in add_memory might suffice, or we can add simple validators if needed.
+            MEMORY_TYPES['ACTION_RAW_OUTPUT']: self._validate_generic_content_event,
+            MEMORY_TYPES['GENERIC_EVENT']: self._validate_generic_content_event,
+            MEMORY_TYPES['SYSTEM_EVENT']: self._validate_generic_content_event,
+        }
         print(f"Simulation started at: {self.start_time.strftime('%H:%M:%S')}")
 
-    def add_memory(self, agent_name, event_type, details):
-        """Record agent memories of interactions and purchases"""
-        if agent_name not in self.memories:
-            self.memories[agent_name] = []
-            
-        current_time = datetime.now()
-        
-        # Family planning and routine memories
-        if event_type == "family_planning":
-            memory = {
-                'id': self.memory_id_counter,
-                'type': 'family_planning',
-                'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
-                'schedule': details.get('schedule', {}),
-                'participants': details.get('participants', []),
-                'conversation': details.get('conversation', ''),
-                'decisions': {
-                    'school_transport': details.get('school_transport', {}),
-                    'dinner_plans': details.get('dinner_plans', {}),
-                    'evening_activities': details.get('evening_activities', {})
-                },
-                'importance': self.determine_memory_importance(agent_name, event_type, details)
-            }
-            
-        elif event_type == "family_meal":
-            memory = {
-                'id': self.memory_id_counter,
-                'type': 'family_meal',
-                'meal_type': details.get('meal_type', 'breakfast'),  # breakfast, lunch, dinner
-                'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
-                'location': details.get('location', 'residence'),
-                'participants': details.get('participants', []),
-                'conversation': details.get('conversation', ''),
-                'coordinated_schedule': details.get('coordinated_schedule', {}),
-                'discussion_points': details.get('discussion_points', {}),
-                'grocery_used': details.get('grocery_used', 0),
-                'importance': self.determine_memory_importance(agent_name, event_type, details)
-            }
-            
-        elif event_type == "daily_planning":
-            memory = {
-                'id': self.memory_id_counter,
-                'type': 'daily_planning',
-                'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
-                'plan': details.get('plan', {}),
-                'is_first_day': details.get('is_first_day', False),
-                'coordinated_with_family': details.get('coordinated_with_family', False),
-                'morning_routine': details.get('morning_routine', {}),
-                'school_schedule': details.get('school_schedule', {}),
-                'work_schedule': details.get('work_schedule', {}),
-                'importance': self.determine_memory_importance(agent_name, event_type, details)
-            }
-            
-        elif event_type == "morning_routine":
-            memory = {
-                'id': self.memory_id_counter,
-                'type': 'morning_routine',
-                'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
-                'activity': details.get('activity', ''),
-                'location': details.get('location', ''),
-                'with_parent': details.get('with_parent', False),
-                'supervised': details.get('supervised', False),
-                'breakfast_status': details.get('breakfast_status', {}),
-                'school_prep': details.get('school_prep', {}),
-                'importance': self.determine_memory_importance(agent_name, event_type, details)
-            }
-            
-        elif event_type == "schedule_coordination":
-            memory = {
-                'id': self.memory_id_counter,
-                'type': 'schedule_coordination',
-                'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
-                'coordinated_with': details.get('coordinated_with', []),
-                'updated_schedule': details.get('updated_schedule', {}),
-                'transport_arrangements': details.get('transport_arrangements', {}),
-                'meal_plans': details.get('meal_plans', {}),
-                'importance': self.determine_memory_importance(agent_name, event_type, details)
-            }
-        
-        # Handle existing memory types
-        elif event_type == "store_visit":
-            # Enhanced satisfaction tracking
-            satisfaction_data = {
-                'overall_rating': details.get('satisfaction', None),  # 1-5 scale
-                'food_quality': details.get('food_quality', None),    # 1-5 scale
-                'price_satisfaction': details.get('price_satisfaction', None),  # 1-5 scale
-                'service': details.get('service_rating', None),       # 1-5 scale
-                'wait_time': details.get('wait_time', None),         # in minutes
-                'specific_feedback': details.get('feedback', ''),     # text feedback
-                'would_recommend': details.get('would_recommend', None),  # boolean
-                'return_intention': details.get('return_intention', None)  # 1-5 scale
-            }
+    # --- Validator Methods (ensure these align with your data structures) ---
+    def _validate_generic_content_event(self, data):
+        """Validates events that primarily need 'content' and 'time'."""
+        required = ['content', 'time']
+        return all(key in data for key in required)
 
-            memory = {
-                'id': self.memory_id_counter,
-                'type': 'store_visit',
-                'location': 'Fried Chicken Shop',
-                'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
-                'visit_number': self.get_visit_count(agent_name) + 1,
-                'experience': details.get('experience', ''),
-                'who_recommended': details.get('recommended_by', None),
-                'shared_with': [],  # Will be updated when agent shares experience
-                'price_paid': details.get('price_paid', None),
-                'was_discount': details.get('used_discount', False),
-                'satisfaction': satisfaction_data,
-                'importance': self.determine_memory_importance(agent_name, event_type, details)
-            }
-            
-            self.memories[agent_name].append(memory)
-            self.memory_id_counter += 1
+    def _validate_location_change(self, data):
+        """Validate location change memory data"""
+        # 'from' and 'to' could be location names (strings) or coordinates (tuples)
+        required = ['time'] # 'from' and 'to' are good to have, but path might start/end outside named locs
+        if not all(key in data for key in required):
+            return False
+        # content detailing the change is also good
+        if 'content' not in data and ('from_coord' not in data or 'to_coord' not in data):
+            return False # Must have some detail about the change
+        return True
 
-        elif event_type == "received_recommendation":
-            memory = {
-                'id': self.memory_id_counter,
-                'type': 'received_info',
-                'source': details['from_agent'],
-                'content': details['message'],
-                'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
-                'acted_upon': False,  # Will be updated if they visit
-                'feedback_given': False,  # Will be updated if they report back
-                'importance': self.determine_memory_importance(agent_name, event_type, details)
-            }
-            
-            self.memories[agent_name].append(memory)
-            self.memory_id_counter += 1
-            
-        elif event_type == "shared_experience":
-            memory = {
-                'id': self.memory_id_counter,
-                'type': 'shared_info',
-                'told_to': details['to_agent'],
-                'content': details['message'],
-                'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
-                'about_visit': details.get('visit_number'),
-                'response': details.get('response', None),
-                'importance': self.determine_memory_importance(agent_name, event_type, details)
-            }
-            
-            # Update the original visit memory's shared_with list
-            for m in reversed(self.memories[agent_name]):
-                if m['type'] == 'store_visit' and m['visit_number'] == details.get('visit_number'):
-                    m['shared_with'].append(details['to_agent'])
-                    break
-                    
-            self.memories[agent_name].append(memory)
-            self.memory_id_counter += 1
-            
-        elif event_type == "word_of_mouth":
-            # Need to ensure details contains 'sentiment' and 'listener'
-            if not details or 'sentiment' not in details or 'listener' not in details:
-                details = {
-                    'sentiment': 'neutral',
-                    'listener': 'unknown',
-                    'content': str(details)  # Convert old format to new
-                }
-            
-        elif event_type == "social":
-            # Add specific handling for food-related social interactions
-            memory = {
-                'id': self.memory_id_counter,
-                'type': 'social',
-                'subtype': details.get('topic', 'general'),  # 'food', 'general', etc.
-                'location': details['location'],
-                'timestamp': current_time.strftime('%Y-%m-%d %H:%M'),
-                'content': details['content'],
-                'participants': details.get('participants', []),
-                'influence': details.get('influence', False),
-                'food_related': 'food' in details.get('topic', '').lower(),
-                'plan_generated': False,  # Track if this memory led to a plan
-                'importance': self.determine_memory_importance(agent_name, event_type, details)
-            }
-            
-            self.memories[agent_name].append(memory)
-            self.memory_id_counter += 1
+    def _validate_conversation_log(self, data):
+        """Validate conversation log memory data"""
+        required = ['content', 'time', 'location'] # 'participants' is highly recommended
+        if not all(key in data for key in required):
+            return False
+        if 'participants' not in data or not isinstance(data['participants'], list):
+            # print("Warning: 'participants' missing or not a list in CONVERSATION_LOG_EVENT")
+            pass # Participants are good but maybe not strictly required for all logs
+        return True
 
-        # Add grocery-specific memory handling
-        elif event_type == "grocery_update":
-            memory = {
-                'id': self.memory_id_counter,
-                'type': 'grocery_update',
-                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M'),
-                'content': details['content'],
-                'grocery_level': details.get('grocery_level', 0),
-                'location': details.get('location'),
-                'importance': 0.6 if details.get('grocery_level', 100) <= 30 else 0.3  # Higher importance when low
-            }
-            
-            self.memories[agent_name].append(memory)
-            self.memory_id_counter += 1
+    def _validate_food_purchase(self, data):
+        """Validate food purchase memory data"""
+        required = ['item_description', 'amount', 'location', 'time'] # 'used_discount' is good to have
+        return all(key in data for key in required)
+    
+    def _validate_grocery_purchase(self, data):
+        """Validate grocery purchase memory data"""
+        required = ['items_list', 'amount', 'location', 'time'] # 'used_discount' is good to have
+        return all(key in data for key in required)
 
-        # Add the memory to the agent's memory list
-        self.memories[agent_name].append(memory)
-        self.memory_id_counter += 1
-        
-        # Consolidate memories if over limit
-        if len(self.memories[agent_name]) > self.memory_limit:
-            self.consolidate_memories(agent_name)
+    def _validate_activity_event(self, data):
+        """Validate activity event memory data"""
+        required = ['activity_type_tag', 'description', 'time']
+        if not all(key in data for key in required):
+            return False
+        if data['activity_type_tag'] not in ACTIVITY_TYPES.values():
+            # print(f"Warning: Invalid 'activity_type_tag': {data['activity_type_tag']} in ACTIVITY_EVENT")
+            return False
+        return True
 
-    def add_store_visit_memory(self, agent_name, details):
-        """Handle store visit memories"""
-        # Get visit history
-        previous_visits = self.get_visit_history(agent_name)
-        
-        visit_details = {
-            **details,  # Include basic details
-            'type': 'store_visit',
-            'visit_number': len(previous_visits) + 1,
-            'is_return_customer': len(previous_visits) > 0,
-            'last_visit_time': previous_visits[-1]['time'] if previous_visits else None,
-            'satisfaction': self.initialize_satisfaction_tracking()
-        }
-        
-        importance = self.determine_memory_importance(agent_name, "store_visit", visit_details)
-        visit_details['importance'] = importance
-        
-        self.add_memory(agent_name, "store_visit", visit_details)
+    def _validate_planning_event(self, data):
+        """Validate planning event memory data."""
+        required = ['plan_content', 'time'] # or similar e.g. 'event_type' like 'daily_plan_generated'
+        return all(key in data for key in required)
 
-    def add_social_memory(self, agent_name, details):
-        """Handle social interaction memories"""
-        # Extract participants
-        content = details['content']
-        participants = []
-        if "with" in content:
-            participants = [name.strip() for name in content.split("with")[1].split("and")]
-            
-        social_details = {
-            **details,
-            'type': 'social',
-            'participants': participants,
-            'food_related': 'food' in content.lower() or 'restaurant' in content.lower(),
-            'about_location': 'Fried Chicken Shop' if 'Fried Chicken Shop' in content else None
-        }
-        
-        importance = self.determine_memory_importance(agent_name, "social", social_details)
-        social_details['importance'] = importance
-        
-        self.add_memory(agent_name, "social", social_details) 
-        
-    def get_visit_count(self, agent_name):
-        """Get the number of times an agent has visited the shop"""
-        return len([m for m in self.memories.get(agent_name, []) 
-                   if m['type'] == 'store_visit' and 
-                   m['location'] == 'Fried Chicken Shop'])
+    def _validate_agent_state_update(self, data):
+        """Validate agent state update memory data."""
+        required = ['energy_level', 'money', 'grocery_level', 'time']
+        return all(key in data for key in required)
 
-    def get_information_chain(self, agent_name):
-        """Get who told this agent about the shop and who they told"""
-        received_from = None
-        told_to = []
-        
-        for memory in self.memories.get(agent_name, []):
-            if memory['type'] == 'received_info':
-                received_from = memory['source']
-            elif memory['type'] == 'shared_info':
-                told_to.append(memory['told_to'])
-                
-        return {
-            'received_from': received_from,
-            'shared_with': told_to
-        }
-
-    def update_visit_feedback(self, agent_name, visit_number, feedback_details):
-        """Update detailed feedback for a specific visit"""
-        for memory in reversed(self.memories.get(agent_name, [])):
-            if memory['type'] == 'store_visit' and memory['visit_number'] == visit_number:
-                # Update satisfaction data
-                memory['satisfaction'].update({
-                    'overall_rating': feedback_details.get('overall_rating', memory['satisfaction']['overall_rating']),
-                    'food_quality': feedback_details.get('food_quality', memory['satisfaction']['food_quality']),
-                    'price_satisfaction': feedback_details.get('price_satisfaction', memory['satisfaction']['price_satisfaction']),
-                    'service': feedback_details.get('service_rating', memory['satisfaction']['service']),
-                    'wait_time': feedback_details.get('wait_time', memory['satisfaction']['wait_time']),
-                    'specific_feedback': feedback_details.get('feedback', memory['satisfaction']['specific_feedback']),
-                    'would_recommend': feedback_details.get('would_recommend', memory['satisfaction']['would_recommend']),
-                    'return_intention': feedback_details.get('return_intention', memory['satisfaction']['return_intention'])
-                })
-                
-                # Update memory importance based on new feedback
-                memory['importance'] = self.determine_memory_importance(agent_name, event_type, feedback_details)
-                break
-
-    def get_satisfaction_history(self, agent_name):
-        """Get satisfaction trends for an agent's visits"""
-        satisfaction_history = []
-        for memory in self.memories.get(agent_name, []):
-            if memory['type'] == 'store_visit':
-                satisfaction_history.append({
-                    'visit_number': memory['visit_number'],
-                    'timestamp': memory['timestamp'],
-                    'was_discount': memory['was_discount'],
-                    'satisfaction': memory['satisfaction'],
-                    'price_paid': memory['price_paid']
-                })
-        return satisfaction_history
-
-    def get_satisfaction_summary(self, agent_name):
-        """Get a summary of an agent's satisfaction with the shop"""
-        visits = [m for m in self.memories.get(agent_name, []) 
-                 if m['type'] == 'store_visit']
-        
-        if not visits:
-            return None
-
-        total_ratings = {
-            'overall_rating': [],
-            'food_quality': [],
-            'price_satisfaction': [],
-            'service': [],
-            'wait_time': [],
-            'would_recommend': 0,
-            'total_visits': len(visits)
-        }
-
-        for visit in visits:
-            sat = visit['satisfaction']
-            if sat['overall_rating']:
-                total_ratings['overall_rating'].append(sat['overall_rating'])
-            if sat['food_quality']:
-                total_ratings['food_quality'].append(sat['food_quality'])
-            if sat['price_satisfaction']:
-                total_ratings['price_satisfaction'].append(sat['price_satisfaction'])
-            if sat['service']:
-                total_ratings['service'].append(sat['service'])
-            if sat['wait_time']:
-                total_ratings['wait_time'].append(sat['wait_time'])
-            if sat['would_recommend']:
-                total_ratings['would_recommend'] += 1
-
-        # Calculate averages
-        summary = {
-            'average_overall': sum(total_ratings['overall_rating']) / len(total_ratings['overall_rating']) if total_ratings['overall_rating'] else None,
-            'average_food_quality': sum(total_ratings['food_quality']) / len(total_ratings['food_quality']) if total_ratings['food_quality'] else None,
-            'average_price_satisfaction': sum(total_ratings['price_satisfaction']) / len(total_ratings['price_satisfaction']) if total_ratings['price_satisfaction'] else None,
-            'average_service': sum(total_ratings['service']) / len(total_ratings['service']) if total_ratings['service'] else None,
-            'average_wait_time': sum(total_ratings['wait_time']) / len(total_ratings['wait_time']) if total_ratings['wait_time'] else None,
-            'recommendation_rate': total_ratings['would_recommend'] / total_ratings['total_visits'] if total_ratings['total_visits'] > 0 else 0,
-            'total_visits': total_ratings['total_visits']
-        }
-        
-        return summary
-
-    def mark_recommendation_acted_upon(self, agent_name, from_agent):
-        """Mark a received recommendation as acted upon when the agent visits"""
-        for memory in self.memories.get(agent_name, []):
-            if memory['type'] == 'received_info' and memory['source'] == from_agent:
-                memory['acted_upon'] = True
-                break
-
-    def mark_feedback_given(self, agent_name, to_agent):
-        """Mark that feedback was given to someone who made a recommendation"""
-        for memory in self.memories.get(agent_name, []):
-            if memory['type'] == 'received_info' and memory['source'] == to_agent:
-                memory['feedback_given'] = True
-                break
-
-    def get_relevant_memories(self, agent_name, context=None, limit=5):
-        """Get relevant memories based on context"""
-        if agent_name not in self.memories:
-            return []
-            
-        memories = self.memories[agent_name]
-        scored_memories = []
-        
-        for memory in memories:
-            # Calculate relevance score
-            relevance = 1.0
-            if context:
-                relevance = self.calculate_semantic_similarity(
-                    str(memory.get('content', '') or memory.get('experience', '')),
-                    context
-                )
-            
-            # Calculate recency score (newer = higher score)
-            try:
-                memory_time = datetime.strptime(memory['timestamp'], '%Y-%m-%d %H:%M')
-                time_diff = (datetime.now() - memory_time).total_seconds() / 3600  # hours
-                recency = 1.0 / (1 + time_diff)
-            except:
-                recency = 0.5
-            
-            # Combine scores
-            total_score = (relevance + recency + memory.get('importance', 0.5)) / 3
-            scored_memories.append((memory, total_score))
-        
-        # Sort by score and return top memories
-        scored_memories.sort(key=lambda x: x[1], reverse=True)
-        return [m for m, _ in scored_memories[:limit]]
-
-    def determine_memory_importance(self, agent_name, event_type, details):
-        """Calculate memory importance with added family and routine factors"""
-        base_importance = 0.5
-        importance_score = base_importance
-        
-        # Family-related importance
-        if event_type in ['family_planning', 'family_meal', 'schedule_coordination']:
-            importance_score += 0.2  # Family interactions are important
-            
-            # Additional importance for key decisions
-            if details.get('decisions', {}).get('school_transport'):
-                importance_score += 0.1
-            if details.get('coordinated_schedule'):
-                importance_score += 0.1
-            
-        # Morning routine importance
-        if event_type == 'morning_routine':
-            if details.get('supervised'):  # Supervised activities for young children
-                importance_score += 0.15
-            if details.get('breakfast_status'):  # Meal-related memories
-                importance_score += 0.1
-            if details.get('school_prep'):  # School preparation
-                importance_score += 0.1
-            
-        # Daily planning importance
-        if event_type == 'daily_planning':
-            if details.get('is_first_day'):  # First day is more memorable
-                importance_score += 0.2
-            if details.get('coordinated_with_family'):
-                importance_score += 0.15
-            
-        # Cap importance between 0.1 and 1.0
-        return min(max(importance_score, 0.1), 1.0)
-
-    def calculate_semantic_similarity(self, text1, text2):
-        """Calculate semantic similarity between two texts"""
-        # Simple word overlap for now
-        words1 = set(str(text1).lower().split())
-        words2 = set(str(text2).lower().split())
-        if not words1 or not words2:
-            return 0.0
-        return len(words1.intersection(words2)) / len(words1.union(words2))
-
-    def consolidate_memories(self, agent_name):
-        """Consolidate memories when over limit"""
-        if agent_name not in self.memories:
+    def add_memory(self, agent_name: str, memory_type_key: str, data: Dict):
+        """Add a memory record for an agent. This method is thread-safe.
+           memory_type_key should be one of the keys from MEMORY_TYPES dictionary.
+        """
+        if memory_type_key not in MEMORY_TYPES:
+            print(f"Warning: Attempted to add memory for {agent_name} with unrecognized type key: {memory_type_key}. Memory not added.")
             return
+
+        actual_memory_type_value = MEMORY_TYPES[memory_type_key]
+
+        if not isinstance(data, dict) or 'time' not in data:
+            print(f"Warning: Invalid data for memory type {actual_memory_type_value} for agent {agent_name}. Missing 'time' or not a dict. Data: {data}. Memory not added.")
+            return
+        
+        validator = self.memory_type_validators.get(actual_memory_type_value)
+        if validator and not validator(data):
+            print(f"Warning: Data validation failed for memory type '{actual_memory_type_value}' for agent {agent_name}. Data: {data}. Memory not added.")
+            return
+
+        with self._lock:
+            if agent_name not in self.memories:
+                self.memories[agent_name] = []
             
-        memories = self.memories[agent_name]
-        
-        # First, remove low-importance memories
-        important_memories = [m for m in memories if m.get('importance', 0.5) >= self.consolidation_threshold]
-        low_importance_memories = [m for m in memories if m.get('importance', 0.5) < self.consolidation_threshold]
-        
-        # If we're still over limit after removing low-importance memories
-        if len(important_memories) > self.memory_limit:
-            # Sort by importance and recency
-            important_memories.sort(key=lambda x: (x.get('importance', 0.5), x['timestamp']), reverse=True)
-            important_memories = important_memories[:self.memory_limit]
-        
-        # Update the agent's memories
-        self.memories[agent_name] = important_memories
-        
-        # Optionally, create a consolidated summary of removed memories
-        if low_importance_memories:
-            summary = self.create_memory_summary(low_importance_memories)
-            if summary:
-                self.memories[agent_name].append(summary)
+            current_sim_time = data.get('time') # Should always be present due to check above
+            # Ensure simulation_day and simulation_hour are consistently added
+            day = (int(current_sim_time) // 24) + 1
+            hour = int(current_sim_time) % 24
+            data['simulation_day'] = day
+            data['simulation_hour'] = hour
+            
+            memory_id = data.get('id', f"mem_{agent_name}_{self.memory_id_counter}") # Include agent name in ID
+            if 'id' not in data: # Only increment if we generated it
+                self.memory_id_counter += 1
 
-    def create_memory_summary(self, memories):
-        """Create a summary memory from multiple low-importance memories"""
-        if not memories:
-            return None
-        
-        # Group memories by type
-        grouped = {}
-        for memory in memories:
-            mem_type = memory.get('type', 'general')
-            if mem_type not in grouped:
-                grouped[mem_type] = []
-            grouped[mem_type].append(memory)
-        
-        # Create summary content
-        summary_content = []
-        for mem_type, type_memories in grouped.items():
-            if mem_type == 'store_visit':
-                count = len(type_memories)
-                summary_content.append(f"Made {count} unmemorable visits to the store")
-            elif mem_type == 'social':
-                count = len(type_memories)
-                summary_content.append(f"Had {count} routine social interactions")
-        
-        if not summary_content:
-            return None
-        
-        return {
-            'id': self.memory_id_counter,
-            'type': 'consolidated_summary',
-            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M'),
-            'content': '. '.join(summary_content),
-            'original_count': len(memories),
-            'importance': self.consolidation_threshold,  # Set at threshold level
-            'is_summary': True
-        }
+            memory_record = {
+                'id': memory_id,
+                'type': actual_memory_type_value,
+                'data': data, # data now includes sim_day and sim_hour
+                'simulation_time': current_sim_time, # Redundant with data.time but good for quick access
+                'recorded_at_real_time': datetime.now().isoformat()
+            }
+            
+            self.memories[agent_name].append(memory_record)
 
-    def save_to_file(self):
-        """Save memories in JSONL format with updated path structure"""
-        # Get parent directory (LLMAgentsTown_Stability)
+            # Memory pruning logic (FIFO)
+            if len(self.memories[agent_name]) > self.memory_limit:
+                self.memories[agent_name].pop(0) # Remove the oldest memory
+        
+    def get_memories_for_day(self, agent_name: str, current_sim_time: int, memory_type_key: Optional[str] = None) -> List[Dict]:
+        """Get all memories for a specific agent on a specific simulation day (thread-safe for read).
+           memory_type_key should be one of the keys from MEMORY_TYPES dictionary if specified.
+        """
+        target_day = (current_sim_time // 24) + 1
+        actual_memory_type_value = MEMORY_TYPES.get(memory_type_key) if memory_type_key else None
+
+        agent_day_memories = []
+        with self._lock: 
+            if agent_name not in self.memories:
+                return []
+            for memory in self.memories[agent_name]:
+                # memory['data'] should reliably have 'simulation_day' due to add_memory logic
+                if memory.get('data', {}).get('simulation_day') == target_day:
+                    if actual_memory_type_value is None or memory['type'] == actual_memory_type_value:
+                        agent_day_memories.append(memory)
+        return agent_day_memories
+        
+    def retrieve_memories(self, agent_name: str, current_time: int, 
+                         memory_type_key: Optional[str] = None, limit: Optional[int] = None) -> List[Dict]:
+        """Retrieve recent memories for an agent (thread-safe for read).
+           memory_type_key should be one of the keys from MEMORY_TYPES dictionary if specified.
+        """
+        actual_memory_type_value = MEMORY_TYPES.get(memory_type_key) if memory_type_key else None
+
+        with self._lock:
+            if agent_name not in self.memories:
+                return []
+            
+            relevant_memories = []
+            for memory in self.memories.get(agent_name, []):
+                # Check type first
+                if actual_memory_type_value and memory.get('type') != actual_memory_type_value:
+                    continue
+                # Then check time
+                memory_sim_time = memory.get('simulation_time') # Direct access is fine
+                if isinstance(memory_sim_time, (int, float)) and memory_sim_time <= current_time:
+                    relevant_memories.append(memory)
+        
+        # Sort by simulation_time descending (most recent first)
+        sorted_memories = sorted(relevant_memories, 
+                               key=lambda x: x.get('simulation_time', 0),
+                               reverse=True)
+        
+        if limit:
+            return sorted_memories[:limit]
+        return sorted_memories
+        
+    def save_to_file(self, filename: str):
+        """Save all memories to a JSONL file (should be called when sim is paused or at end)."""
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        
-        # Path to records directory
-        records_dir = os.path.join(base_dir, 'LLMAgentsTown_memory_records', 'simulation_agents')
+        records_dir = os.path.join(base_dir, 'LLMAgentsTown_memory_records', 'simulation_memory')
         os.makedirs(records_dir, exist_ok=True)
-
-        filename = f"agent_memories_{self.start_time.strftime('%Y%m%d_%H%M%S')}.jsonl"
-        filepath = os.path.join(records_dir, filename)
-
-        with open(filepath, 'w') as f:
-            # Write simulation metadata as first line
-            f.write(json.dumps({
-                'type': 'metadata',
-                'simulation_start': self.start_time.strftime('%Y-%m-%d %H:%M:%S'),
-                'simulation_end': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            }) + '\n')
-            
-            # Write each agent's memories as separate lines
-            for agent_name, memories in self.memories.items():
-                # Group memories by type for better organization
-                grouped_memories = {
-                    'type': 'agent_memories',
-                    'agent': agent_name,
-                    'store_visits': [m for m in memories if m['type'] == 'store_visit'],
-                    'received_info': [m for m in memories if m['type'] == 'received_info'],
-                    'shared_info': [m for m in memories if m['type'] == 'shared_info']
-                }
-                f.write(json.dumps(grouped_memories) + '\n')
-
-        print(f"\nAgent memories saved to: {filepath}")
+        
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filepath = os.path.join(records_dir, f'memories_{timestamp}.jsonl')
+        
+        with self._lock: # Ensure thread safety while reading self.memories
+            with open(filepath, 'w') as f:
+                for agent_name, memories_list in self.memories.items():
+                    for memory in memories_list:
+                        record = {
+                            'agent': agent_name,
+                            'type': memory['type'], # This is already the string value
+                            'simulation_time': memory['simulation_time'],
+                            'simulation_day': (memory['simulation_time'] // 24) + 1,
+                            'simulation_hour': memory['simulation_time'] % 24,
+                            'data': memory['data']
+                        }
+                        f.write(json.dumps(record) + '\n')
+        
+        print(f"\nMemories saved to: {filepath}")
         return filepath
 
     def timestep_to_realtime(self, timestep):
-        """Convert a timestep to real datetime"""
-        return self.start_time + datetime.timedelta(seconds=timestep * self.time_unit)
-
-    def get_recent_memories(self, agent_name, current_time=None, time_window=24, limit=None):
-        """Get recent memories within a time window, sorted by importance"""
-        if agent_name not in self.memories:
-            return []
-        
-        recent_memories = [
-            memory for memory in self.memories[agent_name]
-            if not current_time or current_time - memory['timestamp'] <= time_window
-        ]
-        
-        # Sort by importance and timestamp
-        sorted_memories = sorted(recent_memories, 
-                               key=lambda x: (x['importance'], x['timestamp']),
-                               reverse=True)
-        
-        # Apply limit if specified
-        if limit is not None:
-            return sorted_memories[:limit]
-        return sorted_memories
-                    
-    def update_memory_importance(self, agent_name, memory_id, new_importance):
-        """Update the importance of a specific memory"""
-        if agent_name not in self.memories:
-            return
-            
-        for memory in self.memories[agent_name]:
-            if memory['id'] == memory_id:
-                memory['importance'] = min(1.0, new_importance)  # Cap at 1.0
-                break
+        """Convert simulation timestep to datetime"""
+        # Assuming timestep is in hours for the simulation
+        return self.start_time + datetime.timedelta(hours=timestep)
                 
     def get_important_memories(self, agent_name, importance_threshold=0.7):
-        """Get memories above a certain importance threshold"""
-        if agent_name not in self.memories:
-            return []
-            
-        return [
-            memory for memory in self.memories[agent_name]
-            if memory['importance'] >= importance_threshold
-        ]
+        """Get memories above a certain importance threshold (assumes 'importance' in data)."""
+        # This method might need adjustment based on how 'importance' is defined and stored
+        # With generic events, 'importance' might not always be present.
+        important_memories = []
+        with self._lock:
+            if agent_name not in self.memories: return []
+            for memory in self.memories[agent_name]:
+                if memory.get('data', {}).get('importance', 0.0) >= importance_threshold:
+                    important_memories.append(memory)
+        return important_memories
 
     def get_food_related_memories(self, agent_name, recency_weight=0.7, relevance_weight=0.3):
-        """Get memories related to food with weighted scoring"""
-        if agent_name not in self.memories:
-            return []
-        
-        food_keywords = ["food", "eat", "meal", "restaurant", "chicken", "hungry", "lunch", "dinner"]
+        """Get memories related to food with weighted scoring (operates on memory['data']['content'])."""
+        food_keywords = ["food", "eat", "meal", "restaurant", "chicken", "hungry", "lunch", "dinner", "grocery", "cook", "purchase", "buy"]
         
         scored_memories = []
-        current_time = time.time()  # Use current time as reference
+        current_real_time = datetime.now()
         
-        for memory in self.memories[agent_name]:
-            # Check if memory is related to food
-            is_food_related = any(keyword in memory['content'].lower() for keyword in food_keywords)
-            
-            if is_food_related:
-                # Calculate recency score (normalized 0-1)
-                time_diff = current_time - memory['timestamp']
-                recency_score = max(0, 1 - (time_diff / (7 * 24 * 60 * 60)))  # Within last week
+        with self._lock:
+            if agent_name not in self.memories: return []
+
+            for memory in self.memories[agent_name]:
+                memory_content = ""
+                # Try to get content from common places
+                if 'content' in memory.get('data', {}):
+                    memory_content = str(memory['data']['content'])
+                elif 'description' in memory.get('data', {}): # For ACTIVITY_EVENT
+                    memory_content = str(memory['data']['description'])
+                elif memory['type'] == MEMORY_TYPES['FOOD_PURCHASE_EVENT']:
+                    memory_content = str(memory['data'].get('item_description', '')) + " food purchase"
+                elif memory['type'] == MEMORY_TYPES['GROCERY_PURCHASE_EVENT']:
+                    memory_content = str(memory['data'].get('items_list', '')) + " grocery purchase"
+
+                if not memory_content: continue # Skip if no relevant text found
                 
-                # Calculate relevance score based on how many food keywords appear
-                keyword_count = sum(1 for keyword in food_keywords if keyword in memory['content'].lower())
-                relevance_score = min(1.0, keyword_count / 3)  # Cap at 1.0
+                is_food_related = any(keyword in memory_content.lower() for keyword in food_keywords)
                 
-                # Calculate combined score
-                total_score = (recency_weight * recency_score) + (relevance_weight * relevance_score)
-                
-                scored_memories.append((memory, total_score))
+                if is_food_related:
+                    time_diff_seconds = (current_real_time - datetime.fromisoformat(memory['recorded_at_real_time'])).total_seconds()
+                    recency_score = max(0, 1 - (time_diff_seconds / (7 * 24 * 60 * 60))) # Within last week
+                    
+                    keyword_count = sum(1 for keyword in food_keywords if keyword in memory_content.lower())
+                    relevance_score = min(1.0, keyword_count / 3) # Cap at 1.0 for up to 3 keywords
+                    
+                    total_score = (recency_weight * recency_score) + (relevance_weight * relevance_score)
+                    scored_memories.append((memory, total_score))
         
-        # Sort by score
         scored_memories.sort(key=lambda x: x[1], reverse=True)
-        
-        # Return just the memories, not the scores
         return [memory for memory, _ in scored_memories]
 
     def mark_memory_as_planned(self, agent_name, memory_id):
         """Mark a memory as having generated a plan"""
-        if agent_name not in self.memories:
-            return
-            
-        for memory in self.memories[agent_name]:
-            if memory['id'] == memory_id:
-                memory['plan_generated'] = True
-                break
+        with self._lock:
+            if agent_name not in self.memories: return
+            for memory in self.memories[agent_name]:
+                if memory.get('id') == memory_id:
+                    memory.setdefault('data', {})['plan_generated_from_this_memory'] = True
+                    break
 
-    def retrieve_memories(self, agent_name, current_time, memory_type=None, context=None, limit=5):
-        """Get recent memories with optional type and context filtering"""
-        if agent_name not in self.memories:
-            return []
+    def calculate_memory_score(self, memory_record: Dict, current_sim_time: int, context_text: Optional[str] = None):
+        """Calculate unified memory score for a given memory record."""
+        score = memory_record.get('data', {}).get('importance', 0.5) # Base importance
         
-        memories = self.memories[agent_name]
-        scored_memories = []
+        memory_sim_time = memory_record.get('simulation_time', current_sim_time)
+        time_diff_hours = max(0, current_sim_time - memory_sim_time) # Ensure non-negative diff
+        recency_score = 1.0 / (1 + (time_diff_hours / 24.0)) 
+        score += recency_score * 0.3 
         
-        for memory in memories:
-            # Apply type filter if specified
-            if memory_type and memory.get('type') != memory_type:
-                continue
-            
-            # Calculate comprehensive score
-            score = self.calculate_memory_score(memory, current_time, context)
-            scored_memories.append((memory, score))
+        # Semantic relevance if context is provided
+        # Check if memory has textual content for comparison
+        memory_content_for_relevance = None
+        if 'content' in memory_record.get('data', {}):
+            memory_content_for_relevance = str(memory_record['data']['content'])
+        elif 'description' in memory_record.get('data', {}): # for ACTIVITY_EVENT
+            memory_content_for_relevance = str(memory_record['data']['description'])
         
-        # Sort by score and return top memories
-        scored_memories.sort(key=lambda x: x[1], reverse=True)
-        return [m for m, _ in scored_memories[:limit]]
-
-    def calculate_memory_score(self, memory, current_time, context=None):
-        """Calculate unified memory score"""
-        # Base importance
-        score = memory.get('importance', 0.5)
-        
-        # Time decay
-        try:
-            memory_time = datetime.strptime(memory['timestamp'], '%Y-%m-%d %H:%M')
-            time_diff = (datetime.now() - memory_time).total_seconds() / 3600  # Convert to hours
-            recency = 1.0 / (1 + (time_diff / 24))  # Decay over days
-        except:
-            recency = 0.5  # Default if timestamp parsing fails
-        
-        score += recency * 0.3
-        
-        # Context relevance if provided
-        if context:
+        if context_text and memory_content_for_relevance:
             relevance = self.calculate_semantic_similarity(
-                memory.get('content', ''),
-                context
+                memory_content_for_relevance,
+                context_text
             )
             score += relevance * 0.2
         
-        # Memory type bonus
-        if memory.get('type') in ['store_visit', 'received_recommendation']:
-            score += 0.1
+        # Bonus for certain types - now using the actual string value from MEMORY_TYPES
+        # No STORE_VISIT_EVENT or RECOMMENDATION_EVENT in new simplified list
+        # This bonus might be removed or rethought for new types if applicable.
+        # memory_type_value = memory_record.get('type')
+        # if memory_type_value in [MEMORY_TYPES.get('SOME_NEW_IMPORTANT_TYPE')]: 
+        #     score += 0.1
         
-        # Cap final score at 1.0
-        return min(1.0, score)
+        return min(1.0, max(0.0, score)) # Ensure score is between 0 and 1
 
-    def get_today_memories(self, agent_name):
-        """Get all memories from the current day"""
-        if agent_name not in self.memories:
-            return []
+    def get_today_memories(self, agent_name: str, current_sim_time: int) -> List[Dict]:
+        """Get all memories from the current simulation day for a specific agent."""
+        current_sim_day = (current_sim_time // 24) + 1
+        memories_today = []
+        with self._lock:
+            if agent_name not in self.memories: return []
+            for memory in self.memories[agent_name]:
+                if memory.get('data',{}).get('simulation_day') == current_sim_day:
+                    memories_today.append(memory)
+        return memories_today
+
+    def calculate_semantic_similarity(self, text1: str, text2: str) -> float:
+        """Calculate semantic similarity between two texts (simple word overlap)."""
+        if not text1 or not text2: return 0.0 # Handle empty strings
+        words1 = set(str(text1).lower().split())
+        words2 = set(str(text2).lower().split())
+        if not words1 or not words2: return 0.0
+        intersection_len = len(words1.intersection(words2))
+        union_len = len(words1.union(words2))
+        return intersection_len / union_len if union_len > 0 else 0.0
+
+    def save_memories(self, filepath: Optional[str] = None) -> None:
+        """Save all agent memories to a single JSON file. This should be thread-safe for reading memories."""
+        memories_to_save = {}
         
-        # Get current day's start time
-        current_time = datetime.now()
-        day_start = current_time.replace(hour=0, minute=0, second=0, microsecond=0)
-        
-        # Filter memories from today
-        today_memories = [
-            memory for memory in self.memories[agent_name]
-            if datetime.strptime(memory['timestamp'], '%Y-%m-%d %H:%M') >= day_start
-        ]
-        
-        return today_memories
+        with self._lock:
+            # Create a deep copy to avoid issues if memories are modified during iteration by another thread (less likely here but good practice)
+            # For this specific case, self.memories[agent_name] is a list of dicts. dicts are mutable.
+            # A simple list(agent_memory_list) creates a shallow copy of the list.
+            # We are mostly concerned about the list structure itself changing during iteration if not locked.
+            # The lock already prevents modification of self.memories structure.
+            for agent_name, agent_memory_list in self.memories.items():
+                memories_to_save[agent_name] = {
+                    'memories': [dict(mem) for mem in agent_memory_list], # Create shallow copies of each memory dict
+                    'total_memories': len(agent_memory_list)
+                }
+
+        try:
+            actual_filepath = filepath
+            if not actual_filepath:
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                script_dir = os.path.dirname(os.path.abspath(__file__))
+                project_root = os.path.dirname(script_dir) 
+                memories_dir = os.path.join(project_root, "LLMAgentsTown_memory_records", "simulation_agents")
+                os.makedirs(memories_dir, exist_ok=True)
+                actual_filepath = os.path.join(memories_dir, f"consolidated_memories_{timestamp}.json")
+
+            output_data = {
+                'saved_at_timestamp': datetime.now().isoformat(),
+                'agents_memories': memories_to_save
+            }
+
+            with open(actual_filepath, 'w') as f:
+                json.dump(output_data, f, indent=2)
+            print(f"\nConsolidated agent memories saved to: {actual_filepath}")
+
+        except Exception as e:
+            print(f"Error saving consolidated memories: {str(e)}")
+            traceback.print_exc()
