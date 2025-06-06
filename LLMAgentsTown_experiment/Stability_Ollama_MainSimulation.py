@@ -12,6 +12,7 @@ File Dependencies:
 5. Stability_Memory_Manager.py: Memory storage and retrieval
 6. Stability_Metrics.py: Fried Chicken Shop metrics
 7. simulation_constants.py: Shared constants and settings
+8. energy_constants.py: Energy system constants
 
 Flow:
 1. Load configuration from Stability_Agents_Config.json
@@ -28,7 +29,7 @@ import time
 import json
 import os
 from datetime import datetime
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Optional, Any, Tuple, Union
 import uuid
 import traceback
 import signal
@@ -38,34 +39,60 @@ import random
 import re # For improved action parsing
 import threading
 import concurrent.futures
+from collections import defaultdict
 
 from Stability_Memory_Manager import MemoryManager
 from deepseek_model_manager import ModelManager as DeepSeekModelManager  # Import DeepSeek specifically
 from prompt_manager import PromptManager
-from stability_classes import Agent, Location, TownMap
-from Stability_Metrics import StabilityMetrics
-from simulation_constants import ACTIVITY_TYPES, MEMORY_TYPES
+from stability_classes import Agent, Location, TownMap, ConversationState, shared_location_tracker
+from Stability_Metrics import MetricsManager
+from simulation_constants import (
+    SIMULATION_SETTINGS, ACTIVITY_TYPES, MEMORY_TYPES,
+    TimeManager, SimulationError, AgentError, LocationError,
+    MemoryError, MetricsError, ErrorHandler, ThreadSafeBase,
+    ENERGY_MAX, ENERGY_MIN, ENERGY_COST_PER_STEP, ENERGY_DECAY_PER_HOUR,
+    ENERGY_COST_WORK_HOUR, ENERGY_COST_PER_HOUR_TRAVEL, ENERGY_COST_PER_HOUR_IDLE,
+    ENERGY_GAIN_RESTAURANT_MEAL, ENERGY_GAIN_SNACK, ENERGY_GAIN_HOME_MEAL,
+    ENERGY_GAIN_SLEEP, ENERGY_GAIN_NAP, ENERGY_GAIN_CONVERSATION,
+    ENERGY_THRESHOLD_LOW,
+    shared_memory_buffer,  # Add shared memory buffer import
+    MemoryEvent
+)
 
-SIMULATION_SETTINGS = {
-    'planning_hour': 7,
-    'max_days': 7,
-    'parallel_execution': True
-}
-
-def initialize_simulation():
-    """Initialize the simulation environment"""
+def initialize_simulation() -> Optional[Dict[str, Any]]:
+    """Initialize the simulation environment.
+    
+    Returns:
+        Optional[Dict[str, Any]]: Dictionary containing initialized simulation components or None if initialization fails
+    """
     try:
         print(f"SIM_LOG: Starting initialization at {datetime.now().strftime('%H:%M:%S')}")
+
+        # Initialize managers with proper directory structure
+        base_memory_dir = 'LLMAgentsTown_memory_records'
+        os.makedirs(base_memory_dir, exist_ok=True)
         
-        # Initialize managers
-        memory_manager = MemoryManager()
-        model_manager = DeepSeekModelManager()  # Use DeepSeek model manager
+        # Set up memory manager with simulation_memory directory
+        memory_dir = os.path.join(base_memory_dir, 'simulation_memory')
+        os.makedirs(memory_dir, exist_ok=True)
+        memory_manager = MemoryManager(memory_dir=memory_dir)
+        
+        # Set up metrics manager with simulation_metrics directory
+        metrics_dir = os.path.join(base_memory_dir, 'simulation_metrics')
+        os.makedirs(metrics_dir, exist_ok=True)
+        metrics = MetricsManager(simulation_dir=metrics_dir)
+        
+        model_manager = DeepSeekModelManager()
         prompt_manager = PromptManager()
-        metrics = StabilityMetrics()
-        print("\nInitialized managers and metrics")
         
-        # Load town configuration
-        config_path = os.path.join(os.path.dirname(__file__), 'Stability_Agents_Config.json')
+        print("\nInitializing managers for new simulation")
+        
+        # Load test configuration
+        config_path = os.path.join(os.path.dirname(__file__), 'Stability_Agents_Config_Test.json')
+        if not os.path.exists(config_path):
+            raise FileNotFoundError("Test configuration file not found. Please ensure Stability_Agents_Config_Test.json exists.")
+        
+        print(f"Loading configuration from: {config_path}")
         with open(config_path, 'r') as f:
             town_data = json.load(f)
 
@@ -80,7 +107,7 @@ def initialize_simulation():
             print("\nInitialized TownMap with grid data.")
         else:
             print("\nWarning: TownMap grid data not found or incomplete in config. Proceeding without grid-based map.")
-
+        
         # Initialize locations
         locations = {}
         for category, category_locations in town_data['town_areas'].items():
@@ -112,10 +139,13 @@ def initialize_simulation():
                     grid_coordinate=location_coords
                 )
                 
-                # Set hours from configuration
+                # Set hours directly from configuration
                 if 'hours' in info:
                     location.hours = info['hours']
-                    print(f"Set hours for {location_name}: {location.hours['open']}:00-{location.hours['close']}:00")
+                    if 'always_open' in info['hours']:
+                        print(f"Set {location_name} as always open")
+                    else:
+                        print(f"Hours for {location_name}: {info['hours']['open']}:00-{info['hours']['close']}:00")
                 
                 # Set base price from configuration
                 if 'base_price' in info:
@@ -124,7 +154,7 @@ def initialize_simulation():
                 
                 # Apply discount settings if available
                 if 'discount' in info:
-                    location.discount = info['discount']
+                    location.discounts = info['discount']  # Note: Changed from discount to discounts to match Location class
                     print(f"Applied discount settings for {location_name}: {info['discount']}")
                 
                 locations[location_name] = location
@@ -134,14 +164,25 @@ def initialize_simulation():
         for person_name, person_data in town_data['town_people'].items():
             basics = person_data['basics']
             agent = Agent(
-                name=person_name,
+                name=basics['name'],
+                age=basics['age'],
+                occupation=basics['occupation'],
                 residence=basics['residence'],
-                family_role=basics.get('family_role', 'individual'),
-                memory_manager=memory_manager,
-                model_manager=model_manager,
-                prompt_manager=prompt_manager,
-                town_map=town_map_instance
+                workplace=basics['workplace'],
+                work_schedule=basics['income']['schedule'],
+                memory_mgr=memory_manager
             )
+            # Set additional attributes after initialization
+            agent.model_manager = model_manager
+            agent.prompt_manager = prompt_manager
+            agent.town_map = town_map_instance
+            # Ensure meals_today is initialized
+            agent.meals_today = {
+                'breakfast': {'handled': False, 'method': None},
+                'lunch': {'handled': False, 'method': None},
+                'dinner': {'handled': False, 'method': None},
+                'snack': {'handled': False, 'method': None}
+            }
             # Set locations before initializing personal context
             agent.locations = locations
             # Set metrics instance
@@ -155,13 +196,20 @@ def initialize_simulation():
             if income_info:
                 income_amount = income_info.get('amount', 0)
                 income_type = income_info.get('type', 'hourly')
+                
+                # Calculate daily income for starting money calculation
+                daily_income = 0
                 if income_type == 'annual':
-                    agent.money = income_amount / 365  # Daily amount
+                    daily_income = income_amount / 365
                 elif income_type == 'monthly':
-                    agent.money = income_amount / 30   # Daily amount
+                    daily_income = income_amount / 30
                 else:  # hourly
-                    agent.money = income_amount * 8    # Daily amount for 8 hours
-                print(f"Initial money: ${agent.money:.2f}")
+                    work_hours = 8  # Standard work day
+                    daily_income = income_amount * work_hours
+                
+                # Start with 3 days worth of income instead of a full month
+                agent.money = daily_income * 3
+                print(f"Initial money: ${agent.money:.2f} (3 days of ${daily_income:.2f} daily income)")
             
             # Initialize personal context which will set current_location
             agent.initialize_personal_context(person_data)
@@ -180,7 +228,25 @@ def initialize_simulation():
         # ADDED: Provide each agent with a list of all agents for perception
         for agent_obj in agents:
             agent_obj.all_agents_list_for_perception = agents
-
+        
+        # ADDED: Initialize shared location tracker with all agent positions
+        shared_location_tracker.clear()  # Clear any previous data
+        
+        for agent in agents:
+            current_grid_coord = None
+            if agent.current_location and hasattr(agent.current_location, 'grid_coordinate'):
+                current_grid_coord = agent.current_location.grid_coordinate
+            
+            shared_location_tracker.update_agent_position(
+                agent.name,
+                agent.get_current_location_name(),
+                current_grid_coord,
+                0  # Initial time
+            )
+            print(f"Registered {agent.name} at {agent.get_current_location_name()} with shared tracker")
+        
+        print(f"Shared location tracker initialized with {len(agents)} agents")
+        
         return {
             'settings': SIMULATION_SETTINGS,
             'locations': locations,
@@ -197,376 +263,1184 @@ def initialize_simulation():
         return None
 
 class Simulation:
-    def __init__(self, settings, locations, agents, metrics, memory_mgr, model_mgr, prompt_mgr, town_map: Optional[TownMap]):
-        self.settings = settings
-        self.locations: Dict[str, Location] = locations
-        self.agents: List[Agent] = agents
-        self.metrics = metrics
-        self.memory_mgr = memory_mgr
-        self.model_mgr = model_mgr
-        self.prompt_mgr = prompt_mgr
-        self.town_map = town_map
-        self.current_day = 0
-        self.total_days = settings.get('simulation', {}).get('duration_days', 7)
-        self.current_hour = 0
-        self.conversation_logs = []  # Store all terminal output
-        self.location_locks: Dict[Location, threading.Lock] = {loc: threading.Lock() for loc in self.locations.values()}
-        self.memory_lock = threading.Lock()
-        
-        # Generate single timestamp for this simulation run
-        self.run_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        
-        # Create file paths for this simulation run
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        records_dir = os.path.join(base_dir, "LLMAgentsTown_memory_records")
-        
-        self.metrics_file = os.path.join(records_dir, "simulation_metrics", f"metrics_{self.run_timestamp}.json")
-        self.memories_file = os.path.join(records_dir, "simulation_agents", f"consolidated_memories_{self.run_timestamp}.json")
-        self.conversation_file = os.path.join(records_dir, "simulation_conversation", f"conversation_{self.run_timestamp}.jsonl")
-        
-        # Create directories if they don't exist
-        os.makedirs(os.path.dirname(self.metrics_file), exist_ok=True)
-        os.makedirs(os.path.dirname(self.memories_file), exist_ok=True)
-        os.makedirs(os.path.dirname(self.conversation_file), exist_ok=True)
-        
-        # Set up signal handlers
-        signal.signal(signal.SIGINT, self.handle_interrupt)
-        signal.signal(signal.SIGTERM, self.handle_interrupt)
-
-    def handle_interrupt(self, signum, frame):
-        """Handle interrupt signals by saving state before exit"""
-        print("\nReceived interrupt signal. Saving state...")
-        self.save_state(is_final_save=False)
-        print("State saved. Exiting...")
-        sys.exit(0)
-
-    def save_conversation_logs(self):
-        """Save all conversation logs to a JSONL file"""
+    def __init__(self, config: Dict[str, Any]):
+        """Initialize the simulation with configuration."""
         try:
-            with open(self.conversation_file, 'w') as f:
-                for log in self.conversation_logs:
-                    f.write(json.dumps(log) + '\n')
-            print(f"\nConversation logs saved to: {self.conversation_file}")
-            return self.conversation_file
+            # Initialize basic attributes
+            self.config = config
+            self.current_time = 0
+            self.current_day = 1
+            self.total_days = config.get('total_days', 7)
+            self.total_hours = self.total_days * 24
+            self.max_hours = self.total_days * 24
+            self.plans_created = False
+            
+            # Initialize file paths
+            self.base_dir = 'LLMAgentsTown_memory_records'
+            os.makedirs(self.base_dir, exist_ok=True)
+            
+            # Initialize memory manager with proper file paths
+            memory_dir = os.path.join(self.base_dir, 'simulation_memory')
+            os.makedirs(memory_dir, exist_ok=True)
+            self.memory_mgr = MemoryManager(memory_dir)
+            
+            # Initialize conversation logs directory
+            conversation_dir = os.path.join(self.base_dir, 'simulation_conversation')
+            os.makedirs(conversation_dir, exist_ok=True)
+            self.conversation_log_file = os.path.join(conversation_dir, f'simulation_{datetime.now().strftime("%Y%m%d_%H%M%S")}_conversations.jsonl')
+            
+            # Initialize agent memories file
+            self.agent_memories_file = os.path.join(memory_dir, 'agent_memories.json')
+            if not os.path.exists(self.agent_memories_file):
+                with open(self.agent_memories_file, 'w') as f:
+                    json.dump({}, f)
+            
+            # Initialize metrics directory and manager
+            metrics_dir = os.path.join(self.base_dir, 'simulation_metrics')
+            os.makedirs(metrics_dir, exist_ok=True)
+            self.metrics = MetricsManager(simulation_dir=metrics_dir)
+            
+            # Initialize metrics file
+            self.metrics_file = os.path.join(metrics_dir, 'metrics.json')
+            if not os.path.exists(self.metrics_file):
+                with open(self.metrics_file, 'w') as f:
+                    json.dump({}, f)
+            
+            # Initialize daily summary file
+            self.daily_summary_file = os.path.join(metrics_dir, 'daily_summaries.jsonl')
+            
+            # Initialize locations first
+            self.locations = {}
+            self._initialize_locations()
+            
+            # Initialize agents with memory manager
+            self.agents = []
+            self._initialize_agents()
+            
+            # Initialize locks for thread safety
+            self._conversation_locks = {agent.name: threading.Lock() for agent in self.agents}
+            self._social_locks = {agent.name: threading.Lock() for agent in self.agents}
+            
+            # Initialize debug stats
+            self.debug_stats = {
+                'hourly': defaultdict(lambda: {'successful': 0, 'failed': 0, 'errors': defaultdict(list)}),
+                'daily': defaultdict(lambda: {'successful': 0, 'failed': 0, 'errors': defaultdict(list)})
+            }
+            
+            # Record initial state for all agents
+            self._record_initial_states()
+            
         except Exception as e:
-            print(f"Error saving conversation logs: {str(e)}")
+            print(f"Error initializing simulation: {str(e)}")
             traceback.print_exc()
-            return None
+            raise
 
-    def log_conversation(self, agent_name: str, content: str, log_type_key: str = "ACTION_RAW_OUTPUT"):
-        """Add a conversation or system log entry using a MEMORY_TYPES key.
-           Default log_type_key is 'ACTION_RAW_OUTPUT' for agent actions.
-           Use 'SYSTEM_EVENT' or other relevant keys from MEMORY_TYPES for system messages.
-        """
-        if log_type_key not in MEMORY_TYPES:
-            print(f"Warning: Unrecognized log_type_key '{log_type_key}' used in log_conversation. Defaulting to ACTION_RAW_OUTPUT.")
-            actual_log_type_value = MEMORY_TYPES['ACTION_RAW_OUTPUT'] # Fallback to a generic type
-        else:
-            actual_log_type_value = MEMORY_TYPES[log_type_key]
-
-        log_entry = {
-            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'), # Real-world timestamp
-            'simulation_day': self.current_day,
-            'simulation_hour': self.current_hour,
-            'agent_or_system': agent_name, # Clarified field name
-            'log_type': actual_log_type_value, # The string value of the memory type
-            'content': content
-        }
-        with self.memory_lock: # Assuming memory_lock is for conversation_logs specifically or a general critical section lock
-            self.conversation_logs.append(log_entry)
-
-    def save_state(self, is_final_save: bool = False):
-        """Save current simulation state.
-        If is_final_save is True, it saves the consolidated metrics for the whole simulation.
-        Otherwise, it can save intermediate states (e.g., end of day).
-        """
+    def _record_initial_states(self):
+        """Record initial states for all agents."""
         try:
-            # Save metrics (conditionally based on final save)
-            if is_final_save:
-                self.metrics.save_final_metrics(self.metrics_file)
-                # Also save all daily summaries when it's a final save
-                if hasattr(self, 'daily_insights_file_template'):
-                    self.metrics.save_all_daily_summaries_to_file(self.daily_insights_file_template)
-                else:
-                    # Fallback for older versions where the template might not be defined in __init__
-                    # This might lead to a new timestamped file for daily summaries.
-                    print("Warning: daily_insights_file_template not defined in Simulation.__init__. Daily summaries on final save might use a new timestamp.")
-                    self.metrics.save_all_daily_summaries_to_file() # Uses its own timestamping
-            
-            # Save memory manager state with specific file path
-            self.memory_mgr.save_memories(self.memories_file)
-            
-            # Save conversation logs
-            self.save_conversation_logs()
-            
-            # If not a final save (e.g., interruption or end of day processing)
-            if not is_final_save:
-                 # Save all cached daily summaries (for completed days so far)
-                 if hasattr(self, 'daily_insights_file_template'):
-                    self.metrics.save_all_daily_summaries_to_file(self.daily_insights_file_template)
-                 else:
-                    # Fallback for older versions as above
-                    print("Warning: daily_insights_file_template not defined in Simulation.__init__. Daily summaries on non-final save might use a new timestamp.")
-                    self.metrics.save_all_daily_summaries_to_file()
-
+            for agent in self.agents:
+                # Record initial state
+                state_data = {
+                    'time': 0,
+                    'day': 1,
+                    'location': agent.residence,
+                    'energy_level': agent.energy_level,
+                    'grocery_level': agent.grocery_level,
+                    'money': agent.money,
+                    'current_activity': 'INITIALIZATION'
+                }
+                agent.record_memory('AGENT_STATE_UPDATE_EVENT', state_data)
+                
+                # Record initial location
+                location_data = {
+                    'location': agent.residence,
+                    'time': 0,
+                    'day': 1,
+                    'activity_type': 'INITIALIZATION'
+                }
+                agent.record_memory('LOCATION_EVENT', location_data)
+                
+                # Record initial plan
+                plan_data = {
+                    'time': 0,
+                    'day': 1,
+                    'location': agent.residence,
+                    'plan_type': 'INITIAL',
+                    'description': f"Initial daily plan for {agent.name}"
+                }
+                agent.record_memory('PLANNING_EVENT', plan_data)
+                
         except Exception as e:
-            print(f"Error saving state: {str(e)}")
+            print(f"Error recording initial states: {str(e)}")
+            traceback.print_exc()
+
+    def _initialize_agents(self):
+        """Initialize agents from configuration."""
+        try:
+            # Get agent configurations
+            agent_configs = self.config.get('town_people', {})
+            
+            # Initialize each agent
+            for agent_name, agent_data in agent_configs.items():
+                basics = agent_data.get('basics', {})
+                
+                # Create agent
+                agent = Agent(
+                    name=basics['name'],
+                    age=basics['age'],
+                    occupation=basics['occupation'],
+                    residence=basics['residence'],
+                    workplace=basics['workplace'],
+                    work_schedule=basics['income']['schedule'],
+                    memory_mgr=self.memory_mgr
+                )
+                
+                # Set locations dictionary
+                agent.locations = self.locations
+                
+                # Initialize personal context which will set current_location
+                agent.initialize_personal_context(agent_data)
+                
+                # Add to agents list
+                self.agents.append(agent)
+                
+                # Register with location tracker
+                if hasattr(self, 'location_tracker'):
+                    self.location_tracker.update_agent_position(
+                        agent_name=agent.name,
+                        location_name=agent.residence,
+                        grid_coordinate=None,
+                        timestamp=0
+                    )
+                
+                print(f"Registered {agent.name} at {agent.residence} with shared tracker")
+            
+            print(f"Shared location tracker initialized with {len(self.agents)} agents")
+            
+        except Exception as e:
+            print(f"Error initializing agents: {str(e)}")
+            traceback.print_exc()
+
+    def _initialize_locations(self):
+        """Initialize locations from configuration."""
+        try:
+            # Get location configurations
+            location_configs = self.config.get('town_areas', {})
+            
+            # Initialize locations for each area type
+            for area_type, locations in location_configs.items():
+                for location_name, location_data in locations.items():
+                    # Get grid coordinates
+                    grid_coord = self.config.get('town_map_grid', {}).get('world_locations', {}).get(location_name)
+                    
+                    # Create location
+                    location = Location(
+                        name=location_name,
+                        type=location_data.get('type', area_type),
+                        capacity=location_data.get('capacity', 10),
+                        grid_coordinate=tuple(grid_coord) if grid_coord else None
+                    )
+                    
+                    # Set hours if specified
+                    if 'hours' in location_data:
+                        location.set_hours(location_data['hours'])
+                    
+                    # Set base price if specified
+                    if 'base_price' in location_data:
+                        location.base_price = location_data['base_price']
+                    
+                    # Set discounts if specified
+                    if 'discount' in location_data:
+                        location.discounts = location_data['discount']
+                    
+                    # Add to locations dictionary
+                    self.locations[location_name] = location
+                    
+                    print(f"Initialized location: {location_name} ({location_data.get('type', area_type)})")
+            
+            print(f"Initialized {len(self.locations)} locations")
+            
+        except Exception as e:
+            print(f"Error initializing locations: {str(e)}")
+            traceback.print_exc()
+
+    def run_simulation(self):
+        """Run the simulation for the specified number of days."""
+        try:
+            print(f"\n=== Starting Simulation for {self.total_days} Days ===")
+            
+            # Record simulation start
+            start_data = {
+                'event_type': 'simulation_start',
+                'time': 0,
+                'day': 1,
+                'total_days': self.total_days,
+                'total_agents': len(self.agents)
+            }
+            for agent in self.agents:
+                agent.record_memory('SYSTEM_EVENT', start_data)
+            
+            # Main simulation loop
+            for hour in range(self.total_hours):
+                self.current_time = hour
+                self.current_day = hour // 24 + 1
+                
+                print(f"\n=== Day {self.current_day} Hour {hour % 24:02d}:00 ===")
+                
+                # Process each agent
+                for agent in self.agents:
+                    try:
+                        # Record hourly state update
+                        state_data = {
+                            'time': hour,
+                            'day': self.current_day,
+                            'location': agent.get_current_location_name(),
+                            'energy_level': agent.energy_level,
+                            'grocery_level': agent.grocery_level,
+                            'money': agent.money,
+                            'current_activity': agent.current_activity
+                        }
+                        agent.record_memory('AGENT_STATE_UPDATE_EVENT', state_data)
+                        
+                        # Process agent's actions
+                        self._process_agent(agent, hour)
+                        
+                    except Exception as e:
+                        print(f"Error processing agent {agent.name}: {str(e)}")
+                        traceback.print_exc()
+                
+                # Process end of hour
+                self._process_hour_end(self.current_day, hour % 24)
+            
+            # Record simulation end
+            end_data = {
+                'event_type': 'simulation_end',
+                'time': self.total_hours,
+                'day': self.total_days,
+                'total_agents': len(self.agents)
+            }
+            for agent in self.agents:
+                agent.record_memory('SYSTEM_EVENT', end_data)
+            
+            print("\n=== Simulation Complete ===")
+            
+        except Exception as e:
+            print(f"Error running simulation: {str(e)}")
+            traceback.print_exc()
+            raise
+
+    def handle_interrupt(self, signum: int, frame: Any) -> None:
+        print("\nReceived interrupt signal. Saving state and shutting down...")
+        try:
+            self.save_state(is_final_save=False)
+            print("State saved successfully.")
+            if hasattr(self, '_executor') and self._executor:
+                self._executor.shutdown(wait=False)
+            print("Shutdown complete. Exiting...")
+            os._exit(0)
+        except Exception as e:
+            print(f"Error during shutdown: {str(e)}")
+            os._exit(1)
+
+    def log_conversation(self, agent_name: str, content: str, log_type_key: str = "CONVERSATION_EVENT") -> None:
+        """Log a conversation with proper validation."""
+        try:
+            # Create conversation memory data
+            memory_data = {
+                'agent_name': agent_name,
+                'content': content,
+                'time': self.current_time,
+                'location': self.get_agent_location(agent_name),
+                'type': log_type_key
+            }
+            
+            # Record as CONVERSATION_EVENT
+            self.memory_mgr.record_memory(agent_name, log_type_key, memory_data)
+            
+        except Exception as e:
+            print(f"Error logging conversation: {str(e)}")
+            traceback.print_exc()
+
+    def save_state(self, is_final_save: bool = False) -> None:
+        """Save the current simulation state."""
+        try:
+            # Save agent memories
+            with open(self.agent_memories_file, 'r+') as f:
+                try:
+                    memories = json.load(f)
+                except json.JSONDecodeError:
+                    memories = {}
+                
+                for agent in self.agents:
+                    # Get recent memories for each memory type
+                    agent_memories = []
+                    for memory_type in MEMORY_TYPES:
+                        recent_memories = self.memory_mgr.get_recent_memories(agent.name, memory_type, limit=1000)
+                        if recent_memories:
+                            agent_memories.extend(recent_memories)
+                    
+                    if agent_memories:
+                        if agent.name not in memories:
+                            memories[agent.name] = []
+                        # Add simulation time to each memory
+                        for memory in agent_memories:
+                            memory['simulation_day'] = self.current_day
+                            memory['simulation_hour'] = self.current_time % 24
+                            memory['simulation_time'] = self.current_time
+                        memories[agent.name].extend(agent_memories)
+                
+                f.seek(0)
+                json.dump(memories, f, indent=2)
+                f.truncate()
+            
+            # Save metrics
+            with open(self.metrics_file, 'r+') as f:
+                try:
+                    metrics_data = json.load(f)
+                except json.JSONDecodeError:
+                    metrics_data = {}
+                
+                metrics_data[f'day_{self.current_day}_hour_{self.current_time % 24}'] = self.metrics.get_current_metrics()
+                
+                f.seek(0)
+                json.dump(metrics_data, f, indent=2)
+                f.truncate()
+            
+            # Save daily summary in JSONL format
+            if is_final_save:
+                with open(self.daily_summary_file, 'a') as f:
+                    summary = {
+                        'simulation_day': self.current_day,
+                        'simulation_hour': self.current_time % 24,
+                        'simulation_time': self.current_time,
+                        'metrics': self.metrics.get_current_metrics(),
+                        'agent_states': {
+                            agent.name: {
+                                'energy_level': agent.energy_level,
+                                'money': agent.money,
+                                'grocery_level': agent.grocery_level,
+                                'current_location': agent.get_current_location_name()
+                            } for agent in self.agents
+                        }
+                    }
+                    f.write(json.dumps(summary) + '\n')
+            
+        except Exception as e:
+            print(f"Error saving simulation state: {str(e)}")
             traceback.print_exc()
 
     def run_simulation_sequentially(self):
+        """Run the simulation sequentially."""
         try:
-            print("\nStarting sequential simulation...")
-            self.log_conversation("SYSTEM", "Starting sequential simulation...", 'PLANNING_EVENT')
+            # Start at 7 AM on day 1
+            self.current_time = 7 if self.current_day == 1 else 0
+            print(f"\n=== Starting Day {self.current_day} at {self.current_time:02d}:00 ===\n")
             
-            for day in range(1, self.total_days + 1):
-                self.current_day = day
-                day_start_msg = f"\n=== Starting Day {self.current_day} ==="
-                print(day_start_msg)
-                self.log_conversation("SYSTEM", day_start_msg, 'PLANNING_EVENT')
-                
-                self.metrics.new_day()
+            # Create daily plans for all agents if not already created
+            if not self.plans_created:
                 self.create_daily_plans_sequentially()
+            
+            # Run each hour of the day
+            while self.current_time < self.max_hours:
+                print(f"\n=== Day {self.current_day} Hour {self.current_time:02d}:00 ===\n")
                 
-                for hour in range(SIMULATION_SETTINGS.get('day_start_hour', 7), SIMULATION_SETTINGS.get('day_end_hour', 24)):
-                    self.current_hour = hour
-                    time_msg = f"\n=== Current Time: Day {self.current_day}, {hour:02d}:00 ==="
-                    print(time_msg)
-                    self.log_conversation("SYSTEM", time_msg, 'PLANNING_EVENT')
-                    
-                    for agent in self.agents:
-                        self.run_agent_sequentially(agent)
+                # Run each agent's actions for this hour
+                for agent in self.agents:
+                    self.run_agent_sequentially(agent, self.current_time)
                 
-                self.process_end_of_day()
+                # Process end of hour
+                self._process_hour_end(self.current_day, self.current_time)
+                
+                # Increment time
+                self.current_time += 1
             
-            complete_msg = "\n=== Sequential Simulation Complete ==="
-            print(complete_msg)
-            self.log_conversation("SYSTEM", complete_msg, 'PLANNING_EVENT')
-            self.save_state(is_final_save=True)
-            success_msg = "\nSequential simulation completed successfully!"
-            print(success_msg)
-            self.log_conversation("SYSTEM", success_msg, 'PLANNING_EVENT')
-        
-        except Exception as e:
-            error_msg = f"Error in sequential simulation: {str(e)}"
-            print(error_msg)
-            self.log_conversation("SYSTEM", error_msg, 'SYSTEM_EVENT')
-            traceback.print_exc()
-            self.save_state(is_final_save=False)
-
-    def run_agent_sequentially(self, agent: Agent):
-        try:
-            agent.current_time = self.current_hour  # Fix: Use just the current hour
+            # Process end of day
+            self.process_end_of_day()
             
-            current_location_obj = agent.current_location
-            if not isinstance(current_location_obj, Location):
-                if agent.residence in self.locations:
-                    agent.current_location = self.locations[agent.residence]
-                    current_location_obj = agent.current_location
-                else:
-                    return
-
-            is_work_time = False
-            if hasattr(agent, 'work_schedule') and agent.work_schedule:
-                work_start = agent.work_schedule.get('start', 9)
-                work_end = agent.work_schedule.get('end', 17)
-                is_work_time = work_start <= self.current_hour < work_end
-            
-            context = self.get_agent_context(agent)
-            
-            action_result_str = agent.generate_contextual_action(context)
-            
-            # Log the raw action output from LLM
-            self.log_conversation(agent.name, action_result_str, 'ACTION_RAW_OUTPUT')
-            agent.current_activity = action_result_str
-            
-            # Simplified energy update based on action content - this is very basic
-            if "eat" in action_result_str.lower() or "food" in action_result_str.lower():
-                agent.energy_level = min(100, agent.energy_level + 30)
-            elif "work" in action_result_str.lower():
-                agent.energy_level = max(0, agent.energy_level - 10)
-            elif "sleep" in action_result_str.lower() or "rest" in action_result_str.lower():
-                agent.energy_level = min(100, agent.energy_level + 50)
+            # Move to next day if not at max days
+            if self.current_day < self.total_days:
+                self.current_day += 1
+                self.current_time = 0  # Reset to midnight for next day
+                self.metrics.new_day(force_day=self.current_day)
+                print(f"\n=== Starting Day {self.current_day} at {self.current_time:02d}:00 ===\n")
+                return True
             else:
-                agent.energy_level = max(0, agent.energy_level - 5)
-            agent.energy_level = max(0, agent.energy_level - 2) # Natural decay
-
-            # Conversation generation and logging is now primarily handled within agent.generate_conversation
-            # which uses 'CONVERSATION_LOG_EVENT' memory type.
-            # If a raw action string implies a conversation, the LLM call within agent.generate_contextual_action
-            # or a subsequent call to agent.generate_conversation would log it appropriately.
-            # This specific block for conversation logging here might be redundant if agent methods handle it.
-            
-            # Example: If action implies conversation, it could be a distinct step triggered by action parsing later
-            if any(word in action_result_str.lower() for word in ["talk to", "chat with", "discuss with"]):
-                # This is a simplified trigger; actual conversation generation should be more robustly handled
-                # by the Agent class potentially based on this action string.
-                # For now, we assume agent.generate_contextual_action might return a string that IS the conversation,
-                # or an action that LEADS to a conversation (handled by agent.generate_conversation method itself)
-                pass # Conversation logging is handled by agent.generate_conversation which logs CONVERSATION_LOG_EVENT
-
-            agent.update_state() # Call update_state at the end of the agent's turn, logs AGENT_STATE_UPDATE_EVENT
-        
-        except Exception as e:
-            error_msg = f"Error processing agent {agent.name} sequentially: {str(e)}"
-            print(error_msg)
-            self.log_conversation("SYSTEM", error_msg, 'SYSTEM_EVENT')
-            traceback.print_exc()
-
-    def run_simulation_parallel(self):
-        try:
-            for day in range(1, self.total_days + 1):
-                self.current_day = day
+                print("\n=== Simulation Complete ===\n")
+                return False
                 
-                # Start each day at 7 AM
-                for hour in range(7, 24):  # Run from 7 AM to 11 PM
-                    self.current_hour = hour
-                    
-                    # Create daily plans at the start of each day (7 AM)
-                    if hour == 7:
-                        self.create_daily_plans_sequentially()
-                    
-                    self.run_hour_parallel()
-                    
-                    # Process end of hour - agents handle their needs
-                    for agent in self.agents:
-                        # Check and handle food needs
-                        if agent.needs_food(self.current_hour):
-                            agent.handle_food_needs(self.current_hour)
-                        
-                        # Check and handle grocery needs
-                        if agent.needs_groceries(self.current_hour):
-                            grocery_store = agent.find_closest_food_location(self.current_hour)
-                            if grocery_store:
-                                agent.start_travel_to(grocery_store)
-                        
-                        # Natural energy decay and state update
-                        agent.energy_level = max(0, agent.energy_level - 2)  # Natural energy decay
-                        agent.update_state()
-                        
-                    # Update metrics
-                    self.metrics.record_hour_metrics(self.current_day, hour, self.agents)
-                    
-                # Process end of day
-                self.process_end_of_day()
-                
-            # Save final metrics
-            self.metrics.save_metrics()
-            
         except Exception as e:
             print(f"Error in simulation: {str(e)}")
             traceback.print_exc()
+            return False
 
-    def create_daily_plans_sequentially(self):
-        for agent in self.agents:
-            try:
-                context = self.get_agent_context(agent)
-                plan = agent.create_daily_plan(self.current_hour, context)
-                if not plan:
-                    print(f"Warning: Failed to create daily plan for {agent.name}")
-            except Exception as e:
-                print(f"Error creating daily plan for {agent.name}: {str(e)}")
-                traceback.print_exc()
-
-    def run_hour_parallel(self):
-        with ThreadPoolExecutor(max_workers=len(self.agents) if self.agents else 1) as executor:
-            futures = [
-                executor.submit(self.run_agent_parallel, agent)
-                for agent in self.agents
-            ]
-            concurrent.futures.wait(futures)
-
-    def extract_target_location_name(self, action_string: str, agent_name: str) -> Optional[str]:
-        """Placeholder: Extracts a potential location name from an action string.
-        E.g., "I am moving to The Mall" -> "The Mall"
-        This needs a more robust implementation (e.g., regex, NLP).
-        """
-        parts = action_string.lower().split("moving to ")
-        if len(parts) > 1:
-            potential_location = parts[1].split(" from ")[0].split(" with ")[0].strip()
-            return ' '.join(word.capitalize() for word in potential_location.split())
-        return None
-
-    def get_agent_context(self, agent: Agent) -> Dict[str, Any]:
-        """Builds the context dictionary for an agent's action generation."""
-        current_location = agent.current_location
-        
-        if not current_location or not hasattr(current_location, 'name'):
-            current_location_name = agent.residence
-            current_location_type = "residence"
-            print(f"Warning: Agent {agent.name} had invalid current_location. Defaulting to residence for context.")
-            if agent.residence in self.locations:
-                agent.current_location = self.locations[agent.residence]
-                current_location = agent.current_location
-            else:
-                print(f"CRITICAL: Agent {agent.name} residence {agent.residence} not in self.locations.")
-
-        else:
-            current_location_name = current_location.name
-            current_location_type = current_location.type
-
-        nearby_agents_list = []
-        if agent.current_location:
-            for other_agent in self.agents:
-                if other_agent != agent and other_agent.current_location == agent.current_location:
-                    nearby_agents_list.append(other_agent.name)
-        
-        is_work_time = False
-        if hasattr(agent, 'work_schedule') and agent.work_schedule:
-            work_start = agent.work_schedule.get('start', 9)
-            work_end = agent.work_schedule.get('end', 17)
-            is_work_time = work_start <= self.current_hour < work_end
-
-        context = {
-            'name': agent.name,
-            'location': current_location_name,
-            'current_location': current_location_name,  # Add this explicitly for planning
-            'time': self.current_hour,
-            'nearby_agents': nearby_agents_list,
-            'location_type': current_location_type,
-            'energy_level': agent.energy_level,
-            'grocery_level': agent.grocery_level,
-            'money': agent.money,
-            'current_activity': agent.current_activity if hasattr(agent, 'current_activity') else "idle",
-            'daily_plan': agent.daily_plan if hasattr(agent, 'daily_plan') else "No plan specified.",
-            'is_work_time': is_work_time,
-            'recent_activities': agent.get_recent_activities(limit=3)
-        }
-        return context
-
-    def run_agent_parallel(self, agent: Agent):
+    def run_agent_sequentially(self, agent: Agent, current_time: int) -> None:
+        """Minimal sequential execution for debugging purposes."""
         try:
-            agent.current_time = self.current_hour
+            # Basic state update
+            agent.current_time = current_time
+            agent.update_state()
+            print(f"[Day {self.current_day} | Hour {current_time}] [Agent: {agent.name}] [DEBUG] State updated")
+            
+            # Get context and generate action
             context = self.get_agent_context(agent)
+            action = agent.generate_contextual_action(context, current_time)
+            print(f"[Day {self.current_day} | Hour {current_time}] [Agent: {agent.name}] [DEBUG] Generated action: {action}")
             
-            action_str = agent.generate_contextual_action(context)
-            print(f"Agent {agent.name} at {self.current_hour}:00: {action_str}")
-            
-            # Log the raw action output from the LLM via the simulation-wide log
-            self.log_conversation(agent.name, action_str, 'ACTION_RAW_OUTPUT') 
-            agent.current_activity = action_str
-
-            # Action Parsing and Handling
-            action_lower = action_str.lower()
-
-            # Handle Conversations
-            if any(keyword in action_lower for keyword in ["talk to", "chat with", "discuss with", "speak to", "ask"]):
-                conv_context = self.get_agent_context(agent) 
-                if conv_context['nearby_agents']:
-                    self.log_conversation(agent.name, f"Attempting to converse with {conv_context['nearby_agents']}. Action: '{action_str}'", 'CONVERSATION_LOG_EVENT')
-                    conversation_text = agent.generate_conversation(conv_context)
+            # Process the action if present
+            if action:
+                try:
+                    # Extract target location if present
+                    target_location = self.extract_target_location_name(action, agent.name)
+                    if target_location:
+                        print(f"[Day {self.current_day} | Hour {current_time}] [Agent: {agent.name}] [DEBUG] Starting travel to {target_location}. Energy: {agent.energy_level}")
+                        agent.start_travel_to(target_location)
+                    
+                    # Handle food needs if energy is low or it's meal time
+                    if agent.energy_level < ENERGY_THRESHOLD_LOW or TimeManager.is_meal_time(current_time)[0]:
+                        print(f"[Day {self.current_day} | Hour {current_time}] [Agent: {agent.name}] [DEBUG] Low energy ({agent.energy_level}) or meal time, handling food needs")
+                        self._handle_food_needs(agent, current_time)
+                    
+                    # Handle work if it's work time
+                    if agent.is_work_time():
+                        print(f"[Day {self.current_day} | Hour {current_time}] [Agent: {agent.name}] [DEBUG] Work time, handling work. Energy: {agent.energy_level}")
+                        self._handle_work(agent, current_time)
+                    
+                    # Record successful action
+                    self.debug_stats['hourly'][current_time]['successful'] += 1
+                    self.debug_stats['daily'][self.current_day]['successful'] += 1
+                        
+                except Exception as e:
+                    # Record failed action with context
+                    error_context = {
+                        'energy': agent.energy_level,
+                        'location': agent.get_current_location_name(),
+                        'action': action,
+                        'plan': agent.get_current_active_plan(current_time) if hasattr(agent, 'get_current_active_plan') else None
+                    }
+                    error_info = {
+                        'error': str(e),
+                        'context': error_context,
+                        'traceback': traceback.format_exc()
+                    }
+                    self.debug_stats['hourly'][current_time]['failed'] += 1
+                    self.debug_stats['daily'][self.current_day]['failed'] += 1
+                    self.debug_stats['hourly'][current_time]['errors'][agent.name].append(error_info)
+                    self.debug_stats['daily'][self.current_day]['errors'][agent.name].append(error_info)
+                    
+                    print(f"[Day {self.current_day} | Hour {current_time}] [Agent: {agent.name}] [ERROR] Error processing action: {str(e)}")
+                    print(f"Context: {json.dumps(error_context, indent=2)}")
+                    traceback.print_exc()
             
         except Exception as e:
-            error_msg = f"Error processing agent {agent.name} in parallel: {str(e)}"
-            print(error_msg)
-            self.log_conversation("SYSTEM", error_msg, 'SYSTEM_EVENT')
+            # Record failed action with context
+            error_context = {
+                'energy': agent.energy_level,
+                'location': agent.get_current_location_name(),
+                'action': None,
+                'plan': agent.get_current_active_plan(current_time) if hasattr(agent, 'get_current_active_plan') else None
+            }
+            error_info = {
+                'error': str(e),
+                'context': error_context,
+                'traceback': traceback.format_exc()
+            }
+            self.debug_stats['hourly'][current_time]['failed'] += 1
+            self.debug_stats['daily'][self.current_day]['failed'] += 1
+            self.debug_stats['hourly'][current_time]['errors'][agent.name].append(error_info)
+            self.debug_stats['daily'][self.current_day]['errors'][agent.name].append(error_info)
+            
+            print(f"[Day {self.current_day} | Hour {current_time}] [Agent: {agent.name}] [ERROR] Error in sequential mode: {str(e)}")
+            print(f"Context: {json.dumps(error_context, indent=2)}")
+            traceback.print_exc()
+
+    def _process_hour_end(self, day: int, hour: int) -> None:
+        """Process end of hour activities and record metrics."""
+        try:
+            # Record metrics at the end of each day (hour 23)
+            if hour == 23:
+                self.metrics_mgr.record_daily_metrics(day, self.agents, self.memory_mgr)
+            
+        except Exception as e:
+            print(f"Error processing hour end: {str(e)}")
+            traceback.print_exc()
+
+    def create_daily_plans_sequentially(self):
+        """Create daily plans for all agents sequentially."""
+        if self.plans_created:
+            print("Daily plans already created, skipping...")
+            return
+            
+        print("\n=== Creating Initial Daily Plans ===")
+        
+        for agent in self.agents:
+            try:
+                print(f"\n[DEBUG] Creating initial plan for {agent.name}")
+                
+                # Set the agent's current time to 7
+                agent.current_time = 7
+                
+                # Get agent context
+                context = self.get_agent_context(agent)
+                print(f"[DEBUG] Generated context for {agent.name}:")
+                for key, value in context.items():
+                    print(f"[DEBUG] {key}: {value}")
+                
+                # Get daily plan prompt
+                prompt = self.prompt_mgr.get_prompt('daily_plan', **context)
+                
+                # Generate plan using LLM
+                plan = self.model_mgr.generate(prompt)
+                print(f"[DEBUG] Created plan for {agent.name}")
+                print(f"[DEBUG] Plan: {plan}")
+                
+                # Store raw plan text
+                agent.daily_plan = plan
+                
+            except Exception as e:
+                print(f"Error creating plan for {agent.name}: {str(e)}")
+                traceback.print_exc()
+        
+        self.plans_created = True
+        print("\n=== Daily Plans Created ===\n")
+
+    def handle_plan_review_conversation(self, agent_a: 'Agent', agent_b: 'Agent', current_time: int):
+        """Handle a conversation between household members to review and coordinate their daily plans.
+        
+        The conversation will be initiated by the agent with the alphabetically first name,
+        using the unified conversation handling from stability_classes.py.
+        """
+        try:
+            # Mark both agents as in conversation
+            agent_a.is_in_conversation = True
+            agent_b.is_in_conversation = True
+            agent_a.conversation_partners = [agent_b.name]
+            agent_b.conversation_partners = [agent_a.name]
+            
+            # Get satisfaction ratings for both agents
+            agent_a_satisfaction = agent_a.get_satisfaction_rating()
+            agent_b_satisfaction = agent_b.get_satisfaction_rating()
+            
+            # Build conversation context
+            conversation_context = {
+                'agent_a_name': agent_a.name,
+                'agent_b_name': agent_b.name,
+                'agent_a_plan': agent_a.daily_plan,
+                'agent_b_plan': agent_b.daily_plan,
+                'agent_a_energy': agent_a.energy_level,
+                'agent_b_energy': agent_b.energy_level,
+                'agent_a_satisfaction': agent_a_satisfaction,
+                'agent_b_satisfaction': agent_b_satisfaction,
+                'current_time': current_time,
+                'location': agent_a.get_current_location_name(),
+                'agent_a_recent_activities': agent_a.get_recent_activities(),
+                'agent_b_recent_activities': agent_b.get_recent_activities()
+            }
+            
+            # Use the unified conversation handling
+            agent_a.handle_agent_conversation(agent_a, [agent_b])
+            
+            # Record the conversation in both agents' memories
+            agent_a.record_memory('CONVERSATION_LOG_EVENT', {
+                'content': f"Had a plan review conversation with {agent_b.name}",
+                'time': current_time,
+                'location': agent_a.get_current_location_name(),
+                'participants': [agent_a.name, agent_b.name],
+                'context': conversation_context
+            })
+            
+            agent_b.record_memory('CONVERSATION_LOG_EVENT', {
+                'content': f"Had a plan review conversation with {agent_a.name}",
+                'time': current_time,
+                'location': agent_b.get_current_location_name(),
+                'participants': [agent_a.name, agent_b.name],
+                'context': conversation_context
+            })
+            
+        except Exception as e:
+            print(f"Error in handle_plan_review_conversation: {str(e)}")
+            traceback.print_exc()
+        finally:
+            # Reset conversation state
+            agent_a.is_in_conversation = False
+            agent_b.is_in_conversation = False
+            agent_a.conversation_partners = []
+            agent_b.conversation_partners = []
+
+    def create_daily_plans_parallel(self):
+        """Create daily plans for all agents in parallel."""
+        if self.plans_created:
+            print("Daily plans already created, skipping...")
+            return
+            
+        print("\n=== Creating Initial Daily Plans in Parallel ===")
+        
+        with ThreadPoolExecutor(max_workers=len(self.agents)) as executor:
+            futures = []
+            for agent in self.agents:
+                future = executor.submit(self._create_agent_plan, agent)
+                futures.append(future)
+            
+            # Wait for all plans to be created
+            concurrent.futures.wait(futures)
+        
+        self.plans_created = True
+        print("=== Daily Plans Created ===\n")
+    
+    def _create_agent_plan(self, agent: 'Agent'):
+        """Helper method to create a plan for a single agent."""
+        try:
+            print(f"\n[DEBUG] Creating initial plan for {agent.name}")
+            
+            # Get agent context
+            context = self.get_agent_context(agent)
+            print(f"[DEBUG] Generated context for {agent.name}:")
+            # Print only essential context information
+            essential_keys = [
+                'name', 'age', 'occupation', 'workplace', 'work_schedule_start',
+                'work_schedule_end', 'residence', 'current_location', 'current_time',
+                'energy_level', 'money', 'daily_income', 'grocery_level'
+            ]
+            for key in essential_keys:
+                if key in context:
+                    print(f"[DEBUG] {key}: {context[key]}")
+            
+            # Create plan with proper locking
+            with self._conversation_locks[agent.name]:
+                plan = agent.create_daily_plan(self.current_time, context)
+                if plan:
+                    agent.daily_plan = plan
+                    # Parse and log activities from plan
+                    activities = agent.parse_llm_plan_to_activity(plan)
+                    if activities:
+                        for activity in activities:
+                            agent.add_activity(activity)
+                    
+                    # Log the plan creation
+                    agent.record_memory('PLANNING_EVENT', {
+                        'time': self.current_time,
+                        'content': plan,
+                        'plan_type': 'initial',
+                        'location': agent.get_current_location_name()
+                    })
+                    
+        except Exception as e:
+            print(f"Error creating plan for {agent.name}: {str(e)}")
+            traceback.print_exc()
+
+    def run_simulation_parallel(self):
+        """Run the simulation in parallel mode."""
+        try:
+            # Start at 7 AM on day 1
+            self.current_time = 7 if self.current_day == 1 else 0
+            
+            # Create daily plans for all agents if not already created
+            if not self.plans_created:
+                self.create_daily_plans_parallel()
+            
+            # Run each hour of the day
+            while self.current_time < self.max_hours:
+                # Run each agent's actions for this hour in parallel
+                with ThreadPoolExecutor(max_workers=len(self.agents)) as executor:
+                    executor.map(self.run_agent_parallel, self.agents)
+                
+                # Process end of hour
+                self._process_hour_end(self.current_day, self.current_time)
+                
+                # Increment time
+                self.current_time += 1
+            
+            # Process end of day
+            self.process_end_of_day()
+            
+            # Move to next day if not at max days
+            if self.current_day < self.total_days:
+                self.current_day += 1
+                self.current_time = 0  # Reset to midnight for next day
+                self.metrics.new_day(force_day=self.current_day)
+                return True
+            else:
+                print("\nSimulation Complete. Files saved to:")
+                print(f"Agent Memories: {self.agent_memories_file}")
+                print(f"Metrics: {self.metrics_file}")
+                print(f"Daily Summaries: {self.daily_summary_file}")
+                print(f"Conversations: {self.conversation_log_file}\n")
+                return False
+                
+        except Exception as e:
+            print(f"Error in simulation: {str(e)}")
+            traceback.print_exc()
+            return False
+
+    def extract_target_location_name(self, action_string: str, agent_name: str) -> Optional[str]:
+        """Extracts a potential location name from an action string.
+        Handles various travel-related phrases and validates against available locations.
+        """
+        try:
+            # Common travel-related phrases
+            travel_phrases = [
+                "moving to", "going to", "traveling to", "heading to",
+                "walking to", "driving to", "visiting"
+            ]
+            
+            # Try each phrase
+            for phrase in travel_phrases:
+                if phrase in action_string.lower():
+                    parts = action_string.lower().split(phrase)
+                    if len(parts) > 1:
+                        # Extract potential location name
+                        potential_location = parts[1].split(" from ")[0].split(" with ")[0].strip()
+                        location_name = ' '.join(word.capitalize() for word in potential_location.split())
+                        
+                        # Validate against available locations
+                        if location_name in [loc.name for loc in self.locations.values()]:
+                            return location_name
+                        else:
+                            print(f"[DEBUG] Invalid location '{location_name}' for {agent_name}")
+                            return None
+            
+            return None
+            
+        except Exception as e:
+            print(f"Error extracting location name for {agent_name}: {str(e)}")
+            return None
+
+    def get_agent_context(self, agent: 'Agent') -> Dict[str, Any]:
+        """Get the current context for an agent."""
+        try:
+            # Calculate daily income
+            daily_income = 0
+            if hasattr(agent, 'personal_info') and 'basics' in agent.personal_info:
+                income_info = agent.personal_info['basics'].get('income', {})
+                if income_info:
+                    income_amount = income_info.get('amount', 0)
+                    income_type = income_info.get('type', 'hourly')
+                    
+                    if income_type == 'annual':
+                        daily_income = income_amount / 365
+                    elif income_type == 'monthly':
+                        daily_income = income_amount / 30
+                    else:  # hourly
+                        work_hours = 8  # Standard work day
+                        daily_income = income_amount * work_hours
+
+            # Get basic agent info
+            context = {
+                'name': agent.name,
+                'age': agent.personal_info.get('age', 25) if agent.personal_info else 25,  # Default age if not set
+                'occupation': agent.occupation,
+                'workplace': agent.workplace,
+                'work_schedule_start': agent.work_schedule.get('start_time', 9) if agent.work_schedule else 9,
+                'work_schedule_end': agent.work_schedule.get('end_time', 17) if agent.work_schedule else 17,
+                'residence': agent.residence,
+                'current_location': agent.get_current_location_name(),
+                'current_time': agent.current_time,
+                'energy_level': agent.energy_level,
+                'money': agent.money,
+                'daily_income': daily_income,  # Added daily income
+                'income_schedule': 'end_of_day',  # Added income schedule
+                'grocery_level': agent.grocery_level,
+                'recent_activities': agent.get_recent_activities(limit=3),
+                'available_locations': [loc.name for loc in self.locations.values()]  # List all locations in town
+            }
+            
+            # Add debug logging
+            print(f"[DEBUG] Generated context for {agent.name}:")
+            print(f"[DEBUG] Occupation: {context['occupation']}")
+            print(f"[DEBUG] Workplace: {context['workplace']}")
+            print(f"[DEBUG] Work Schedule: {context['work_schedule_start']}-{context['work_schedule_end']}")
+            print(f"[DEBUG] Age: {context['age']}")
+            print(f"[DEBUG] Daily Income: ${daily_income:.2f}")
+            
+            return context
+            
+        except Exception as e:
+            print(f"Error generating context for {agent.name}: {str(e)}")
+            traceback.print_exc()
+            return {}
+
+    def get_nearby_agents(self, agent: 'Agent') -> List[str]:
+        """Get list of agent names that are at the same location as the given agent."""
+        try:
+            current_location = agent.get_current_location_name()
+            if not current_location:
+                return []
+                
+            # Get all agents at the current location
+            agents_at_location = []
+            for other_agent in self.agents:
+                if other_agent.name != agent.name and other_agent.get_current_location_name() == current_location:
+                    agents_at_location.append(other_agent.name)
+                    
+            return agents_at_location
+            
+        except Exception as e:
+            print(f"Error getting nearby agents for {agent.name}: {str(e)}")
+            return []
+
+    def run_agent_parallel(self, agent: 'Agent'):
+        """Run a single agent's actions in parallel."""
+        try:
+            with self._conversation_locks[agent.name]:
+                # Update agent state
+                agent.current_time = self.current_time
+                agent.update_state()
+                
+                # Get context and generate action
+                context = self.get_agent_context(agent)
+                action = agent.generate_contextual_action(simulation=self, current_time=self.current_time)
+                
+                # Process the action
+                if action:
+                    # Extract target location if present
+                    target_location = self.extract_target_location_name(action, agent.name)
+                    if target_location:
+                        # Start travel to target location
+                        travel_result = agent.start_travel_to(target_location)
+                        if travel_result.startswith("Error"):
+                            print(f"Travel error for {agent.name}: {travel_result}")
+                            return
+                    
+                    # Execute travel steps if agent is traveling
+                    if agent.is_traveling:
+                        message, is_continuing, encounter_info = agent._perform_travel_step()
+                        
+                        if encounter_info:
+                            if encounter_info['type'] == 'agent':
+                                # Handle agent encounter
+                                other_agent = encounter_info['other_agent']
+                                self.handle_agent_conversation(agent, [other_agent])
+                            elif encounter_info['type'] == 'location':
+                                # Handle location encounter (shop)
+                                location_name = encounter_info['location_name']
+                                if agent._should_make_purchase_at_location(location_name):
+                                    # Generate purchase decision
+                                    purchase_decision = agent.generate_structured_purchase_decision(context)
+                                    if purchase_decision.get('should_purchase', False):
+                                        # Make purchase
+                                        purchase_result = agent.make_purchase(
+                                            location_name,
+                                            purchase_decision.get('item_type', ''),
+                                            purchase_decision.get('item_description', '')
+                                        )
+                                        if purchase_result:
+                                            print(f"{agent.name} made a purchase at {location_name}")
+                        
+                        if not is_continuing:
+                            # Travel complete or interrupted
+                            agent.is_traveling = False
+                            agent.travel_state = None
+                    
+                    # Handle household interactions if at residence
+                    if agent.get_current_location_name() == agent.residence:
+                        with self._social_locks[agent.name]:
+                            # Get household members
+                            household_members = [a for a in self.agents if a.residence == agent.residence and a.name != agent.name]
+                            if household_members:
+                                # Check if should interact with household members
+                                for member in household_members:
+                                    should_interact, interaction_context = agent.should_interact_with_household_member(member, self.current_time)
+                                    if should_interact:
+                                        interaction = agent.handle_household_interaction(self.current_time)
+                                        if interaction and interaction != "Quiet time at home due to error":
+                                            print(f"\nHousehold interaction for {agent.name}:")
+                                            print(interaction)
+                    
+                    # Handle food needs if not traveling
+                    if not agent.is_traveling:
+                        self._handle_food_needs(agent, self.current_time)
+                    
+                    # Handle work if it's work time and not traveling
+                    if not agent.is_traveling and agent.is_work_time():
+                        self._handle_work(agent, self.current_time)
+                    
+                    # Update location tracker
+                    self.shared_location_tracker.update_agent_position(
+                        agent.name,
+                        agent.get_current_location_name(),
+                        self.town_map.get_coordinates_for_location(agent.get_current_location_name()),
+                        self.current_time
+                    )
+                    
+                    # Log the action
+                    self.log_conversation(agent.name, action)
+            
+        except Exception as e:
+            print(f"Error running agent {agent.name} in parallel: {str(e)}")
+            traceback.print_exc()
+
+    def save_debug_stats(self) -> None:
+        """Save debug statistics to file."""
+        try:
+            debug_file = os.path.join(self.base_dir, f'debug_stats_{self.simulation_id}.jsonl')
+            
+            # Save daily stats
+            daily_stats = {
+                'day': self.current_day,
+                'stats': self.debug_stats['daily'][self.current_day],
+                'timestamp': datetime.now().isoformat()
+            }
+            
+            with open(debug_file, 'a') as f:
+                f.write(json.dumps(daily_stats) + '\n')
+            
+            # Clear the stats for the current day
+            self.debug_stats['daily'][self.current_day] = {
+                'successful': 0,
+                'failed': 0,
+                'errors': defaultdict(list)
+            }
+            
+        except Exception as e:
+            print(f"Error saving debug stats: {str(e)}")
             traceback.print_exc()
 
     def process_end_of_day(self):
-        self.log_conversation("SYSTEM", f"End of Day {self.current_day} processing.", 'PLANNING_EVENT')
-        daily_summary_data = self.metrics.get_daily_summary_data(self.current_day)
-        self.metrics.print_daily_summary(daily_summary_data, self.current_day) 
-        self.log_conversation("SYSTEM", f"Daily summary printed for Day {self.current_day}.", 'PLANNING_EVENT')
-        self.save_state(is_final_save=False)
+        """Process end of day activities."""
+        try:
+            # Create system event memory data
+            memory_data = {
+                'event_type': 'end_of_day',
+                'time': self.current_time,
+                'day': self.current_day,
+                'description': f"End of day {self.current_day}"
+            }
+            
+            # Record as SYSTEM_EVENT for all agents
+            for agent in self.agents:
+                agent.record_memory('SYSTEM_EVENT', memory_data)
+                
+                # Record final state update
+                state_data = {
+                    'time': self.current_time,
+                    'location': agent.get_current_location_name(),
+                    'current_activity': 'END_OF_DAY',
+                    'energy_level': agent.energy_level,
+                    'grocery_level': agent.grocery_level,
+                    'money': agent.money
+                }
+                agent.record_memory('AGENT_STATE_UPDATE_EVENT', state_data)
+            
+            # Process end of day activities
+            self._process_hour_end(self.current_day, 23)
+            
+        except Exception as e:
+            print(f"Error processing end of day: {str(e)}")
+            traceback.print_exc()
+
+    def handle_agent_conversation(self, initiator: Agent, participants: List[Agent]):
+        """Handle a conversation between agents."""
+        try:
+            # Create interaction memory data
+            memory_data = {
+                'initiator': initiator.name,
+                'participants': [p.name for p in participants],
+                'time': self.current_time,
+                'location': initiator.get_current_location_name(),
+                'interaction_type': 'conversation',
+                'activity_type': 'CONVERSATION'
+            }
+            
+            # Record as INTERACTION_EVENT
+            initiator.record_memory('INTERACTION_EVENT', memory_data)
+            
+            # Handle the conversation
+            initiator.handle_agent_conversation(initiator, participants)
+            
+            # Record state update for all participants
+            for agent in [initiator] + participants:
+                state_data = {
+                    'time': self.current_time,
+                    'location': agent.get_current_location_name(),
+                    'current_activity': 'CONVERSATION',
+                    'conversation_partners': [p.name for p in participants if p != agent]
+                }
+                agent.record_memory('AGENT_STATE_UPDATE_EVENT', state_data)
+            
+        except Exception as e:
+            print(f"Error handling agent conversation: {str(e)}")
+            traceback.print_exc()
+
+    def _handle_food_needs(self, agent: Agent, current_time: int) -> None:
+        """Handle food needs for an agent."""
+        try:
+            # Check if it's meal time
+            is_meal_time, meal_type = agent.is_meal_time(current_time)
+            
+            if is_meal_time:
+                # Check if agent is at home with groceries
+                if agent.get_current_location_name() == agent.residence and agent.grocery_level > 0:
+                    # Create activity memory data for cooking at home
+                    memory_data = {
+                        'activity_type': 'DINING',
+                        'meal_type': meal_type,
+                        'location': agent.residence,
+                        'time': current_time,
+                        'description': f"Cooking and eating {meal_type} at home",
+                        'energy_gain': ENERGY_GAIN_HOME_MEAL,
+                        'grocery_used': 1
+                    }
+                    
+                    # Record as ACTIVITY_EVENT
+                    agent.record_memory('ACTIVITY_EVENT', memory_data)
+                    
+                    # Update agent state
+                    agent.energy_level = min(agent.energy_level + ENERGY_GAIN_HOME_MEAL, ENERGY_MAX)
+                    agent.grocery_level -= 1
+                    
+                    # Record state update
+                    state_data = {
+                        'energy_level': agent.energy_level,
+                        'grocery_level': agent.grocery_level,
+                        'time': current_time,
+                        'location': agent.residence,
+                        'current_activity': 'DINING'
+                    }
+                    agent.record_memory('AGENT_STATE_UPDATE_EVENT', state_data)
+                    
+                else:
+                    # Find closest food location
+                    food_location = agent.find_closest_food_location(current_time)
+                    if food_location:
+                        # Create travel memory data
+                        memory_data = {
+                            'target_location': food_location,
+                            'start_location': agent.get_current_location_name(),
+                            'start_time': current_time,
+                            'reason': f"Getting {meal_type}",
+                            'activity_type': 'TRAVEL'
+                        }
+                        
+                        # Record as TRAVEL_EVENT
+                        agent.record_memory('TRAVEL_EVENT', memory_data)
+                        
+                        # Start travel to food location
+                        agent.start_travel_to(food_location)
+            
+        except Exception as e:
+            print(f"Error handling food needs: {str(e)}")
+            traceback.print_exc()
+
+    def _handle_travel(self, agent: Agent, target_location: str) -> None:
+        """Handle travel for an agent."""
+        try:
+            # Create travel memory data
+            memory_data = {
+                'target_location': target_location,
+                'start_location': agent.get_current_location_name(),
+                'start_time': self.current_time,
+                'status': 'started',
+                'activity_type': 'TRAVEL'
+            }
+            
+            # Record as TRAVEL_EVENT
+            agent.record_memory('TRAVEL_EVENT', memory_data)
+            
+            # Start travel
+            agent.start_travel_to(target_location)
+            
+            # Record state update
+            state_data = {
+                'time': self.current_time,
+                'location': agent.get_current_location_name(),
+                'current_activity': 'TRAVEL',
+                'travel_target': target_location
+            }
+            agent.record_memory('AGENT_STATE_UPDATE_EVENT', state_data)
+            
+        except Exception as e:
+            print(f"Error handling travel: {str(e)}")
+            traceback.print_exc()
+
+    def _handle_work(self, agent: Agent, current_time: int) -> None:
+        """Handle work for an agent."""
+        try:
+            # Create activity memory data
+            memory_data = {
+                'activity_type': 'WORK',
+                'location': agent.workplace,
+                'time': current_time,
+                'description': f"Working at {agent.workplace}",
+                'energy_cost': ENERGY_COST_WORK_HOUR
+            }
+            
+            # Record as ACTIVITY_EVENT
+            agent.record_memory('ACTIVITY_EVENT', memory_data)
+            
+            # Update agent state
+            agent.energy_level = max(agent.energy_level - ENERGY_COST_WORK_HOUR, ENERGY_MIN)
+            
+            # Record state update
+            state_data = {
+                'energy_level': agent.energy_level,
+                'time': current_time,
+                'location': agent.workplace,
+                'current_activity': 'WORK'
+            }
+            agent.record_memory('AGENT_STATE_UPDATE_EVENT', state_data)
+            
+        except Exception as e:
+            print(f"Error handling work: {str(e)}")
+            traceback.print_exc()
+
+    def _handle_rest(self, agent: Agent, current_time: int) -> None:
+        """Handle rest for an agent."""
+        try:
+            # Create activity memory data
+            memory_data = {
+                'activity_type': 'RESTING',
+                'location': agent.get_current_location_name(),
+                'time': current_time,
+                'description': "Resting to recover energy",
+                'energy_gain': ENERGY_GAIN_NAP
+            }
+            
+            # Record as ACTIVITY_EVENT
+            agent.record_memory('ACTIVITY_EVENT', memory_data)
+            
+            # Update agent state
+            agent.energy_level = min(agent.energy_level + ENERGY_GAIN_NAP, ENERGY_MAX)
+            
+            # Record state update
+            state_data = {
+                'energy_level': agent.energy_level,
+                'time': current_time,
+                'location': agent.get_current_location_name(),
+                'current_activity': 'RESTING'
+            }
+            agent.record_memory('AGENT_STATE_UPDATE_EVENT', state_data)
+            
+        except Exception as e:
+            print(f"Error handling rest: {str(e)}")
+            traceback.print_exc()
+
+    def save_conversation_logs(self) -> None:
+        """Save conversation logs to file."""
+        try:
+            if hasattr(self, 'conversation_log_file'):
+                # Get all conversation memories
+                conversation_memories = []
+                for agent in self.agents:
+                    agent_conversations = self.memory_mgr.get_recent_memories(
+                        agent.name,
+                        'CONVERSATION_EVENT',
+                        limit=1000
+                    )
+                    if agent_conversations:
+                        conversation_memories.extend(agent_conversations)
+                
+                # Sort by timestamp
+                conversation_memories.sort(key=lambda x: x.get('time', 0))
+                
+                # Write to file
+                with open(self.conversation_log_file, 'w') as f:
+                    for memory in conversation_memories:
+                        f.write(json.dumps(memory) + '\n')
+                
+                print(f"Conversation logs saved to: {self.conversation_log_file}")
+            
+        except Exception as e:
+            print(f"Error saving conversation logs: {str(e)}")
+            traceback.print_exc()
 
 if __name__ == "__main__":
     try:
@@ -578,30 +1452,27 @@ if __name__ == "__main__":
             raise ValueError("Failed to initialize simulation. Exiting.")
         
         simulation = Simulation(
-            settings=sim_data['settings'],
-            locations=sim_data['locations'],
-            agents=sim_data['agents'],
-            metrics=sim_data['metrics'],
-            memory_mgr=sim_data['memory_mgr'],
-            model_mgr=sim_data['model_mgr'],
-            prompt_mgr=sim_data['prompt_mgr'],
-            town_map=sim_data['town_map']
+            config=sim_data['settings']
         )
         
-        simulation.run_simulation_parallel()
-
-    except ValueError as ve:
-        print(f"\nInitialization Error: {str(ve)}")
-        traceback.print_exc()
+        # Run simulation based on parallel setting
+        if sim_data['settings'].get('parallel', False):
+            print("\n=== Running Simulation in Parallel Mode ===")
+            simulation.run_simulation()
+        else:
+            print("\n=== Running Simulation in Sequential Mode ===")
+            simulation.run_simulation_sequentially()
+        
+        print(f"\nReal-world end time: {datetime.now().strftime('%H:%M:%S')}")
+        print("=== Simulation Complete ===\n")
+        
+    except KeyboardInterrupt:
+        print("\nSimulation interrupted by user")
     except Exception as e:
-        print(f"\nFatal error in main execution: {str(e)}")
+        print(f"Error in simulation: {str(e)}")
         traceback.print_exc()
-        if 'simulation' in locals() and simulation is not None:
-            try:
-                simulation.save_state(is_final_save=False)
-                print("Attempted to save state before exiting due to fatal error.")
-            except Exception as se:
-                print(f"Could not save state during fatal error handling: {se}")
     finally:
-        print("\n=== Simulation Ended ===")
-        print(f"Real-world end time: {datetime.now().strftime('%H:%M:%S')}")
+        # Save final state
+        if 'simulation' in locals():
+            simulation.save_state(is_final_save=True)
+            simulation.save_conversation_logs()

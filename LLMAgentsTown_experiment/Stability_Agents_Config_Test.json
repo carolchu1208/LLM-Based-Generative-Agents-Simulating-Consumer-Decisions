@@ -1,0 +1,266 @@
+{
+    "world_layout": {
+        "major_areas": {
+            "Main_Street": {
+                "position": "central",
+                "locations": ["Target", "Local Market", "The Coffee Shop", "Local Diner", "Fried Chicken Shop"]
+            },
+            "Residential": {
+                "position": "west",
+                "locations": ["Maple Street Apartments", "Oak View Condos"]
+            },
+            "Business_District": {
+                "position": "north",
+                "locations": ["Tech Hub", "Marketing Agency", "Office Complex"]
+            }
+        }
+    },
+    "town_map_grid": {
+        "world_locations": {
+            "Target": [-6, 0],
+            "The Coffee Shop": [-3, 0],
+            "Fried Chicken Shop": [0, 0],
+            "Local Diner": [3, 0],
+            "Local Market": [6, 0],
+            "Maple Street Apartments": [-3, -2],
+            "Oak View Condos": [-3, -3],
+            "Tech Hub": [3, 3],
+            "Marketing Agency": [0, 3],
+            "Office Complex": [-3, 3]
+        },
+        "travel_paths": [
+            [[-6, 0], [-5, 0], [-4, 0], [-3, 0], [-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0]],
+            [[-3, -3], [-3, -2]],
+            [[-3, -2], [-2, -2],[-1,-2],[0,-2]],
+            [[0, -2], [0, -1], [0, 0], [0, 1], [0, 2], [0, 3]],
+            [[0, 3], [1, 3], [2, 3], [3, 3]],
+            [[0, 3], [-1, 3], [-2, 3], [-3, 3]]
+        ]
+    },
+    "town_areas": {
+        "retail_and_grocery": {
+            "Target": {
+                "description": "Department store offering clothing, home goods, groceries, fresh vegetable, dairy goods and everyday essentials",
+                "type": "grocery",
+                "hours": {
+                    "open": 8,
+                    "close": 22
+                },
+                "base_price": 2.0
+            },
+            "Local Market": {
+                "description": "Family-owned small scale grocery store with fresh produce and everyday essentials",
+                "type": "grocery",
+                "hours": {
+                    "open": 7,
+                    "close": 22
+                },
+                "base_price": 1.0
+            }
+        },
+        "residences": {
+            "Maple Street Apartments": {
+                "description": "A modern apartment complex with family-friendly amenities",
+                "type": "residence",
+                "hours": {
+                    "always_open": true
+                }
+            },
+            "Oak View Condos": {
+                "description": "Mid-range condominiums with good amenities and convenient location",
+                "type": "residence",
+                "hours": {
+                    "always_open": true
+                }
+            }
+        },
+        "dining": {
+            "Fried Chicken Shop": {
+                "description": "A popular fast-food restaurant known for its crispy chicken meals",
+                "type": "local_shop",
+                "hours": {
+                    "open": 10,
+                    "close": 22
+                },
+                "base_price": 20.0,
+                "discount": {
+                    "type": "percentage",
+                    "value": 20,
+                    "days": [3, 4]
+                }
+            },
+            "The Coffee Shop": {
+                "description": "Cozy cafe offering coffee, pastries, and light meals",
+                "type": "local_shop",
+                "hours": {
+                    "open": 8,
+                    "close": 20
+                },
+                "base_price": 5.0
+            },
+            "Local Diner": {
+                "description": "Family-style restaurant serving breakfast, lunch, and dinner all day",
+                "type": "local_shop",
+                "hours": {
+                    "open": 8,
+                    "close": 23
+                },
+                "base_price": 25.0
+            }
+        },
+        "business": {
+            "Tech Hub": {
+                "description": "Modern tech office space with meeting rooms and collaborative areas",
+                "type": "office",
+                "hours": {
+                    "open": 10,
+                    "close": 18
+                },
+                "capacity": 50
+            },
+            "Marketing Agency": {
+                "description": "Creative marketing firm with open-plan office space",
+                "type": "office",
+                "hours": {
+                    "open": 9,
+                    "close": 17
+                },
+                "capacity": 30
+            },
+            "Office Complex": {
+                "description": "Multi-tenant office building with various businesses",
+                "type": "office",
+                "hours": {
+                    "open": 10,
+                    "close": 18
+                },
+                "capacity": 100
+            }
+        }
+    },
+    "town_people": {
+        "Kevin Chen": {
+            "basics": {
+                "name": "Kevin Chen",
+                "age": 23,
+                "occupation": "fried chicken shop supervisor",
+                "residence": "Maple Street Apartments",
+                "workplace": "Fried Chicken Shop",
+                "relationships": {
+                    "status": "single",
+                    "household_members": []
+                },
+                "income": {
+                    "type": "hourly",
+                    "amount": 18.50,
+                    "schedule": {
+                        "type": "full_time",
+                        "work_hours": {
+                            "start": 10,
+                            "end": 18
+                        },
+                        "days": [1, 2, 3, 4, 5]
+                    }
+                }
+            }
+        },
+        "Sophie Martinez": {
+            "basics": {
+                "name": "Sophie Martinez",
+                "age": 27,
+                "occupation": "Local Market owner",
+                "residence": "Oak View Condos",
+                "workplace": "Local Market",
+                "relationships": {
+                    "status": "single",
+                    "living_arrangement": "alone",
+                    "household_members": []
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 6000,
+                    "schedule": {
+                        "type": "business_owner",
+                        "work_hours": {
+                            "start": 8,
+                            "end": 15
+                        },
+                        "days": [1, 2, 3, 4, 5, 6]
+                    }
+                }
+            }
+        },
+        "David Kim": {
+            "basics": {
+                "name": "David Kim",
+                "age": 35,
+                "occupation": "software engineer",
+                "residence": "Oak View Condos",
+                "workplace": "Tech Hub",
+                "relationships": {
+                    "status": "married",
+                    "spouse": {
+                        "name": "Lisa Kim",
+                        "relationship_type": "spouse",
+                        "relationship_duration": "7 years"
+                    },
+                    "household_members": [
+                        {
+                            "name": "Lisa Kim",
+                            "relationship_type": "spouse",
+                            "relationship_duration": "7 years"
+                        }
+                    ]
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 8500,
+                    "schedule": {
+                        "type": "full_time",
+                        "work_hours": {
+                            "start": 10,
+                            "end": 18
+                        },
+                        "days": [1, 2, 3, 4, 5]
+                    }
+                }
+            }
+        },
+        "Lisa Kim": {
+            "basics": {
+                "name": "Lisa Kim",
+                "age": 33,
+                "occupation": "marketing manager",
+                "residence": "Oak View Condos",
+                "workplace": "Marketing Agency",
+                "relationships": {
+                    "status": "married",
+                    "spouse": {
+                        "name": "David Kim",
+                        "relationship_type": "spouse",
+                        "relationship_duration": "7 years"
+                    },
+                    "household_members": [
+                        {
+                            "name": "David Kim",
+                            "relationship_type": "spouse",
+                            "relationship_duration": "7 years"
+                        }
+                    ]
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 7000,
+                    "schedule": {
+                        "type": "full_time",
+                        "work_hours": {
+                            "start": 9,
+                            "end": 17
+                        },
+                        "days": [1, 2, 3, 4, 5]
+                    }
+                }
+            }
+        }
+    }
+} 
