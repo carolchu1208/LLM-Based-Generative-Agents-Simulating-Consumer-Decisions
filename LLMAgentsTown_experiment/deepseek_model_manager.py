@@ -1,13 +1,38 @@
+# Standard library imports
+import os
+import json
+import random
 import threading
 import time
-from typing import Dict, Any, Optional
-import re
-import requests
-import os
 import traceback
-import json
+import logging
+from collections import defaultdict, deque
+from datetime import datetime
+from typing import (
+    Dict, List, Optional, Any, Tuple, Set, Union, 
+    TYPE_CHECKING, TypeVar, Generic, Protocol
+)
 
-class ModelManager:
+# Third-party imports
+import requests
+
+
+# Model Manager Interface
+class ModelManagerInterface(Protocol):
+    """Interface for model management functionality."""
+    def generate(self, prompt: str) -> str:
+        """Generate a response from the model."""
+        ...
+    
+    def generate_with_context(self, prompt: str, context: str, **kwargs) -> str:
+        """Generate a response with additional context."""
+        ...
+    
+    def generate_structured(self, prompt: str, schema: Dict[str, Any], **kwargs) -> Optional[Dict[str, Any]]:
+        """Generate a structured response following the provided schema."""
+        ...
+
+class ModelManager(ModelManagerInterface):
     _instance = None
     _lock = threading.Lock()
     
@@ -24,21 +49,57 @@ class ModelManager:
     
     def _initialize(self):
         """Initialize the model manager with settings."""
-        self.fallback_responses = {
-            "daily_plan": {
-                "schedule": "I'll start my day at 7:00 AM with breakfast at home. At 8:30 AM, I'll head to work. During my lunch break at 12:00 PM, I'll eat at a nearby restaurant. I'll continue working until 5:00 PM, then have dinner at home at 6:00 PM. I'll spend the evening relaxing at home.",
-                "reasoning": "This schedule maintains a good balance between work and personal time, with proper meal breaks and rest periods.",
-                "energy_considerations": "I'll need to ensure I have enough energy for work by eating proper meals and taking breaks when needed."
-            },
-            "conversation": "I understand. Let's continue our conversation.",
-            "contextual_action": "I'll proceed with my current activity.",
-            "default": "I understand and will proceed accordingly."
+        # Set API key
+        self.api_key = 'sk-4e401a02a7084517bcf02541fa87be78'
+        self.use_fallback = False
+        
+        # Model configuration
+        self.model_config = {
+            "model": "deepseek-chat",
+            "max_tokens": 2048,
+            "temperature": 1.0,
+            "top_p": 0.9
         }
+        
+        # Initialize fallback responses (only used if API calls fail)
+        self.fallback_responses = {
+            "daily_plan": """{
+  "activities": [
+    {"time": 7, "action": "go_to", "target": "Fried Chicken Shop", "description": "Travel to work"},
+    {"time": 8, "action": "work", "target": "Fried Chicken Shop", "description": "Start work shift"},
+    {"time": 9, "action": "work", "target": "Fried Chicken Shop", "description": "Continue work"},
+    {"time": 10, "action": "work", "target": "Fried Chicken Shop", "description": "Continue work"},
+    {"time": 11, "action": "work", "target": "Fried Chicken Shop", "description": "Continue work"},
+    {"time": 12, "action": "eat", "target": "Local Diner", "description": "Lunch break"},
+    {"time": 13, "action": "work", "target": "Fried Chicken Shop", "description": "Resume work"},
+    {"time": 14, "action": "work", "target": "Fried Chicken Shop", "description": "Continue work"},
+    {"time": 15, "action": "work", "target": "Fried Chicken Shop", "description": "Continue work"},
+    {"time": 16, "action": "work", "target": "Fried Chicken Shop", "description": "Continue work"},
+    {"time": 17, "action": "work", "target": "Fried Chicken Shop", "description": "End work shift"},
+    {"time": 18, "action": "go_to", "target": "Maple Street Apartments", "description": "Travel home"},
+    {"time": 19, "action": "eat", "target": "Maple Street Apartments", "description": "Dinner at home"},
+    {"time": 20, "action": "idle", "target": "Maple Street Apartments", "description": "Relax at home"},
+    {"time": 21, "action": "idle", "target": "Maple Street Apartments", "description": "Evening relaxation"},
+    {"time": 22, "action": "idle", "target": "Maple Street Apartments", "description": "Wind down"},
+    {"time": 23, "action": "rest", "target": "Maple Street Apartments", "description": "Prepare for sleep"}
+  ]
+}""",
+            "conversation": "I understand. Let's continue our conversation.",
+            "action": "I'll proceed with my current activity."
+        }
+        
+        print("[DEBUG] ModelManager initialized with API key")
+        print(f"[DEBUG] Using model: {self.model_config['model']}")
     
-    def _make_api_call(self, prompt: str, max_retries=3, **kwargs) -> Optional[str]:
+    def _make_api_call(self, prompt: str, prompt_type: str, max_retries=3, **kwargs) -> Optional[str]:
         """Process the prompt and generate appropriate response."""
         try:
-            print(f"\n[DEBUG] Starting API call for prompt type: {self._identify_prompt_type(prompt)}")
+            # Validate prompt type
+            valid_types = ["daily_plan", "conversation", "action"]
+            if prompt_type not in valid_types:
+                raise ValueError(f"Invalid prompt type: {prompt_type}. Must be one of: {valid_types}")
+                
+            print(f"\n[DEBUG] Starting API call for prompt type: {prompt_type}")
             
             # Extract context if present
             context = {}
@@ -49,77 +110,138 @@ class ModelManager:
             elif isinstance(prompt, list):
                 prompt = ' '.join(str(p) for p in prompt)
             
-            # Process the prompt based on its type
-            prompt_type = self._identify_prompt_type(prompt)
-            print(f"[DEBUG] Identified prompt type: {prompt_type}")
             print(f"[DEBUG] Prompt length: {len(prompt)} characters")
+            
+            # Initialize retry variables
+            retry_delay = 2  # Initial delay in seconds
+            last_error = None
             
             # Make the actual API call to DeepSeek with retries
             for attempt in range(max_retries):
                 try:
                     print(f"[DEBUG] Making API call attempt {attempt + 1}/{max_retries}")
-                    print(f"[DEBUG] Request payload: {{'model': 'deepseek-chat', 'max_tokens': 512, 'temperature': 0.7}}")
+                    print(f"[DEBUG] API endpoint: https://api.deepseek.com/v1/chat/completions")
                     
+                    # Test internet connectivity first
+                    try:
+                        print("[DEBUG] Testing internet connectivity...")
+                        requests.get("https://api.deepseek.com", timeout=(5, 5))  # (connect timeout, read timeout)
+                        print("[DEBUG] Internet connection test successful")
+                    except requests.exceptions.RequestException as e:
+                        print(f"[DEBUG] Internet connection test failed: {str(e)}")
+                        print("[DEBUG] Please check your internet connection and try again")
+                        if attempt < max_retries - 1:
+                            print(f"[DEBUG] Retrying in {retry_delay} seconds...")
+                            time.sleep(retry_delay)
+                            retry_delay *= 2  # Exponential backoff
+                            continue
+                        return self._get_fallback_response(prompt_type)
+                    
+                    # Set timeouts: (connect timeout, read timeout)
+                    connect_timeout = 10  # 10 seconds to establish connection
+                    read_timeout = 60    # 60 seconds to read response
+                    print(f"[DEBUG] Using timeouts - Connect: {connect_timeout}s, Read: {read_timeout}s")
+                    
+                    # Prepare request payload
+                    payload = {
+                        **self.model_config,
+                        "messages": [{"role": "user", "content": prompt}]
+                    }
+                    
+                    # Make the API call
                     response = requests.post(
                         "https://api.deepseek.com/v1/chat/completions",
                         headers={
-                            "Authorization": f"Bearer sk-4e401a02a7084517bcf02541fa87be78",
+                            "Authorization": f"Bearer {self.api_key}",
                             "Content-Type": "application/json"
                         },
-                        json={
-                            "model": "deepseek-chat",
-                            "messages": [{"role": "user", "content": prompt}],
-                            "max_tokens": 512,
-                            "temperature": 0.7,
-                            "top_p": 0.9
-                        },
-                        timeout=30
+                        json=payload,
+                        timeout=(connect_timeout, read_timeout)
                     )
                     
                     print(f"[DEBUG] API Response status code: {response.status_code}")
-                    print(f"[DEBUG] API Response headers: {dict(response.headers)}")
                     
+                    # Handle different response status codes
                     if response.status_code == 200:
-                        content = response.json()["choices"][0]["message"]["content"]
-                        print(f"[DEBUG] Successfully received response of length: {len(content)}")
-                        return content
-                    elif response.status_code == 429:
+                        try:
+                            response_json = response.json()
+                            if not response_json or "choices" not in response_json:
+                                print("[DEBUG] Invalid response format from API")
+                                last_error = "Invalid response format"
+                                continue
+                                
+                            choices = response_json["choices"]
+                            if not choices or len(choices) == 0:
+                                print("[DEBUG] No choices in API response")
+                                last_error = "No choices in response"
+                                continue
+                                
+                            content = choices[0].get("message", {}).get("content")
+                            if not content:
+                                print("[DEBUG] No content in API response")
+                                last_error = "No content in response"
+                                continue
+                                
+                            print(f"[DEBUG] Successfully received response of length: {len(content)}")
+                            return content
+                            
+                        except (json.JSONDecodeError, KeyError, IndexError) as e:
+                            print(f"[DEBUG] Error parsing API response: {str(e)}")
+                            last_error = f"Error parsing response: {str(e)}"
+                            continue
+                            
+                    elif response.status_code == 429:  # Rate limit
                         retry_after = int(response.headers.get('Retry-After', 5))
                         print(f"[DEBUG] Rate limited. Waiting {retry_after} seconds...")
                         time.sleep(retry_after)
                         continue
-                    else:
+                        
+                    elif response.status_code >= 500:  # Server errors
+                        print(f"[DEBUG] Server error: {response.status_code}")
+                        last_error = f"Server error: {response.status_code}"
+                        if attempt < max_retries - 1:
+                            print(f"[DEBUG] Retrying in {retry_delay} seconds...")
+                            time.sleep(retry_delay)
+                            retry_delay *= 2
+                            continue
+                            
+                    else:  # Other errors
                         error_msg = response.json().get("error", {}).get("message", "Unknown error")
                         print(f"[DEBUG] API error: {response.status_code} {error_msg}")
-                        print(f"[DEBUG] Full error response: {response.text}")
+                        last_error = f"API error: {error_msg}"
                         if attempt < max_retries - 1:
-                            wait_time = 2 ** attempt
-                            print(f"[DEBUG] Retrying in {wait_time} seconds...")
-                            time.sleep(wait_time)
+                            print(f"[DEBUG] Retrying in {retry_delay} seconds...")
+                            time.sleep(retry_delay)
+                            retry_delay *= 2
                             continue
-                        print("[DEBUG] Using fallback response after all retries failed")
-                        return self._get_fallback_response(prompt_type)
-                        
-                except requests.exceptions.Timeout:
-                    print(f"[DEBUG] Request timed out on attempt {attempt + 1}")
+                            
+                except requests.exceptions.Timeout as e:
+                    if isinstance(e, requests.exceptions.ConnectTimeout):
+                        print(f"[DEBUG] Connection timed out on attempt {attempt + 1}")
+                        last_error = "Connection timeout"
+                    elif isinstance(e, requests.exceptions.ReadTimeout):
+                        print(f"[DEBUG] Read timed out on attempt {attempt + 1}")
+                        last_error = "Read timeout"
+                    else:
+                        print(f"[DEBUG] Request timed out on attempt {attempt + 1}")
+                        last_error = "Request timeout"
+                    
                     if attempt < max_retries - 1:
-                        wait_time = 2 ** attempt
-                        print(f"[DEBUG] Retrying in {wait_time} seconds...")
-                        time.sleep(wait_time)
+                        print(f"[DEBUG] Retrying in {retry_delay} seconds...")
+                        time.sleep(retry_delay)
+                        retry_delay *= 2
                         continue
-                    print("[DEBUG] Using fallback response after timeout")
-                    return self._get_fallback_response(prompt_type)
+                        
                 except requests.exceptions.RequestException as e:
                     print(f"[DEBUG] Request failed on attempt {attempt + 1}: {str(e)}")
+                    last_error = f"Request failed: {str(e)}"
                     if attempt < max_retries - 1:
-                        wait_time = 2 ** attempt
-                        print(f"[DEBUG] Retrying in {wait_time} seconds...")
-                        time.sleep(wait_time)
+                        print(f"[DEBUG] Retrying in {retry_delay} seconds...")
+                        time.sleep(retry_delay)
+                        retry_delay *= 2
                         continue
-                    print("[DEBUG] Using fallback response after request exception")
-                    return self._get_fallback_response(prompt_type)
                     
-            print("[DEBUG] Using fallback response after all retries exhausted")
+            print(f"[DEBUG] All retry attempts failed. Last error: {last_error}")
             return self._get_fallback_response(prompt_type)
                 
         except Exception as e:
@@ -129,58 +251,69 @@ class ModelManager:
     
     def _get_fallback_response(self, prompt_type: str) -> str:
         """Get an appropriate fallback response based on the prompt type."""
-        return self.fallback_responses.get(prompt_type, self.fallback_responses["default"])
+        valid_types = ["daily_plan", "conversation", "action"]
+        if prompt_type not in valid_types:
+            raise ValueError(f"Invalid prompt type: {prompt_type}. Must be one of: {valid_types}")
+        return self.fallback_responses.get(prompt_type)
     
-    def generate(self, prompt: str) -> str:
+    def generate(self, prompt: str, prompt_type: str) -> str:
         """Generate a response from the model or use fallback if processing fails."""
         try:
-            response = self._make_api_call(prompt)
+            print(f"\n[DEBUG] Starting response generation...")
+            print(f"[DEBUG] Prompt type: {prompt_type}")
+            print(f"[DEBUG] Prompt length: {len(prompt)} characters")
+            
+            response = self._make_api_call(prompt, prompt_type)
             if response:
-                # Only log the response once
-                print(f"[DEBUG] Raw response received: {response[:200]}...")
+                # Log the full response for debugging
+                print(f"[DEBUG] Full API response received:")
+                print(f"[DEBUG] Response length: {len(response)} characters")
                 return response
-            return self._get_fallback_response("default")
+                
+            print("[DEBUG] No response received from model, using fallback")
+            return self._get_fallback_response(prompt_type)
         except Exception as e:
-            print(f"[DeepSeek] Error generating response: {e}")
-            return self._get_fallback_response("default")
+            print(f"[DEBUG] Error in generate method:")
+            print(f"[DEBUG] Error type: {type(e).__name__}")
+            print(f"[DEBUG] Error message: {str(e)}")
+            print(f"[DEBUG] Error traceback:")
+            traceback.print_exc()
+            return self._get_fallback_response(prompt_type)
     
-    def _identify_prompt_type(self, prompt: str) -> str:
-        """Identify the type of prompt to determine appropriate response generation."""
-        prompt_lower = prompt.lower()
-        
-        if "starting my day" in prompt_lower or "daily plan" in prompt_lower:
-            return "daily_plan"
-        elif "conversation" in prompt_lower or "chat" in prompt_lower:
-            return "conversation"
-        elif "action" in prompt_lower or "what to do" in prompt_lower:
-            return "contextual_action"
-        else:
-            return "default"
-    
-    def generate_with_context(self, prompt: str, context: str, **kwargs) -> str:
+    def generate_with_context(self, prompt: str, context: str, prompt_type: str, **kwargs) -> str:
         """Generate a response with additional context."""
         combined_prompt = f"Context: {context}\n\nPrompt: {prompt}"
-        return self.generate(combined_prompt)
+        return self.generate(combined_prompt, prompt_type)
     
-    def generate_structured(self, prompt: str, schema: Dict[str, Any], **kwargs) -> Optional[Dict[str, Any]]:
+    def generate_structured(self, prompt: str, schema: Dict[str, Any], prompt_type: str, **kwargs) -> Optional[Dict[str, Any]]:
         """Generate a structured response following the provided schema."""
         try:
             print(f"\n[DEBUG] Generating structured response with schema: {schema}")
-            print(f"[DEBUG] Prompt type: {self._identify_prompt_type(prompt)}")
+            print(f"[DEBUG] Prompt type: {prompt_type}")
             print(f"[DEBUG] Prompt length: {len(prompt)} characters")
             
             # Get the raw response
-            response = self.generate(prompt)
+            response = self.generate(prompt, prompt_type)
             if not response:
                 print("[DEBUG] No response generated from model")
                 return None
                 
-            print(f"[DEBUG] Raw response received: {response[:200]}...")  # Log first 200 chars
+            # Log response preview safely
+            response_preview = response[:200] if isinstance(response, str) else str(response)[:200]
+            print(f"[DEBUG] Raw response received: {response_preview}...")
             
             # Try to parse JSON response
             try:
-                result = json.loads(response)
-                print(f"[DEBUG] Successfully parsed JSON response: {result}")
+                if isinstance(response, str):
+                    result = json.loads(response)
+                else:
+                    result = response
+                    
+                if not result:
+                    print("[DEBUG] Empty result after parsing")
+                    return None
+                    
+                print(f"[DEBUG] Successfully parsed response: {result}")
                 return result
             except json.JSONDecodeError:
                 print("[DEBUG] Response is not valid JSON, attempting to extract structured data")
@@ -189,7 +322,7 @@ class ModelManager:
             result = {}
             for key, value_type in schema.items():
                 print(f"[DEBUG] Processing key: {key}")
-                if key in response.lower():
+                if isinstance(response, str) and key in response.lower():
                     try:
                         # Find the section after the key
                         key_index = response.lower().find(key.lower())
@@ -210,7 +343,7 @@ class ModelManager:
                             else:
                                 value = after_key.strip()
                             
-                            print(f"[DEBUG] Extracted value for {key}: {value[:100]}...")  # Log first 100 chars
+                            print(f"[DEBUG] Extracted value for {key}: {value[:100]}...")
                             
                             # Convert to appropriate type
                             if value_type == str:

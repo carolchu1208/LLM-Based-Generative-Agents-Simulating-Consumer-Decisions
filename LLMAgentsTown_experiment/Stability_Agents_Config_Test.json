@@ -31,11 +31,11 @@
         "travel_paths": [
             [[-6, 0], [-5, 0], [-4, 0], [-3, 0], [-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0]],
             [[-3, -3], [-3, -2]],
-            [[-3, -2], [-2, -2],[-1,-2],[0,-2]],
-            [[0, -2], [0, -1], [0, 0], [0, 1], [0, 2], [0, 3]],
+            [[-3, -2], [-2, -2], [-1, -2], [0, -2]],
+            [[0, -2], [0, -1], [0, 0]],
+            [[0, 0], [0, 1], [0, 2], [0, 3]],
             [[0, 3], [1, 3], [2, 3], [3, 3]],
-            [[0, 3], [-1, 3], [-2, 3], [-3, 3]]
-        ]
+            [[0, 3], [-1, 3], [-2, 3], [-3, 3]]]
     },
     "town_areas": {
         "retail_and_grocery": {
@@ -46,8 +46,8 @@
                     "open": 8,
                     "close": 22
                 },
-                "base_price": 2.0
-            },
+                "base_price": 1.0
+            }, 
             "Local Market": {
                 "description": "Family-owned small scale grocery store with fresh produce and everyday essentials",
                 "type": "grocery",
@@ -63,14 +63,16 @@
                 "description": "A modern apartment complex with family-friendly amenities",
                 "type": "residence",
                 "hours": {
-                    "always_open": true
+                    "open": 0,
+                    "close": 24
                 }
             },
             "Oak View Condos": {
                 "description": "Mid-range condominiums with good amenities and convenient location",
                 "type": "residence",
                 "hours": {
-                    "always_open": true
+                    "open": 0,
+                    "close": 24
                 }
             }
         },
@@ -82,7 +84,26 @@
                     "open": 10,
                     "close": 22
                 },
-                "base_price": 20.0,
+                "menu": {
+                    "lunch": {
+                        "available_hours": [11, 12, 13, 14],
+                        "item": "Fried Chicken Tender Meal Set",
+                        "description": "Chicken tenders, waffle fries and drink",
+                        "base_price": 20.0
+                    },
+                    "dinner": {
+                        "available_hours": [17, 18, 19, 20],
+                        "item": "Fried Chicken Wings Meal Set",
+                        "description": "Chicken Wings, waffle fries and drink",
+                        "base_price": 20.0
+                    },
+                    "snack": {
+                        "available_hours": [10, 15, 16, 21, 22],
+                        "item": "Fried Chicken Nugget 6pcs",
+                        "description": "Fried Chicken Nugget 6pcs",
+                        "base_price": 10.0
+                    }
+                },
                 "discount": {
                     "type": "percentage",
                     "value": 20,
@@ -96,7 +117,20 @@
                     "open": 8,
                     "close": 20
                 },
-                "base_price": 5.0
+                "menu": {
+                    "breakfast": {
+                        "available_hours": [8, 9],
+                        "item": "Morning Set",
+                        "description": "Energy Boosting Shot and Tuna Sandwich",
+                        "base_price": 20.0
+                    },
+                    "snack": {
+                        "available_hours": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+                        "item": "Blueberry Muffin",
+                        "description": "Blueberry Muffin",
+                        "base_price": 5.0
+                    }
+                }
             },
             "Local Diner": {
                 "description": "Family-style restaurant serving breakfast, lunch, and dinner all day",
@@ -105,7 +139,32 @@
                     "open": 8,
                     "close": 23
                 },
-                "base_price": 25.0
+                "menu": {
+                    "breakfast": {
+                        "available_hours": [8, 9],
+                        "item": "Breakfast Burrito",
+                        "description": "Breakfast Burrito",
+                        "base_price": 20.0
+                    },
+                    "lunch": {
+                        "available_hours": [11, 12, 13, 14],
+                        "item": "Commercial Lunch Set",
+                        "description": "Fried Steak with Vegetable and Potato",
+                        "base_price": 20.0
+                    },
+                    "dinner": {
+                        "available_hours": [17, 18, 19, 20],
+                        "item": "Dinner Set",
+                        "description": "Soup, Salad, Spaghetti, and Dessert",
+                        "base_price": 25.0
+                    },
+                    "snack": {
+                        "available_hours": [10, 15, 16, 21, 22, 23],
+                        "item": "French Fries",
+                        "description": "French Fries",
+                        "base_price": 10.0
+                    }
+                }
             }
         },
         "business": {
@@ -115,8 +174,7 @@
                 "hours": {
                     "open": 10,
                     "close": 18
-                },
-                "capacity": 50
+                }
             },
             "Marketing Agency": {
                 "description": "Creative marketing firm with open-plan office space",
@@ -124,8 +182,7 @@
                 "hours": {
                     "open": 9,
                     "close": 17
-                },
-                "capacity": 30
+                }
             },
             "Office Complex": {
                 "description": "Multi-tenant office building with various businesses",
@@ -133,8 +190,7 @@
                 "hours": {
                     "open": 10,
                     "close": 18
-                },
-                "capacity": 100
+                }
             }
         }
     },
@@ -148,7 +204,13 @@
                 "workplace": "Fried Chicken Shop",
                 "relationships": {
                     "status": "single",
-                    "household_members": []
+                    "household_members": [],
+                    "best_friends": [
+                        {
+                            "name": "Mike Johnson",
+                            "relationship_duration": "4 years"
+                        }
+                    ]
                 },
                 "income": {
                     "type": "hourly",
@@ -250,7 +312,224 @@
                 },
                 "income": {
                     "type": "monthly",
-                    "amount": 7000,
+                    "amount": 7500,
+                    "schedule": {
+                        "type": "full_time",
+                        "work_hours": {
+                            "start": 9,
+                            "end": 17
+                        },
+                        "days": [1, 2, 3, 4, 5]
+                    }
+                }
+            }
+        },
+        "Rebecca Queen": {
+            "basics": {
+                "name": "Rebecca Queen",
+                "age": 22,
+                "occupation": "fried chicken employee",
+                "residence": "Oak View Condos",
+                "workplace": "Fried Chicken Shop",
+                "relationships": {
+                    "status": "single",
+                    "household_members": [],
+                    "best_friends": [
+                        {
+                            "name": "Emma Wilson",
+                            "relationship_duration": "3 years"
+                        }
+                    ]
+                },
+                "income": {
+                    "type": "hourly",
+                    "amount": 18.50,
+                    "schedule": {
+                        "type": "full_time",
+                        "work_hours": {
+                            "start": 10,
+                            "end": 18
+                        },
+                        "days": [1, 2, 3, 4, 5]
+                    }
+                }
+            }
+        },
+        "Alex Thompson": {
+            "basics": {
+                "name": "Alex Thompson",
+                "age": 25,
+                "occupation": "barista",
+                "residence": "Maple Street Apartments",
+                "workplace": "The Coffee Shop",
+                "relationships": {
+                    "status": "single",
+                    "household_members": [
+                        {
+                            "name": "Jordan Lee",
+                            "relationship_type": "roommate",
+                            "relationship_duration": "2 years"
+                        }
+                    ]
+                },
+                "income": {
+                    "type": "hourly",
+                    "amount": 16.00,
+                    "schedule": {
+                        "type": "part_time",
+                        "work_hours": {
+                            "start": 8,
+                            "end": 16
+                        },
+                        "days": [1, 2, 3, 4, 5, 6]
+                    }
+                }
+            }
+        },
+        "Jordan Lee": {
+            "basics": {
+                "name": "Jordan Lee",
+                "age": 24,
+                "occupation": "graphic designer",
+                "residence": "Maple Street Apartments",
+                "workplace": "Office Complex",
+                "relationships": {
+                    "status": "single",
+                    "household_members": [
+                        {
+                            "name": "Alex Thompson",
+                            "relationship_type": "roommate",
+                            "relationship_duration": "2 years"
+                        }
+                    ]
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 4500,
+                    "schedule": {
+                        "type": "full_time",
+                        "work_hours": {
+                            "start": 9,
+                            "end": 17
+                        },
+                        "days": [1, 2, 3, 4, 5]
+                    }
+                }
+            }
+        },
+        "Maria Rodriguez": {
+            "basics": {
+                "name": "Maria Rodriguez",
+                "age": 29,
+                "occupation": "chef",
+                "residence": "Oak View Condos",
+                "workplace": "Local Diner",
+                "relationships": {
+                    "status": "dating",
+                    "household_members": [],
+                    "dating": [
+                        {
+                            "name": "Sarah Chen",
+                            "relationship_duration": "1 year"
+                        }
+                    ]
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 5200,
+                    "schedule": {
+                        "type": "full_time",
+                        "work_hours": {
+                            "start": 8,
+                            "end": 16
+                        },
+                        "days": [1, 2, 3, 4, 5, 6]
+                    }
+                }
+            }
+        },
+        "Sarah Chen": {
+            "basics": {
+                "name": "Sarah Chen",
+                "age": 26,
+                "occupation": "waitress",
+                "residence": "Oak View Condos",
+                "workplace": "Local Diner",
+                "relationships": {
+                    "status": "dating",
+                    "household_members": [],
+                    "dating": [
+                        {
+                            "name": "Maria Rodriguez",
+                            "relationship_duration": "1 year"
+                        }
+                    ]
+                },
+                "income": {
+                    "type": "hourly",
+                    "amount": 15.00,
+                    "schedule": {
+                        "type": "part_time",
+                        "work_hours": {
+                            "start": 11,
+                            "end": 19
+                        },
+                        "days": [1, 2, 3, 4, 5, 6]
+                    }
+                }
+            }
+        },
+        "Mike Johnson": {
+            "basics": {
+                "name": "Mike Johnson",
+                "age": 31,
+                "occupation": "retail manager",
+                "residence": "Maple Street Apartments",
+                "workplace": "Target",
+                "relationships": {
+                    "status": "single",
+                    "household_members": [],
+                    "best_friends": [
+                        {
+                            "name": "Kevin Chen",
+                            "relationship_duration": "4 years"
+                        }
+                    ]
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 4800,
+                    "schedule": {
+                        "type": "full_time",
+                        "work_hours": {
+                            "start": 8,
+                            "end": 16
+                        },
+                        "days": [1, 2, 3, 4, 5, 6]
+                    }
+                }
+            }
+        },
+        "Emma Wilson": {
+            "basics": {
+                "name": "Emma Wilson",
+                "age": 28,
+                "occupation": "marketing assistant",
+                "residence": "Maple Street Apartments",
+                "workplace": "Marketing Agency",
+                "relationships": {
+                    "status": "single",
+                    "household_members": [],
+                    "best_friends": [
+                        {
+                            "name": "Rebecca Queen",
+                            "relationship_duration": "3 years"
+                        }
+                    ]
+                },
+                "income": {
+                    "type": "monthly",
+                    "amount": 4200,
                     "schedule": {
                         "type": "full_time",
                         "work_hours": {

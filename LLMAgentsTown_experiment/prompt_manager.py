@@ -1,870 +1,1018 @@
-from simulation_constants import (
-    SIMULATION_SETTINGS, ACTIVITY_TYPES, MEMORY_TYPES,
-    TimeManager, SimulationError, AgentError, LocationError,
-    MemoryError, MetricsError, ErrorHandler, ThreadSafeBase,
-    ENERGY_MAX, ENERGY_MIN, ENERGY_COST_PER_STEP, ENERGY_DECAY_PER_HOUR,
-    ENERGY_COST_WORK_HOUR, ENERGY_COST_PER_HOUR_TRAVEL, ENERGY_COST_PER_HOUR_IDLE,
-    ENERGY_GAIN_RESTAURANT_MEAL, ENERGY_GAIN_SNACK, ENERGY_GAIN_HOME_MEAL,
-    ENERGY_GAIN_SLEEP, ENERGY_GAIN_NAP, ENERGY_GAIN_CONVERSATION,
-    ENERGY_THRESHOLD_LOW
+# Standard library imports
+import os
+import json
+import random
+import threading
+import time
+import traceback
+import logging
+from collections import defaultdict, deque
+from datetime import datetime
+from typing import (
+    Dict, List, Optional, Any, Tuple, Set, Union, 
+    TYPE_CHECKING, TypeVar, Generic
 )
 
-class PromptManager:
+# Third-party imports
+import requests
+from simulation_types import (
+    ENERGY_MAX, ENERGY_MIN, ENERGY_DECAY_PER_HOUR, ENERGY_COST_WORK_PER_HOUR,
+    ENERGY_COST_TRAVEL_PER_STEP, ENERGY_GAIN_RESTAURANT_MEAL,
+    ENERGY_GAIN_SNACK, ENERGY_GAIN_HOME_MEAL, ENERGY_GAIN_SLEEP,
+    ENERGY_GAIN_NAP, ENERGY_THRESHOLD_LOW, ENERGY_THRESHOLD_FOOD,
+    MAX_CONVERSATION_TURNS, GROCERY_COST_HOME_MEAL, PromptManagerInterface
+)
+from Stability_Memory_Manager import MemoryManager
+from Stability_Metrics_Manager import StabilityMetricsManager
+if TYPE_CHECKING:
+    from stability_classes import (
+        ConversationManager, Agent, Location, TownMap,
+        PlanExecutor, SimulationSettings
+    )
+from shared_trackers import (
+    SharedLocationTracker, SharedResourceManager,
+    LocationLockManager
+)
+from thread_safe_base import (
+    AgentError, LocationError,
+    MemoryError, MetricsError, ThreadSafeBase
+)
+
+class PromptManager(PromptManagerInterface):
     _instance = None
+    _unified_rules = {}  # Single source of truth for all rules
     
-    def __new__(cls):
+    def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super(PromptManager, cls).__new__(cls)
-            cls._instance._initialize()
+            cls._instance._initialized = False
         return cls._instance
     
-    def _initialize(self):
-        """Initialize the prompt manager with all prompt templates."""
-        self.prompts = {
-            'daily_plan': """You are {name}, a {age}-year-old {occupation} living at {residence}. Your workplace is {workplace} with work hours from {work_schedule_start} to {work_schedule_end}.
-
-Current time is {current_time}:00. Create a detailed daily schedule that includes:
-1. Meal times (breakfast, lunch, dinner)
-2. Work schedule
-3. Travel time to/from work
-4. Personal activities
-5. Social interactions
-6. Rest periods
-
-Consider:
-- Your energy levels
-- Available locations
-- Time of day
-- Work commitments
-- Basic needs (food, rest)
-
-Format your response as a natural text schedule with times and activities.""",
-
-            'plan_review_conversation': """You are {name}, reviewing your daily plan with {other_agent_name} at {location}.
-
-Current time: {current_time}:00
-Your current plan: {current_plan}
-Their current plan: {other_agent_plan}
-
-Have a natural conversation about your plans, considering:
-1. Any schedule conflicts
-2. Opportunities to spend time together
-3. Shared activities or meals
-4. Travel coordination
-5. Household responsibilities
-
-Format your response as a natural dialogue between you and {other_agent_name}, followed by your updated plan and reasoning for any changes made.""",
-
-            'action': """You are {name}, currently at {location} at {current_time}:00.
-
-Current state:
-- Energy level: {energy_level}
-- Money: ${money}
-- Grocery level: {grocery_level}
-- Current activity: {current_activity}
-
-Recent activities: {recent_activities}
-
-Based on your current state and needs, what should you do next? Consider:
-1. Basic needs (food, rest)
-2. Work schedule
-3. Travel requirements
-4. Social opportunities
-5. Available resources
-
-Respond with your next action.""",
-
-            'activity_parsing': """Parse the following activity description into structured data:
-
-Activity: {activity_description}
-
-Extract:
-1. Activity type
-2. Location
-3. Time
-4. Participants
-5. Resources needed
-6. Energy impact
-7. Cost (if any)
-
-Format as JSON with these fields.""",
-
-            'conversation': """You are {name} having a conversation with {other_agent_name} at {location}.
-
-Current time: {current_time}:00
-Relationship: {relationship}
-Recent interactions: {recent_interactions}
-
-Context: {conversation_context}
-
-Respond naturally to continue the conversation.""",
-
-            'household_coordination': """You are {name}, coordinating with your household members at {location}.
-
-Current time: {current_time}:00
-Household members: {household_members}
-Your current plan: {current_plan}
-
-Discuss:
-1. Shared meals
-2. Household chores
-3. Travel arrangements
-4. Social activities
-5. Resource sharing
-
-Format as a natural conversation.""",
-
-            'conversation_analysis': """Analyze the following conversation between {participants}:
-
-Conversation: {conversation_content}
-
-Extract:
-1. Main topics discussed
-2. Decisions made
-3. Plans agreed upon
-4. Emotional tone
-5. Action items
-
-Format as structured data.""",
-
-            'contextual_action': """You are {name} at {location} during {time_of_day}.
-
-Current state:
-- Energy: {energy_level}
-- Money: ${money}
-- Current activity: {current_activity}
-
-Available options:
-{available_options}
-
-Choose your next action based on your needs and the current context.""",
-
-            'location_context': """Location: {location_name}
-Type: {location_type}
-Current time: {current_time}:00
-Open hours: {open_hours}
-Current capacity: {current_capacity}/{max_capacity}
-Base price: ${base_price}
-Special offers: {special_offers}
-
-Describe the current state and available activities at this location.""",
-
-            "location_check": {
-                "template": "Check if {location} is appropriate for {name} at {time}:00. Consider: {considerations}",
-                "parameters": ["location", "name", "time", "considerations"]
+    def __init__(self, location_tracker=None, config_data=None):
+        """Initialize the prompt manager."""
+        if self._initialized:
+            # If already initialized, just update the attributes
+            if location_tracker is not None:
+                self.location_tracker = location_tracker
+            if config_data is not None:
+                self.config_data = config_data
+                self._load_menu_information()
+            return
+            
+        self.location_tracker = location_tracker
+        self.memory_mgr = None
+        self.config_data = config_data or {}
+        self.menu_data = {}
+        # Cache for static dining info to avoid regenerating for each agent
+        self._static_dining_cache = {}
+        
+        self._initialized = True
+        self.prompt_templates = {}
+        self._initialize_unified_rules()  # New unified system
+        self._initialize_prompt_templates()
+        self._load_menu_information()
+        
+    def _initialize_unified_rules(self):
+        """Initialize unified rules system to prevent prompt conflicts."""
+        
+        # Import constants from simulation_types
+        try:
+            from simulation_types import (
+                ENERGY_MAX, ENERGY_MIN, ENERGY_DECAY_PER_HOUR, ENERGY_COST_WORK_PER_HOUR,
+                ENERGY_COST_TRAVEL_PER_STEP, ENERGY_GAIN_HOME_MEAL, ENERGY_GAIN_RESTAURANT_MEAL,
+                ENERGY_GAIN_SNACK, ENERGY_GAIN_SLEEP, ENERGY_GAIN_NAP,
+                GROCERY_MAX, GROCERY_MIN, CONVERSATION_COOLDOWN_HOURS,
+                GROCERY_COST_HOME_MEAL
+            )
+        except ImportError:
+            # Fallback constants if import fails
+            ENERGY_MAX, ENERGY_MIN = 100, 0
+            GROCERY_MAX, GROCERY_MIN = 100, 0
+            ENERGY_DECAY_PER_HOUR = 5
+            ENERGY_COST_WORK_PER_HOUR = 5
+            ENERGY_COST_TRAVEL_PER_STEP = 1
+            ENERGY_GAIN_HOME_MEAL = 30
+            ENERGY_GAIN_RESTAURANT_MEAL = 40
+            ENERGY_GAIN_SNACK = 5
+            ENERGY_GAIN_SLEEP = 100
+            ENERGY_GAIN_NAP = 10
+            CONVERSATION_COOLDOWN_HOURS = 4
+            GROCERY_COST_HOME_MEAL = 10
+        
+        # ENERGY SYSTEM - Single definitive rules
+        self._unified_rules['energy'] = {
+            'range': f"Energy level range: {ENERGY_MIN}-{ENERGY_MAX} (starts at {ENERGY_MAX})",
+            'natural_decay': f"Natural decay: -{ENERGY_DECAY_PER_HOUR} energy per hour automatically",
+            'work_cost': f"Work cost: -{ENERGY_COST_WORK_PER_HOUR} energy per hour worked",
+            'travel_cost': f"Travel cost: -{ENERGY_COST_TRAVEL_PER_STEP} energy per step moved",
+            'home_meal': f"Home meals: +{ENERGY_GAIN_HOME_MEAL} energy (requires grocery level > {GROCERY_COST_HOME_MEAL}, costs {GROCERY_COST_HOME_MEAL} grocery levels)",
+            'restaurant_meal': f"Restaurant meals: +{ENERGY_GAIN_RESTAURANT_MEAL} energy",
+            'snack': f"Snacks/beverages: +{ENERGY_GAIN_SNACK} energy",
+            'sleep': f"Sleep at home (22:00-06:00): +{ENERGY_GAIN_SLEEP} energy (resets to {ENERGY_MAX})",
+            'nap': f"Nap at workplace (11:00-15:00): +{ENERGY_GAIN_NAP} energy",
+            'thresholds': {
+                'low_energy': f"Energy < {ENERGY_THRESHOLD_LOW}: Plan urgent meals or rest",
+                'food_threshold': f"Energy < {ENERGY_THRESHOLD_FOOD}: Must eat soon"
+            }
+        }
+        
+        # GROCERY SYSTEM - Single definitive rules with range specification
+        self._unified_rules['grocery'] = {
+            'range': f"Grocery level range: {GROCERY_MIN}-{GROCERY_MAX} (starts at {GROCERY_MAX})",
+            'home_cooking': f"Home meals require grocery level > {GROCERY_COST_HOME_MEAL} and cost {GROCERY_COST_HOME_MEAL} grocery levels",
+            'shopping': "Grocery shopping: $1 per grocery level gained",
+            'locations': "Grocery shopping available at Target and Local Market"
+        }
+        
+        # ACTION SYSTEM - Single definitive rules
+        self._unified_rules['actions'] = {
+            'types': {
+                'go_to': "Travel to any location",
+                'shop': "Purchase items at stores", 
+                'work': "Work-related activities at workplace",
+                'eat': "Consume ANY food or drinks at ANY location (including home)",
+                'rest': "ONLY for nap (11:00-15:00 at workplace) or sleep (23:00-06:00 at home)",
+                'idle': "Relaxing/free time with no energy gain (use for evening relaxation, waiting, etc.)"
             },
-            "satisfaction_rating": """You are {name} evaluating your experience at {location}. 
-Current time: {current_time}:00
-Energy level: {energy_level}
-Money spent: ${money:.2f}
-
-Recent experiences: {experiences}
-
-Please provide a detailed rating in the following format:
-- Overall satisfaction (1-5): 
-- Food quality (1-5): 
-- Price satisfaction (1-5): 
-- Service quality (1-5): 
-- Wait time (minutes): 
-- Would recommend (yes/no): 
-- Likelihood to return (1-5): 
-- Brief comment: 
-
-Consider:
-1. Food quality and taste
-2. Price and value for money
-3. Service experience
-4. Atmosphere and ambiance
-5. Wait time and efficiency
-6. Overall satisfaction
-7. Previous experiences at this location
-""",
-            "recommendation": {
-                "template": "You are {name} recommending {location} to {target}. Your experiences: {experiences}. Consider their preferences and your relationship.",
-                "parameters": ["name", "location", "target", "experiences"]
+            'rest_timing_rules': {
+                'nap': "rest action at workplace during 11:00-15:00 for +10 energy",
+                'sleep': "rest action at home during 23:00-06:00 for full energy reset",
+                'other_times': "Use 'idle' action instead - no energy gain but valid activity"
             },
-            "memory_consolidation": {
-                "template": """Review and consolidate memories for {name} at {current_time}:00.
-
-Recent Memories:
-{recent_memories}
-
-Social Interactions:
-{social_interactions}
-
-Location History:
-{location_history}
-
-Consider:
-1. Important events and interactions
-2. Emotional significance
-3. Impact on relationships
-4. Learning experiences
-5. Future relevance
-6. Pattern recognition
-
-Rate each memory's importance (0-1) and identify key insights.""",
-                "parameters": ["name", "current_time", "recent_memories", "social_interactions", "location_history"]
+            'meal_planning': {
+                'use_meal_types': "Plan with: breakfast, lunch, dinner, or snack",
+                'no_item_names': "Do NOT specify exact menu items",
+                'auto_selection': "System automatically selects appropriate items based on location and time",
+                'examples': [
+                    "eat breakfast at Coffee Shop",
+                    "eat lunch at Local Diner", 
+                    "eat dinner at Fried Chicken Shop",
+                    "eat snack at Coffee Shop",
+                    "eat breakfast at residence (home cooking)"
+                ]
+            }
+        }
+        
+        # MEAL SYSTEM - Single definitive rules
+        self._unified_rules['meals'] = {
+            'timing': {
+                'breakfast': "6:00-9:00",
+                'lunch': "11:00-14:00", 
+                'dinner': "17:00-20:00",
+                'snack': "Any time"
             },
-            "error_recovery": {
-                "template": """Error occurred for {name} at {location}, time {time}:00.
-
-Error Context:
-- Type: {error_type}
-- Activity: {current_activity}
-- State: {current_state}
-- Recent actions: {recent_actions}
-
-Consider:
-1. Impact on current activity
-2. Alternative actions available
-3. State preservation needs
-4. Recovery priorities
-5. Safety considerations
-6. Communication needs
-
-Generate appropriate recovery action and explanation.""",
-                "parameters": ["name", "location", "time", "error_type", "current_activity", "current_state", "recent_actions"]
+            'locations': {
+                'home': f"Any eating/drinking at residence = home meal (+{ENERGY_GAIN_HOME_MEAL} energy, requires grocery level > {GROCERY_COST_HOME_MEAL}, costs {GROCERY_COST_HOME_MEAL} grocery levels)"
             },
-            "mid_travel_location_decision": """
-You are {agent_name}, currently traveling to {original_destination_name}.
-You have just taken a step and are now at the coordinates of {encountered_location_name} ({encountered_location_type}). This location is currently open.
+            'critical_planning': f"Working 8 hours costs {ENERGY_COST_WORK_PER_HOUR * 8} energy (work activity) + {ENERGY_DECAY_PER_HOUR * 8} energy (natural decay) = {(ENERGY_COST_WORK_PER_HOUR + ENERGY_DECAY_PER_HOUR) * 8} total - plan meals accordingly"
+        }
+        
+        # FORMAT SYSTEM - Single definitive rules
+        self._unified_rules['format'] = {
+            'requirements': [
+                "Plan for EVERY HOUR from 07:00 to 23:00 (17 hours total)",
+                "Each hour must have: time, action, target, description", 
+                "Actions must be: go_to, shop, work, rest, eat",
+                "Targets must be exact valid location names",
+                "Use first person perspective",
+                "No gaps or skipped hours allowed"
+            ],
+            'structure': "HH:00\nAction: [action]\nTarget: [location]\nReasoning: [brief explanation]"
+        }
 
-Your current status:
-- Energy: {energy_level}
-- Grocery Level: {grocery_level}
-- Money: ${money:.2f}
-- Current Time: {time}:00
-- Time until next commitment: {time_to_next_commitment} hours
-- Destination Urgency: {destination_urgency}
-- Current Day: Day {current_day}
+    def get_unified_rules(self, context_type: str, agent_state: dict = None) -> str:
+        """Get unified rules based on context type and agent state."""
+        rules_text = []
+        
+        if context_type == 'planning':
+            # Core energy rules - always needed for planning
+            energy_rules = self._unified_rules['energy']
+            rules_text.append("🔋 ENERGY SYSTEM:")
+            rules_text.append(f"• {energy_rules['range']}")
+            rules_text.append(f"• {energy_rules['natural_decay']}")
+            rules_text.append(f"• {energy_rules['work_cost']}")
+            rules_text.append(f"• {energy_rules['travel_cost']}")
+            rules_text.append(f"• {energy_rules['home_meal']}")
+            rules_text.append(f"• {energy_rules['restaurant_meal']}")
+            rules_text.append(f"• {energy_rules['snack']}")
+            rules_text.append(f"• {energy_rules['sleep']}")
+            rules_text.append(f"• {energy_rules['nap']}")
+            
+            # Grocery system rules
+            grocery_rules = self._unified_rules['grocery']
+            rules_text.append("\n🛒 GROCERY SYSTEM:")
+            rules_text.append(f"• {grocery_rules['range']}")
+            rules_text.append(f"• {grocery_rules['home_cooking']}")
+            rules_text.append(f"• {grocery_rules['shopping']}")
+            rules_text.append(f"• {grocery_rules['locations']}")
+            
+            # Add thresholds if energy is low
+            if agent_state and agent_state.get('energy_level', ENERGY_MAX) < ENERGY_THRESHOLD_LOW:
+                rules_text.append("\n⚠️ ENERGY THRESHOLDS:")
+                for threshold_type, threshold_rule in energy_rules['thresholds'].items():
+                    rules_text.append(f"• {threshold_rule}")
+            
+            # Meal system
+            meal_rules = self._unified_rules['meals']
+            rules_text.append("\n🕐 MEAL TIMING:")
+            for meal_type, timing in meal_rules['timing'].items():
+                rules_text.append(f"• {meal_type}: {timing}")
+            
+            rules_text.append("\n🏠 HOME MEALS:")
+            rules_text.append(f"• {meal_rules['locations']['home']}")
+            
+            # Add dynamic dining information from config (actual locations only)
+            dynamic_dining_info = self._get_dynamic_dining_info()
+            if dynamic_dining_info and "Error" not in dynamic_dining_info:
+                rules_text.append(f"\n{dynamic_dining_info}")
+            
+            rules_text.append(f"\n⚠️ {meal_rules['critical_planning']}")
+            
+            # Action system
+            action_rules = self._unified_rules['actions']
+            rules_text.append("\n🎯 ACTIONS:")
+            for action_type, action_rule in action_rules['types'].items():
+                rules_text.append(f"• {action_type}: {action_rule}")
+            
+            # Add specific rest timing rules
+            rules_text.append("\n⏰ REST TIMING RULES:")
+            for timing_type, timing_rule in action_rules['rest_timing_rules'].items():
+                rules_text.append(f"• {timing_rule}")
+            
+            # Format system
+            format_rules = self._unified_rules['format']
+            rules_text.append("\n📋 FORMAT REQUIREMENTS:")
+            for requirement in format_rules['requirements']:
+                rules_text.append(f"• {requirement}")
+            
+            return '\n'.join(rules_text)
 
-Your daily plan for today is:
-{daily_plan}
+        elif context_type == 'conversation':
+            # Minimal rules for conversations
+            rules_text.append(f"🗣️ CONVERSATION RULES:")
+            rules_text.append(f" per turn (max {MAX_CONVERSATION_TURNS} turns)")
+            rules_text.append(f"• Duration: 5-15 minutes per turn")
+            rules_text.append(f"• Can occur at any location")
+            rules_text.append(f"• Let your relationship naturally guide the conversation")
+            
+        return '\n'.join(rules_text)
 
-Location Context:
-- Type: {encountered_location_type}
-- Current Offers/Discounts: {discount_info}
-- Relevance to your needs: {location_relevance}
-- Last visit: {last_visit_time}
+    def _initialize_prompt_templates(self):
+        """Initialize all prompt templates."""
+        # Daily Plan Template
+        self.prompt_templates["daily_plan"] = {
+            "template": """You are {name}, a {age}-year-old {occupation} living in {residence}. You work at {workplace}.
 
-Special Consideration for Fried Chicken Shop:
-- You're passing by the Fried Chicken Shop, a popular local eatery
-- 20% discount available on Days 3 (Wednesday) and 4 (Thursday)
-- Current Day: Day {current_day}
-- {discount_status}
-- Quick service, perfect for a meal break
-- Energy boost from a good meal could help with the rest of your journey
+Current State:
+- Current Time: {current_time}:00
+- Current Day: {current_day}
+- Current Location: {current_location}
+- Energy Level: {energy_level} (range: 0-100, capped at 100)
+- Grocery Level: {grocery_level} (range: 0-100)
+- Available Money: ${money:.2f}
 
-Location Context:
-- Current Time: {time}:00
-- Shop Hours: 10:00-22:00
-- Base Price: $20.00 (Before any discounts)
-- {discount_info}
+{system_info}
 
-Considering your current needs, your plan, and this unexpected location encounter, what do you want to do?
-Choose ONE of the following options:
+⚠️ CRITICAL LOCATION RULE:
+You MUST ONLY use locations that exist in the simulation. Do NOT create, invent, or mention any new locations.
+ONLY use the exact location names listed above in "Available Locations".
+Example INVALID locations: "new bistro", "nearby cafe", "local restaurant", "downtown mall"
+Example VALID locations: "Local Diner", "Coffee Shop", "Fried Chicken Shop" (use exact names from the list)
 
-(A) Rush to original destination: {original_destination_name}
-    Choose this if:
-    - You're running late or have an urgent commitment
-    - The destination is your workplace during work hours
-    - You have a scheduled meeting or appointment
-    - Your energy level is sufficient to continue
+Your Task:
+Create a detailed 17-hour daily plan from {current_time}:00 to 23:00 (hours {current_time} through 23).
 
-(B) Quick stop (5-10 minutes)
-    Choose this if:
-    - You have moderate time pressure but critical needs
-    - Your energy/grocery levels are very low
-    - There's a special discount today (check the day!)
-    - The location directly supports your daily plan
-    Specify what quick action you'll take (e.g., "grab a quick coffee", "buy essential groceries")
+CRITICAL REQUIREMENTS:
+- Plan EXACTLY 17 consecutive hours: {current_time}, {current_time}+1, {current_time}+2, ..., 23
+- Each hour must have exactly one activity
+- ONLY use locations from the "Available Locations" list above - NO made-up locations allowed
+- Include appropriate meals: breakfast (6-9), lunch (11-14), dinner (17-20)
+- Work during business hours (9-17) to earn your daily wage
+- Manage your energy carefully (starts at {energy_level}, decays 5/hour)
+- End at your residence at hour 23 (automatic sleep system handles hours 23-6)
 
-(C) Regular visit (15-30 minutes)
-    Choose this if:
-    - You have flexible time
-    - The location is highly relevant to your needs
-    - You can combine multiple tasks here
-    - The detour won't significantly impact your schedule
-    Specify what you plan to do during the visit
+Format your response as a JSON object with this exact structure:
+{{
+  "activities": [
+    {{
+      "time": {current_time},
+      "action": "action_name",
+      "target": "location_name",
+      "description": "Brief description of what you're doing and why."
+    }},
+    // ... exactly 17 activities total
+    {{
+      "time": 23,
+      "action": "rest",
+      "target": "{residence}",
+      "description": "Preparing for sleep at home. Automatic sleep system will handle energy recovery through the night."
+    }}
+  ]
+}}
 
-Respond with your choice letter (A, B, or C) followed by a colon and then a brief first-person thought process.
-Example if choosing A: "A: Can't stop now, I have a meeting in 15 minutes at {original_destination_name}."
-Example if choosing B: "B: My energy is critically low - I'll grab a quick coffee and snack, should take just 5 minutes."
-Example if choosing C: "C: I have an hour before my next meeting, and this grocery store has everything I need for the week."
-""",
+⚠️ RESPONSE FORMAT: Return ONLY the JSON object, no markdown code blocks, no ```json or ``` markers. Start with {{ and end with }}.
 
-            "mid_travel_agent_encounter_decision": """
-You are {agent_name}, currently traveling to {original_destination_name}.
-At your current step ({current_grid_coord}), you encounter: {encountered_agent_names_list}.
-{encountered_agent_details_list}
+⚠️ FINAL CHECK: Before submitting your plan, verify that EVERY "target" field contains a location name from the "Available Locations" list above. If you use any location not on that list, the plan will fail."""
+        }
 
-Your current status:
-- Energy: {energy_level}
-- Current Time: {time}:00
-Your daily plan for today is:
-{daily_plan}
-
-Important Context:
-- Your relationships with encountered agents: {relationships}
-- Your shared history with them: {shared_history}
-- Your current urgency to reach destination: {destination_urgency}
-- Time until your next commitment: {time_to_next_commitment} hours
-
-What do you want to do regarding this encounter?
-Choose ONE of the following options:
-(A) Briefly acknowledge them (e.g., nod or wave) and continue traveling to {original_destination_name}.
-(B) Stop your current travel and attempt to start a conversation with one of them. Consider this strongly if:
-   - They are close friends, family, or colleagues
-   - You share the same destination
-   - You have time before your next commitment
-   - You haven't interacted with them recently
-(C) Ignore them and continue traveling to {original_destination_name}.
-
-Respond with your choice letter (A, B, or C) followed by a colon and then a brief first-person thought process. If choosing (B), also state who you'd primarily like to talk to if there are multiple people.
-Example if choosing A: "A: I'll wave at Sarah since we're both heading to work and running late."
-Example if choosing B: "B: I'll stop to chat with Mike - he's my colleague and we're both heading to the office. We could discuss the project."
-Example if choosing C: "C: I need to hurry to my appointment, can't stop now."
-""",
-            "solo_evening_routine": """
-            You are {name}, at {location} in the evening ({time}:00).
-            Your energy is {energy}.
-            Your current grocery stock level is {grocery_level}%.
-            Your recent activities: {recent_activities}.
-            Your schedule for tomorrow: {next_day_schedule}.
-
-            Describe your solo evening routine in the first person. What are you doing to wind down, prepare for tomorrow, or occupy yourself, considering your day, your grocery stock, and what's ahead?
-            """,
-            "food_decision": """
-You are {name}, deciding whether to cook at home or eat out for {meal_type}.
-Your current situation:
-- Energy Level: {energy_level}/100
-- Grocery Level: {grocery_level}/100
-- Total Money: ${total_money:.2f}
-- Daily Money Budget: ${daily_money:.2f}
-- Location: {location}
-- Current Time: {time:02d}:00
-
-Recent dining experiences and ratings:
-{recent_ratings}
-
-IMPORTANT MEAL TIMING RULES:
-- For LUNCH (11:00-14:00) and DINNER (17:00-21:00): Only consider proper restaurants (Fried Chicken Shop, Local Diner), NOT coffee shops
-- For BREAKFAST (06:00-10:00): Coffee shops are appropriate for light breakfast items
-- For SNACKS (other times): Coffee shops are fine for beverages and light snacks
-
-Make a natural, human-like decision about whether to cook at home or eat out.
-Consider:
-1. Your current energy and grocery levels
-2. The time and type of meal (coffee shops are NOT suitable for lunch/dinner)
-3. Your financial situation
-4. Past dining experiences
-5. Random personal preferences
-6. Other agents' satisfaction ratings
-
-Respond with your decision and brief reasoning in a natural, first-person voice.
-""",
-
-            "food_location_choice": """
-You are {name}, choosing where to eat {meal_type}.
-Your current situation:
-- Energy Level: {energy_level}/100
-- Total Money: ${total_money:.2f}
-- Daily Money Budget: ${daily_money:.2f}
-- Current Time: {time:02d}:00
-
-Available locations:
-{available_locations}
-
-Recent dining experiences and ratings:
-{recent_ratings}
-
-CRITICAL MEAL LOCATION RULES:
-- For LUNCH (11:00-14:00) and DINNER (17:00-21:00): Only choose proper restaurants (Fried Chicken Shop, Local Diner)
-- Coffee shops (The Coffee Shop) are ONLY appropriate for:
-  * BREAKFAST items (06:00-10:00)
-  * Light snacks and beverages (not main meals)
-- Do NOT choose coffee shops for lunch or dinner - they don't serve full meals
-
-Make a natural, human-like decision about where to eat.
-Consider:
-1. Your current energy level
-2. The prices at each location
-3. Past ratings and experiences
-4. Your financial situation
-5. Random personal preferences (sometimes people just crave certain foods)
-6. MEAL TIMING: Choose appropriate locations for the type of meal you need
-
-Respond with your chosen location and brief reasoning in a natural, first-person voice.
-Make sure to clearly mention the exact name of your chosen location.
-""",
-
-            "conversation_turn": """
-You are {name}, naturally continuing a conversation at {location}.
-
-The conversation so far:
-{previous_turns}
-
-Recent conversation memories (if any):
-{recent_memory_context}
-
-Your current situation:
-- Location: {location_type}
-- Time: {time}:00
-- Energy: {energy_level}
-- What you're currently doing: {current_activity}
-- Recent interactions: {recent_interactions}
-- Your relationships with these people: {relationships}
-
-Just say what you would naturally say next in this conversation. 
-- Be yourself - use your natural speaking style
-- React authentically to what was just said
-- Use contractions, casual language, real speech patterns
-- Keep it conversational and genuine
-- If you want to end the conversation, do it naturally ("Alright, I should get going" or "See ya later!")
-- If there are recent conversation memories, acknowledge and build upon them naturally
-
-Don't include stage directions or explanations - just speak naturally.
-
-What you say:""",
-
-            "social_interaction": """
-You are {name}, naturally interacting with people at {location}.
-Time: {time:02d}:00
-
-Your current situation:
-{personal_context}
-
-People around you:
-{nearby_agents}
-
-Why you're interacting: {interaction_reason}
-
-Speak naturally to these people based on:
-- Your relationship with them (friend, coworker, spouse, stranger, etc.)
-- The location you're at and what's appropriate there
-- Your current mood and energy level
-- Any shared history or experiences you have
-- The time of day and social context
-
-Just talk like you normally would in this situation. Be genuine, show your personality, and use natural speech patterns.
-
-Examples of natural interactions:
-- "Hey! Didn't expect to see you here. How's it going?"
-- "Morning, honey. Coffee smells amazing!"
-- "Oh hi there! Are you enjoying the food here? I'm thinking about trying it."
-- "Susan! Perfect timing - I was just about to text you about lunch plans."
-
-Your natural interaction:""",
-
-            "structured_action": """
-You are {name} at {location} (Time: {time:02d}:00).
-
-Current Status:
-- Energy: {energy_level}/100
-- Groceries: {grocery_level}/100  
-- Money: ${money:.2f}
-
-Work Context: {work_context}
-Daily Plan: {daily_plan}
-
-Available Locations:
-{available_locations}
-
-Think naturally about your situation and what you want to do next. You can express your thoughts, feelings, and reasoning in a natural way, just like you would in real conversation.
-
-After your natural thoughts, you MUST end with this exact structured format:
-
-LOCATION: [Where you want to go next - use exact location name or "stay"]
-ACTION: [What you want to do there - be natural and conversational]
-REASONING: [Brief explanation of your decision]
-
-Rules for the structured conclusion:
-1. If it's work time and you're not at workplace: LOCATION: {workplace}
-2. Use exact location names from the available list
-3. Consider your energy, money, and schedule
-4. Use "stay" if no movement is needed
-
-Example Response:
-"Hmm, I'm feeling pretty tired and could really use some caffeine before diving into work today. The Coffee Shop is just down the street and their morning blend is exactly what I need to get energized. Plus, I have about 30 minutes before I need to be at the office, so perfect timing.
-
-LOCATION: Coffee Shop
-ACTION: Buy a coffee and maybe a pastry to fuel up for the workday
-REASONING: Need energy boost before work starts and have time to spare"
-
-Your natural thoughts and structured response:""",
-
-            "movement_decision": """
-You are {name}, deciding your next move.
+        # Emergency Replan Template
+        self.prompt_templates["emergency_replan"] = {
+            "template": """You are {name}.
 
 Current Situation:
-- Location: {current_location}
-- Time: {time:02d}:00
-- Energy: {energy_level}/100
-- Work Status: {work_status}
+- Time: {current_time}:00 on Day {current_day}
+- Your Location: {current_location}
+- Your Money: ${money:.2f}
+- Failure Reason: {reason}
 
-Your options:
-{location_options}
+Available Option:
+- A nearby restaurant, '{target_location}', is open and you can afford a meal there.
 
-Choose ONE option and respond with just the location name:
-""",
+Your Task:
+Create a 2-hour plan starting at {current_time}:00 to travel to '{target_location}' and eat a meal.
+Follow the exact JSON format rules provided for daily plans, but ONLY for the next two hours.
 
-            "structured_purchase": """
-You are {name} at {location} (Time: {time:02d}:00).
+Format Rules:
+- The plan must cover exactly two consecutive hours: {current_time}:00 and {next_hour}:00.
+- Each hour must have an 'action' ('go_to' or 'eat') and a 'target'.
+- The first hour's action must be 'go_to' with the target '{target_location}'.
+- The second hour's action must be 'eat' with the target '{target_location}'.
 
-Current Status:
-- Energy: {energy_level}/100
-- Groceries: {grocery_level}/100  
-- Money: ${money:.2f}
-- Available Money for Purchases: ${available_money:.2f}
+⚠️ RESPONSE FORMAT: Return ONLY the JSON object, no markdown code blocks, no ```json or ``` markers. Start with {{ and end with }}.
 
-**CRITICAL ENERGY ASSESSMENT:**
-- If your energy is ≤35: You are in CRITICAL condition and MUST get substantial food immediately
-- If your energy is 36-60: You need proper nourishment soon
-- If your energy is 61-100: You can make casual food choices
-
-**MEAL TIMING RULES (STRICTLY ENFORCED):**
-- **CRITICAL: NO PACKED LUNCHES OR MEAL PREP** - You cannot prepare meals in advance or bring packed lunches to work
-- **IMMEDIATE CONSUMPTION ONLY** - All meals must be cooked and eaten immediately when made
-- LUNCH TIME (11:00-14:00): You MUST choose restaurants (Fried Chicken Shop, Local Diner) for proper meals
-- DINNER TIME (17:00-21:00): You MUST choose restaurants (Fried Chicken Shop, Local Diner) for proper meals  
-- BREAKFAST TIME (06:00-10:00): Coffee shops are acceptable for light breakfast
-- OTHER TIMES: Coffee shops only for beverages and light snacks
-
-**COFFEE SHOP RESTRICTION:**
-- Coffee shops (The Coffee Shop) CANNOT provide proper meals for lunch or dinner
-- Coffee shops only serve beverages, pastries, and light snacks (+5 energy max)
-- If you need substantial energy restoration, you MUST choose a restaurant
-
-Location Information:
-- Type: {location_type}
-- Current Offers: {location_offers}
-- Base Price: ${base_price:.2f}
-- Current Price: ${current_price:.2f}
-
-Recent Purchases and Experiences:
-{recent_purchase_history}
-
-Think naturally about whether you want to make a purchase at this location. Consider your needs, your financial situation, the prices, and your recent experiences. **PRIORITIZE YOUR ENERGY NEEDS - if your energy is critically low (≤35), you cannot afford to choose inadequate food options.**
-
-After your natural thoughts, you MUST end with this exact structured format:
-
-PURCHASE: [YES or NO]
-ITEM_TYPE: [groceries/meal/beverages_and_snacks/misc]
-ITEM_DESCRIPTION: [what you want to buy - be specific]
-REASONING: [brief explanation of your decision]
-
-Rules for the structured conclusion:
-1. PURCHASE must be exactly "YES" or "NO"
-2. If PURCHASE is NO, still fill in other fields with "none" or "not applicable"
-3. Choose ITEM_TYPE based on location and meal time:
-   - groceries: Only at markets/supermarkets (Target, Local Market)
-   - meal: Only at restaurants for proper meals (Fried Chicken Shop, Local Diner) during lunch (11:00-14:00) or dinner (17:00-21:00) time
-   - beverages_and_snacks: Coffee shops for drinks, pastries, light snacks, or breakfast items
-   - misc: Other items not covered above
-4. **CRITICAL: Coffee shops (The Coffee Shop) can only serve beverages_and_snacks, NOT full meals for lunch/dinner**
-5. **ENERGY PRIORITY: If energy ≤35, you MUST seek substantial food (meal type) at restaurants, NOT coffee shop snacks**
-6. Be specific about ITEM_DESCRIPTION (e.g., "weekly groceries including vegetables and dairy" or "fried chicken combo meal" or "coffee and croissant")
-7. Consider your actual needs and financial situation
-
-Example Response for Low Energy:
-"My energy is at 23/100 which is critically low, and it's 12:00 lunch time. I'm at The Coffee Shop, but coffee and pastries won't give me the substantial energy boost I desperately need. I need a proper meal with +40 energy gain, not just +5 from snacks. I should go to a restaurant instead.
-
-PURCHASE: NO
-ITEM_TYPE: not applicable
-ITEM_DESCRIPTION: not applicable  
-REASONING: Energy critically low - need proper restaurant meal, not coffee shop snacks"
-
-Example Response for Appropriate Coffee Shop Visit:
-"It's 8:00 AM and I'm feeling good with 75 energy. I just want a quick coffee and pastry for breakfast before work starts. Perfect timing and energy level for a light coffee shop breakfast.
-
-PURCHASE: YES
-ITEM_TYPE: beverages_and_snacks
-ITEM_DESCRIPTION: coffee and croissant for breakfast
-REASONING: Good energy level and appropriate breakfast time for coffee shop"
-
-Your natural thoughts and structured purchase decision:""",
-
-            "structured_conversation_ending": """
-You are {name}, currently in a conversation with {participants} at {location}.
-
-The conversation so far:
-{conversation_history}
-
-Your current situation:
-- Time: {time:02d}:00
-- Energy: {energy_level}/100
-- Current plans: {current_plans}
-- How long you've been talking: {conversation_duration} minutes
-
-Think naturally about whether you want to continue this conversation or if it feels like a good time to end it. Consider your energy, your schedule, how the conversation is flowing, and whether you have other things to do.
-
-After your natural thoughts, you MUST end with this exact structured format:
-
-CONTINUE_CONVERSATION: [YES or NO]
-REASONING: [brief explanation of your decision]
-
-Rules for the structured conclusion:
-1. CONTINUE_CONVERSATION must be exactly "YES" or "NO"
-2. Consider natural conversation flow - if the topic seems finished or you're getting tired
-3. Think about your schedule and commitments
-4. Be realistic about energy levels and social stamina
-
-Example Response:
-"This has been such a nice chat with Sarah about the new restaurant downtown. I'm enjoying catching up with her, but I can feel my energy starting to dip and I know I need to get to the grocery store before it gets too crowded. The conversation feels like it's winding down naturally anyway, and she mentioned needing to head home soon too.
-
-CONTINUE_CONVERSATION: NO
-REASONING: Energy getting low and need to handle errands while stores are less crowded"
-
-Your natural thoughts and structured decision:""",
-
-            "structured_location_visit": """
-You are {name}, traveling to {destination} when you encounter {encountered_location}.
-
-Your current situation:
-- Original destination: {destination}
-- Encountered location: {encountered_location}
-- Location type: {location_type}
-- Time: {time:02d}:00
-- Energy: {energy_level}/100
-- Money: ${money:.2f}
-- Urgency to reach destination: {urgency_level}
-
-Location offers:
-{location_offers}
-
-Your schedule and plans:
-{current_plans}
-
-Think naturally about whether you want to stop at this location during your travel. Consider your needs, your schedule, any special offers, and how urgent your original destination is.
-
-After your natural thoughts, you MUST end with this exact structured format:
-
-VISIT_LOCATION: [YES or NO]
-VISIT_DURATION: [QUICK/REGULAR/NONE]
-ACTION_PLAN: [what you plan to do if visiting]
-REASONING: [brief explanation of your decision]
-
-Rules for the structured conclusion:
-1. VISIT_LOCATION must be exactly "YES" or "NO"
-2. VISIT_DURATION: QUICK (5-10 min), REGULAR (15-30 min), or NONE
-3. Consider your urgency, needs, and any special offers
-4. Be realistic about time constraints
-
-Example Response:
-"Oh, I'm passing by the coffee shop and I could really use a caffeine boost before my meeting. I have about 20 minutes before I need to be at the office, and a quick coffee stop would actually help me be more alert for the meeting. The line doesn't look too long either.
-
-VISIT_LOCATION: YES
-VISIT_DURATION: QUICK
-ACTION_PLAN: Grab a coffee and maybe a pastry to go
-REASONING: Need energy boost for upcoming meeting and have time for quick stop"
-
-Your natural thoughts and structured decision:""",
-
-            "structured_activity_classification": """
-You are {name}, reflecting on your current activity: "{current_activity}"
-
-Your current situation:
-- Time: {time:02d}:00
-- Location: {location}
-- Energy before activity: {energy_before}/100
-
-Think naturally about what you're doing and how it affects your energy and well-being. Consider the physical and mental demands of this activity.
-
-After your natural thoughts, you MUST end with this exact structured format:
-
-ACTIVITY_TYPE: [WORK/TRAVEL/MEAL/REST/SOCIAL/ERRANDS/EXERCISE]
-ENERGY_IMPACT: [HIGH_DRAIN/MODERATE_DRAIN/LOW_DRAIN/NEUTRAL/LOW_BOOST/MODERATE_BOOST/HIGH_BOOST]
-REASONING: [brief explanation of the classification]
-
-Rules for the structured conclusion:
-1. Choose the most appropriate ACTIVITY_TYPE from the list
-2. ENERGY_IMPACT should reflect how this activity affects your energy
-3. Consider both physical and mental aspects of the activity
-
-Example Response:
-"I'm having lunch at this nice restaurant after a busy morning at work. The food is delicious and I'm finally getting to sit down and relax for a bit. It's exactly what I needed to recharge before the afternoon meetings. Taking this break to eat and unwind is definitely helping me feel more energized.
-
-ACTIVITY_TYPE: MEAL
-ENERGY_IMPACT: MODERATE_BOOST
-REASONING: Eating a good meal and taking a break from work is restoring my energy"
-
-Your natural thoughts and structured classification:""",
-
-            "structured_memory_relevance": """
-You are {name}, considering this memory: "{memory_content}"
-
-Your current context:
-- Current situation: {current_context}
-- What you're thinking about: {query_context}
-- Time of memory: {memory_time}
-- Current time: {current_time}
-
-Think naturally about how relevant this memory is to your current situation or what you're thinking about. Consider the content, timing, and emotional significance.
-
-After your natural thoughts, you MUST end with this exact structured format:
-
-RELEVANCE: [HIGH/MEDIUM/LOW/NONE]
-MEMORY_TYPE: [PERSONAL/SOCIAL/WORK/FOOD/LOCATION/ACTIVITY/OTHER]
-REASONING: [brief explanation of the relevance]
-
-Rules for the structured conclusion:
-1. RELEVANCE should reflect how useful this memory is right now
-2. MEMORY_TYPE should categorize what kind of memory this is
-3. Consider both direct relevance and emotional significance
-
-Example Response:
-"This memory about trying the new pasta place with my colleague last week is pretty relevant right now since I'm deciding where to have lunch today. I remember really enjoying the food there and the prices were reasonable. It's exactly the kind of information I need to make a good choice about where to eat.
-
-RELEVANCE: HIGH
-MEMORY_TYPE: FOOD
-REASONING: Directly relevant to current lunch decision-making and contains useful experience"
-
-Your natural thoughts and structured assessment:""",
-        }
-    
-    def get_prompt(self, prompt_type: str, **kwargs) -> str:
-        """Get a prompt based on type and context."""
-        if prompt_type == 'daily_plan':
-            return f"""You are {kwargs['name']}, a {kwargs['age']} year old {kwargs['occupation']} living in {kwargs['residence']}.
-Current time: {kwargs['current_time']}:00
-Current location: {kwargs['current_location']}
-
-Your current state:
-- Energy: {kwargs['energy_level']}/100
-- Money: ${kwargs['money']:.2f} (You will receive ${kwargs['daily_income']:.2f} at the end of the day)
-- Grocery level: {kwargs['grocery_level']}/100
-
-Work schedule: {kwargs['work_schedule_start']}:00 - {kwargs['work_schedule_end']}:00 at {kwargs['workplace']}
-
-Recent activities:
-{kwargs['recent_activities']}
-
-Available locations:
-{kwargs['available_locations']}
-
-Create a detailed daily plan that considers:
-1. Your work schedule
-2. Your energy levels
-3. Your financial situation (remember you'll receive ${kwargs['daily_income']:.2f} at the end of the day)
-4. Your grocery needs
-5. Your social needs
-
-Format your plan as a list of activities with times, locations, and reasons.
+Example Format:
+{{
+  "activities": [
+    {{
+      "time": {current_time},
+      "action": "go_to",
+      "target": "{target_location}",
+      "description": "Traveling to the restaurant because I need to eat.",
+    }},
+    {{
+      "time": {next_hour},
+      "action": "eat",
+      "target": "{target_location}",
+      "description": "Eating a meal to regain energy.",
+    }}
+  ]
+}}
 """
-        if prompt_type not in self.prompts:
-            raise ValueError(f"Unknown prompt type: {prompt_type}")
-            
+        }
+
+    def _load_menu_information(self):
+        """Load menu information from config."""
         try:
-            # Format food locations prices if they exist
-            if 'food_locations_prices' in kwargs:
-                prices_str = []
-                for loc_name, price_info in kwargs['food_locations_prices'].items():
-                    price_line = f"- {loc_name}: ${price_info['current_price']:.2f}"
-                    if price_info['has_discount']:
-                        price_line += f" (${price_info['base_price']:.2f} base price, ${price_info['discount_amount']:.2f} discount)"
-                    prices_str.append(price_line)
-                kwargs['food_locations_prices_formatted'] = "\n".join(prices_str)
-                
-                # Add current FCS price if available
-                if "Fried Chicken Shop" in kwargs['food_locations_prices']:
-                    kwargs['current_fcs_price'] = kwargs['food_locations_prices']["Fried Chicken Shop"]['current_price']
-                else:
-                    kwargs['current_fcs_price'] = 20.00  # Default base price
-            else:
-                kwargs['food_locations_prices_formatted'] = "No food location prices available"
-                kwargs['current_fcs_price'] = 20.00  # Default base price
-            
-            return self.prompts[prompt_type].format(**kwargs)
-        except KeyError as e:
-            raise ValueError(f"Missing required parameters for {prompt_type}: {list(e.args)}")
+            # Simple menu structure - can be expanded later
+            self.menu_data = {
+                'Fried Chicken Shop': {
+                    'meals': ['Fried Chicken Meal'],
+                    'price': 15,
+                    'energy': 40
+                },
+                'Local Diner': {
+                    'meals': ['Diner Special'],
+                    'price': 15,
+                    'energy': 40
+                },
+                'Coffee Shop': {
+                    'snacks': ['Coffee', 'Pastry'],
+                    'price': 5,
+                    'energy': 5
+                },
+                'Convenience Store': {
+                    'snacks': ['Snack', 'Drink'],
+                    'price': 5,
+                    'energy': 5
+                }
+            }
         except Exception as e:
-            raise ValueError(f"Error formatting prompt: {str(e)}")
+            print(f"Error loading menu information: {str(e)}")
+            self.menu_data = {}
+
+    def _generate_static_dining_info(self, current_hour: int, current_day: int) -> Dict[str, Any]:
+        """
+        Generate static dining information that's the same for all agents.
+        Focus on meal types (breakfast, lunch, dinner, snack) instead of specific item names.
+        """
+        try:
+            # Check cache first
+            cache_key = f"{current_day}_{current_hour}"
+            if cache_key in self._static_dining_cache:
+                return self._static_dining_cache[cache_key]
+            
+            if not self.menu_data:
+                return {'error': "No dining information available."}
+            
+            # Get current meal period for context
+            from simulation_types import get_meal_period
+            meal_period = get_meal_period(current_hour)
+            
+            static_info = {
+                'current_hour': current_hour,
+                'current_day': current_day,
+                'meal_period': meal_period,
+                'locations': []
+            }
+            
+            for location_name, location_data in self.menu_data.items():
+                # Check if location is open
+                hours = location_data.get('hours', {})
+                open_hour = hours.get('open', 0)
+                close_hour = hours.get('close', 24)
+                
+                if not (open_hour <= current_hour < close_hour):
+                    continue
+                
+                # Get location info
+                description = location_data.get('description', '')
+                menu = location_data.get('menu', {})
+                
+                # Check for discounts
+                discount_info = ""
+                discount_data = None
+                if location_name in self.config_data.get('town_areas', {}).get('dining', {}):
+                    location_config = self.config_data['town_areas']['dining'][location_name]
+                    discount_data = location_config.get('discount', {})
+                    if discount_data and current_day in discount_data.get('days', []):
+                        discount_value = discount_data.get('value', 0)
+                        discount_type = discount_data.get('type', 'percentage')
+                        if discount_type == 'percentage':
+                            discount_info = f" 🎉 {discount_value}% OFF TODAY!"
+                        else:
+                            discount_info = f" 🎉 ${discount_value} OFF TODAY!"
+                
+                # Process menu to show available meal types with their time windows
+                available_meal_types = []
+                
+                for meal_type, menu_item in menu.items():
+                    available_hours = menu_item.get('available_hours', [])
+                    base_price = menu_item.get('base_price', 0)
+                    
+                    # Calculate final price with discount
+                    final_price = base_price
+                    if discount_data and current_day in discount_data.get('days', []):
+                        discount_value = discount_data.get('value', 0)
+                        discount_type = discount_data.get('type', 'percentage')
+                        if discount_type == 'percentage':
+                            final_price = base_price * (1 - discount_value / 100)
+                        else:
+                            final_price = max(0, base_price - discount_value)
+                    
+                    # Format time windows for display
+                    time_windows = []
+                    if available_hours:
+                        # Group consecutive hours
+                        ranges = []
+                        start = available_hours[0]
+                        end = start
+                        
+                        for hour in available_hours[1:]:
+                            if hour == end + 1:
+                                end = hour
+                            else:
+                                ranges.append(f"{start}:00-{end+1}:00" if start != end else f"{start}:00")
+                                start = end = hour
+                        ranges.append(f"{start}:00-{end+1}:00" if start != end else f"{start}:00")
+                        time_windows = ranges
+                    
+                    meal_type_info = {
+                        'meal_type': meal_type,
+                        'available_hours': available_hours,
+                        'time_windows': time_windows,
+                        'base_price': base_price,
+                        'final_price': final_price,
+                        'has_discount': bool(discount_info),
+                        'available_now': current_hour in available_hours
+                    }
+                    available_meal_types.append(meal_type_info)
+                
+                if available_meal_types:
+                    location_info = {
+                        'name': location_name,
+                        'description': description,
+                        'discount_info': discount_info,
+                        'open_hour': open_hour,
+                        'close_hour': close_hour,
+                        'available_meal_types': available_meal_types
+                    }
+                    static_info['locations'].append(location_info)
+            
+            # Cache the result
+            self._static_dining_cache[cache_key] = static_info
+            
+            # Clean old cache entries (keep only last 3 hours to prevent memory buildup)
+            if len(self._static_dining_cache) > 3:
+                oldest_key = min(self._static_dining_cache.keys())
+                del self._static_dining_cache[oldest_key]
+            
+            return static_info
+            
+        except Exception as e:
+            print(f"Error generating static dining info: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return {'error': "Error retrieving dining information."}
+
+    def get_dining_information_for_planning(self, current_hour: int, current_day: int) -> str:
+        """Get dining information with current time context for planning."""
+        try:
+            dining_info = []
+            
+            # Time-sensitive dining information
+            dining_info.append(f"Current Time: {current_hour}:00 on Day {current_day}")
+            
+            # Meal timing guidance
+            if 6 <= current_hour <= 9:
+                dining_info.append("🌅 Breakfast Time (6:00-9:00)")
+            elif 11 <= current_hour <= 14:
+                dining_info.append("🌞 Lunch Time (11:00-14:00)")
+            elif 17 <= current_hour <= 20:
+                dining_info.append("🌆 Dinner Time (17:00-20:00)")
+            else:
+                dining_info.append("🍪 Snack Time (meals outside normal hours)")
+            
+            return "\n".join(dining_info)
+            
+        except Exception as e:
+            print(f"Error getting dining information for planning: {str(e)}")
+            return "Error retrieving dining information."
+
+    def _get_dynamic_dining_info(self) -> str:
+        """Get dynamic dining location information from config."""
+        try:
+            if not self.config_data:
+                return "No dining information available."
+            
+            dining_locations = self.config_data.get('town_areas', {}).get('dining', {})
+            if not dining_locations:
+                return "No dining locations found in config."
+            
+            dining_info = []
+            dining_info.append("🍽️ AVAILABLE DINING LOCATIONS:")
+            
+            for location_name, location_data in dining_locations.items():
+                location_type = location_data.get('type', 'unknown')
+                description = location_data.get('description', '')
+                menu = location_data.get('menu', {})
+                
+                if menu:
+                    meal_info = []
+                    for meal_type, meal_data in menu.items():
+                        price = meal_data.get('base_price', 'Price not set')
+                        available_hours = meal_data.get('available_hours', [])
+                        if available_hours:
+                            hours_str = f"{min(available_hours)}:00-{max(available_hours)}:00"
+                        else:
+                            hours_str = "Hours not set"
+                        meal_info.append(f"{meal_type} (${price}, {hours_str})")
+                    
+                    dining_info.append(f"• {location_name}: {', '.join(meal_info)}")
+                else:
+                    dining_info.append(f"• {location_name}: No menu available")
+            
+            return '\n'.join(dining_info)
+            
+        except Exception as e:
+            print(f"Error getting dynamic dining info: {str(e)}")
+            return "Error retrieving dining information."
+
+    # Interface implementation methods
+    def get_prompt(self, prompt_type: str, context: dict) -> str:
+        """Get a formatted prompt based on type and context."""
+        try:
+            if prompt_type == "daily_plan":
+                return self.get_planning_prompt(
+                    agent_name=context.get('name', ''),
+                    current_time=context.get('current_time', 0),
+                    context=context
+                )
+            elif prompt_type == "emergency_replan":
+                return self.get_emergency_replan_prompt(context)
+            elif prompt_type == "conversation":
+                return self.get_conversation_prompt(
+                    speaker=context.get('speaker', ''),
+                    listener=context.get('listener', ''),
+                    context=context
+                )
+            else:
+                raise ValueError(f"Unknown prompt type: {prompt_type}")
+        except Exception as e:
+            print(f"Error getting prompt: {str(e)}")
+            traceback.print_exc()
+            raise
+
+    def get_prompt_type(self, prompt: str) -> str:
+        """Determine the type of a given prompt."""
+        try:
+            if "Create a detailed 17-hour daily plan" in prompt:
+                return "daily_plan"
+            elif "Create a 2-hour plan starting" in prompt:
+                return "emergency_replan"
+            elif "conversation" in prompt.lower():
+                return "conversation"
+            else:
+                return "unknown"
+        except Exception:
+            return "unknown"
 
     def get_discount_info(self, location_name: str, current_day: int) -> str:
-        """Get discount information based on location and current day."""
-        if location_name == "Fried Chicken Shop":
-            if current_day in [3, 4]:  # Wednesday and Thursday
-                return "Special Offer: 20% discount on all meals today! (Wednesday/Thursday Special)"
-            else:
-                return "No special discounts available today. Regular prices in effect."
-        return ""  # Return empty string for other locations
+        """Get discount information for a location."""
+        # Currently no discount system implemented
+        return ""
 
     def get_location_context(self, location_name: str, current_day: int) -> str:
-        """Get context about a specific location, prioritizing system rules and constraints."""
+        """Get context information for a location."""
         try:
-            context = "System Rules and Constraints:\n"
+            return self._get_location_specific_info(location_name)
+        except Exception as e:
+            print(f"Error getting location context: {str(e)}")
+            return f"Location: {location_name}"
+
+    def validate_context(self, prompt_type: str, context: dict) -> bool:
+        """Validate context for a prompt type."""
+        try:
+            if prompt_type == "daily_plan":
+                required_fields = ['name', 'age', 'occupation', 'residence', 'workplace', 
+                                 'current_time', 'current_day', 'current_location', 
+                                 'energy_level', 'grocery_level', 'money']
+                return all(field in context for field in required_fields)
+            elif prompt_type == "emergency_replan":
+                required_fields = ['name', 'current_time', 'current_day', 'current_location', 
+                                 'money', 'reason', 'target_location']
+                return all(field in context for field in required_fields)
+            elif prompt_type == "conversation":
+                required_fields = ['speaker', 'listener']
+                return all(field in context for field in required_fields)
+            else:
+                return False
+        except Exception:
+            return False
+
+    def get_planning_prompt(self, agent_name: str, current_time: int, context: dict) -> str:
+        """Get a planning prompt for an agent."""
+        try:
+            template = self.prompt_templates.get("daily_plan")
+            if not template:
+                raise ValueError("Daily plan template not found")
             
-            # Energy System Rules
-            context += "\nEnergy System:\n"
-            context += f"- Maximum Energy: {ENERGY_MAX}\n"
-            context += f"- Minimum Energy: {ENERGY_MIN}\n"
-            context += f"- Energy Decay: {ENERGY_DECAY_PER_HOUR} per hour\n"
-            context += f"- Work Cost: {ENERGY_COST_WORK_HOUR} per hour\n"
-            context += f"- Travel Cost: {ENERGY_COST_PER_HOUR_TRAVEL} per hour\n"
-            context += f"- Idle Cost: {ENERGY_COST_PER_HOUR_IDLE} per hour\n"
+            # Get unified rules for planning context (no energy warnings during planning)
+            unified_rules = self.get_unified_rules('planning', context)
             
-            # Food and Energy Rules
-            context += "\nFood and Energy Rules:\n"
-            context += f"- Home Meal: +{ENERGY_GAIN_HOME_MEAL} energy\n"
-            context += f"- Restaurant Meal: +{ENERGY_GAIN_RESTAURANT_MEAL} energy\n"
-            context += f"- Snack/Beverage: +{ENERGY_GAIN_SNACK} energy\n"
-            context += f"- Sleep: +{ENERGY_GAIN_SLEEP} energy\n"
-            context += f"- Nap: +{ENERGY_GAIN_NAP} energy\n"
-            context += f"- Conversation: +{ENERGY_GAIN_CONVERSATION} energy\n"
+            # Add system info with unified rules and pass context for location information
+            system_info = self._get_system_info(context).format(unified_rules=unified_rules)
             
-            # Money and Cost Rules
-            context += "\nMoney and Cost Rules:\n"
-            context += "- Restaurant Meal: $15\n"
-            context += "- Snack/Beverage: $5\n"
-            context += "- Groceries: $10 per unit\n"
+            context['system_info'] = system_info
             
-            # Work Schedule Rules
-            context += "\nWork Schedule Rules:\n"
-            context += "- Standard Work Hours: 9:00-17:00\n"
-            context += "- Must have sufficient energy to work\n"
-            context += "- Work provides daily wage\n"
+            # Ensure agent_name and current_time are in context
+            context['name'] = agent_name
+            context['current_time'] = current_time
             
-            # Location-specific Information
-            context += f"\nLocation: {location_name}\n"
-            
-            # Food Options by Location
-            if location_name == 'Coffee Shop':
-                context += "\nFood Options:\n"
-                context += "- Serves snacks and beverages only (not full meals)\n"
-                context += "- Snacks/beverages cost $5 and provide a small energy boost\n"
-                context += "- Open for breakfast and afternoon snacks\n"
-            elif location_name in ['Fried Chicken Shop', 'Local Diner']:
-                context += "\nFood Options:\n"
-                context += "- Serves full meals (breakfast, lunch, dinner)\n"
-                context += "- Meals cost $15 and provide significant energy\n"
-                context += "- Open during regular meal hours\n"
-            elif location_name == 'Grocery Store':
-                context += "\nFood Options:\n"
-                context += "- Sells groceries for home cooking\n"
-                context += "- Also offers quick snacks for $5\n"
-                context += "- Open during regular business hours\n"
-            
-            # Location Hours
-            context += "\nOperating Hours:\n"
-            if location_name in ['Fried Chicken Shop', 'Local Diner']:
-                context += "- Open: 7:00-21:00 (Meal Service)\n"
-            elif location_name == 'Coffee Shop':
-                context += "- Open: 6:00-20:00 (Snack Service)\n"
-            elif location_name == 'Grocery Store':
-                context += "- Open: 8:00-22:00\n"
-            elif location_name == 'Home':
-                context += "- Always accessible to residents\n"
-            elif location_name == 'Workplace':
-                context += "- Open during work hours (9:00-17:00)\n"
-            
-            # Add any special events or discounts
-            discount_info = self.get_discount_info(location_name, current_day)
-            if discount_info:
-                context += f"\n{discount_info}"
-            
-            return context
+            # Validate required context fields
+            if not self.validate_context('daily_plan', context):
+                raise ValueError("Missing required context fields for daily plan")
+
+            return template["template"].format(**context)
             
         except Exception as e:
-            print(f"Error in get_location_context: {str(e)}")
-            return f"Location: {location_name}\nError retrieving context."
+            print(f"Error getting planning prompt: {str(e)}")
+            traceback.print_exc()
+            raise
+
+    def get_plan_schema(self) -> dict:
+        """Get the schema for planning prompts."""
+        return {
+            "type": "object",
+            "properties": {
+                "activities": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "time": {"type": "integer", "minimum": 7, "maximum": 23},
+                            "action": {"type": "string"},
+                            "target": {"type": "string"},
+                            "description": {"type": "string"}
+                        },
+                        "required": ["time", "action", "target", "description"]
+                    },
+                    "minItems": 17,
+                    "maxItems": 17
+                }
+            },
+            "required": ["activities"]
+        }
+
+    def get_conversation_prompt(self, speaker: str, listener: str, context: dict) -> str:
+        """Get a conversation prompt between two agents."""
+        try:
+            # Build conversation history context
+            previous_interaction = context.get('previous_interaction', [])
+            conversation_turn = context.get('conversation_turn', 0)
+            
+            # Determine if this is an initiator or response turn
+            is_initiator_turn = len(previous_interaction) == 0
+            
+            if is_initiator_turn:
+                # First turn - speaker is initiating the conversation                
+                prompt = f"""You are {speaker} starting a conversation with {listener}.
+
+Current context:
+- Location: {context.get('location', 'Unknown')}
+- Time: {context.get('time', 'Unknown')}:00
+- Your energy: {context.get('energy_level', 'Unknown')}
+- Your money: ${context.get('money', 'Unknown')}
+- Relationship: {context.get('relationship', 'neighbor')}
+- Location Info: {context.get('location_hours_info', 'No hours info available')}
+
+Your Background:
+- Occupation: {context.get('speaker_occupation', 'Unknown')}
+- Employment: {context.get('typical_work_hours', 'Unknown schedule')}
+- Workplace: {context.get('speaker_workplace', 'Unknown')}
+- Current Activity: {context.get('current_activity', 'Unknown')}
+
+⚠️ VALID LOCATIONS ONLY:
+If you make plans to meet somewhere, you MUST use locations from this list:
+{', '.join(context.get('valid_locations', []))}
+Do NOT invent new locations like "new bistro", "nearby cafe", "local place" - use exact names from the list above.
+
+You are initiating a conversation with {listener}. Generate a natural greeting or opening statement.
+- Keep it brief (1-2 sentences) and appropriate for the setting
+- Consider your relationship with {listener}
+- Stay in character as {speaker}
+- Be aware of current time and location availability when discussing plans
+- IMPORTANT: You are a working adult - do NOT mention classes, school, or student activities
+- Base conversations on your actual occupation and work schedule
+- If suggesting meeting places, ONLY use valid location names from the list above
+
+If you make any specific plans or commitments with {listener} (like meeting somewhere at a specific time), format your response as JSON:
+{{
+  "dialogue": "Your conversation text here",
+  "commitments": [
+    {{
+      "with": ["{listener}"],
+      "schedule_update": {{
+        "18:00": {{"action": "go_to", "target": "Location Name", "reasoning": "Brief reason"}},
+        "19:00": {{"action": "eat", "target": "Location Name", "reasoning": "Brief reason"}}
+      }}
+    }}
+  ]
+}}
+
+⚠️ COMMITMENT VALIDATION: If you include commitments, the "target" MUST be an exact location name from the valid locations list above.
+
+Otherwise, just respond with your dialogue text directly.
+
+Your opening statement:"""
+                
+            else:
+                # Response turn - speaker is responding to previous dialogue
+                last_turn = previous_interaction[-1] if previous_interaction else {}
+                last_speaker = last_turn.get('speaker', 'Unknown')
+                last_dialogue = last_turn.get('dialogue', '')
+                                
+                # Build conversation history for context
+                history_text = "\n\nConversation so far:\n"
+                for turn in previous_interaction:
+                    turn_speaker = turn.get('speaker', 'Unknown')
+                    turn_dialogue = turn.get('dialogue', '')
+                    history_text += f"- {turn_speaker}: \"{turn_dialogue}\"\n"
+                
+                prompt = f"""You are {speaker} having a conversation with {listener}.
+
+Current context:
+- Location: {context.get('location', 'Unknown')}
+- Time: {context.get('time', 'Unknown')}:00
+- Your energy: {context.get('energy_level', 'Unknown')}
+- Your money: ${context.get('money', 'Unknown')}
+- Relationship: {context.get('relationship', 'neighbor')}
+- Location Info: {context.get('location_hours_info', 'No hours info available')}
+
+Your Background:
+- Occupation: {context.get('speaker_occupation', 'Unknown')}
+- Employment: {context.get('typical_work_hours', 'Unknown schedule')}
+- Workplace: {context.get('speaker_workplace', 'Unknown')}
+- Current Activity: {context.get('current_activity', 'Unknown')}
+
+⚠️ VALID LOCATIONS ONLY:
+If you make plans to meet somewhere, you MUST use locations from this list:
+{', '.join(context.get('valid_locations', []))}
+Do NOT invent new locations like "new bistro", "nearby cafe", "local place" - use exact names from the list above.
+
+{history_text}
+
+{last_speaker} just said: "{last_dialogue}"
+
+Generate a natural response to what {last_speaker} just said.
+- Keep it brief (1-2 sentences) and appropriate for the setting
+- Respond directly to what was just said
+- Stay in character as {speaker}
+- Be aware of current time and location availability when discussing plans
+- IMPORTANT: You are a working adult - do NOT mention classes, school, or student activities
+- Base conversations on your actual occupation and work schedule
+- If suggesting meeting places, ONLY use valid location names from the list above
+
+If you make any specific plans or commitments with {listener} (like agreeing to meet somewhere at a specific time), format your response as JSON:
+{{
+  "dialogue": "Your conversation text here",
+  "commitments": [
+    {{
+      "with": ["{listener}"],
+      "schedule_update": {{
+        "18:00": {{"action": "go_to", "target": "Location Name", "reasoning": "Brief reason"}},
+        "19:00": {{"action": "eat", "target": "Location Name", "reasoning": "Brief reason"}}
+      }}
+    }}
+  ]
+}}
+
+⚠️ COMMITMENT VALIDATION: If you include commitments, the "target" MUST be an exact location name from the valid locations list above.
+
+Otherwise, just respond with your dialogue text directly.
+
+Your response:"""
+            
+            return prompt
+            
+        except Exception as e:
+            print(f"Error getting conversation prompt: {str(e)}")
+            traceback.print_exc()
+            raise
+
+    def get_emergency_replan_prompt(self, context: dict) -> str:
+        """Generate emergency replan prompt when an agent needs immediate food."""
+        try:
+            template = self.prompt_templates.get("emergency_replan")
+            if not template:
+                raise ValueError("Emergency replan template not found")
+            
+            # Validate required context fields
+            if not self.validate_context('emergency_replan', context):
+                raise ValueError("Missing required context fields for emergency replan")
+            
+            # Add the next hour to the context
+            context['next_hour'] = (context['current_time'] + 1) % 24
+
+            return template["template"].format(**context)
+            
+        except Exception as e:
+            print(f"Error getting emergency replan prompt: {str(e)}")
+            traceback.print_exc()
+            raise
+
+    def _get_location_specific_info(self, location_name: str) -> str:
+        """Get location-specific rules and information."""
+        context = ""
+        
+        if not self.config_data:
+            return f"Location: {location_name}"
+        
+        # Check what type of location this is from config
+        town_areas = self.config_data.get('town_areas', {})
+        
+        # Check if it's a dining location
+        dining_locations = town_areas.get('dining', {})
+        if location_name in dining_locations:
+            location_data = dining_locations[location_name]
+            menu = location_data.get('menu', {})
+            if menu:
+                meal_types = list(menu.keys())
+                context += f"\nRestaurant/Cafe Information:\n"
+                context += f"- Serves: {', '.join(meal_types)}\n"
+                context += f"- Description: {location_data.get('description', '')}\n"
+                
+                # Add pricing information from config
+                for meal_type, meal_data in menu.items():
+                    price = meal_data.get('base_price', 'Price not set')
+                    available_hours = meal_data.get('available_hours', [])
+                    if available_hours:
+                        hours_str = f"{min(available_hours)}:00-{max(available_hours)}:00"
+                        context += f"- {meal_type}: ${price} (available {hours_str})\n"
+                    else:
+                        context += f"- {meal_type}: ${price} (hours not set)\n"
+            else:
+                context += f"\nDining Location:\n"
+                context += f"- No menu available\n"
+        
+        # Check if it's a grocery location
+        grocery_locations = town_areas.get('retail_and_grocery', {})
+        if location_name in grocery_locations:
+            location_data = grocery_locations[location_name]
+            base_price = location_data.get('base_price', 'Price not set')
+            context += f"\nGrocery Store Information:\n"
+            context += f"- PRIMARY PURPOSE: Buy groceries at ${base_price} per level\n"
+            context += f"- Description: {location_data.get('description', '')}\n"
+            context += f"- ⚠️ CANNOT eat meals here - this is for shopping only\n"
+            context += f"- For meals, go to restaurants in the dining section\n"
+        
+        # Check if it's a residence
+        residence_locations = town_areas.get('residences', {})
+        if location_name in residence_locations:
+            context += f"\nHome Information:\n"
+            context += f"- Can eat home meals if grocery level > {GROCERY_COST_HOME_MEAL}\n"
+            context += f"- Home meals cost {GROCERY_COST_HOME_MEAL} grocery levels, provide +{ENERGY_GAIN_HOME_MEAL} energy\n"
+            context += f"- Sleep here at night to reset energy to {ENERGY_MAX}\n"
+        
+        # Check if it's a work location
+        work_locations = town_areas.get('work', {})
+        if location_name in work_locations:
+            context += f"\nWorkplace Information:\n"
+            context += f"- Work here to earn daily wage\n"
+            context += f"- Can take naps during midday hours (11-15)\n"
+            
+        return context
+
+    def _get_system_info(self, context: dict = None):
+        """Get system information for all prompts."""
+        # Build available locations from context if provided
+        locations_text = "Available Locations:\n"
+        if context and 'valid_locations' in context:
+            # Categorize locations dynamically from config
+            dining_locations = set()
+            grocery_locations = set()
+            residence_locations = set()
+            work_locations = set()
+            
+            if self.config_data:
+                # Get dining locations from config
+                dining_data = self.config_data.get('town_areas', {}).get('dining', {})
+                dining_locations = set(dining_data.keys())
+                
+                # Get grocery locations from config
+                grocery_data = self.config_data.get('town_areas', {}).get('retail_and_grocery', {})
+                grocery_locations = set(grocery_data.keys())
+                
+                # Get residence locations from config
+                residence_data = self.config_data.get('town_areas', {}).get('residences', {})
+                residence_locations = set(residence_data.keys())
+                
+                # Get work locations from config
+                work_data = self.config_data.get('town_areas', {}).get('work', {})
+                work_locations = set(work_data.keys())
+            
+            for location in context['valid_locations']:
+                # Categorize based on config data
+                if location in dining_locations:
+                    locations_text += f"- {location} (RESTAURANT/CAFE - for meals and snacks)\n"
+                elif location in grocery_locations:
+                    locations_text += f"- {location} (GROCERY STORE - for shopping only, NO meals)\n"
+                elif location in residence_locations:
+                    locations_text += f"- {location} (RESIDENCE - for home meals and sleep)\n"
+                elif location in work_locations:
+                    locations_text += f"- {location} (WORKPLACE - for work and naps)\n"
+                else:
+                    locations_text += f"- {location}\n"
+        else:
+            # Fallback to basic locations if no context provided
+            locations_text += "- Residence (your home)\n"
+            locations_text += "- Coffee Shop (snacks/beverages only, not full meals)\n"
+            locations_text += "- Fried Chicken Shop (full restaurant meals)\n"
+            locations_text += "- Local Diner (full restaurant meals)\n"
+            locations_text += "- Office (work)\n"
+        
+        return f"""IMPORTANT SYSTEM RULES - READ CAREFULLY:
+
+{locations_text}
+{{unified_rules}}
+
+Available Actions:
+- go_to: Travel to a location (costs 1 energy per step + natural decay)
+- work: Work at office (costs 5 energy/hour + natural decay, earns daily wage)
+- eat: Eat at current location (ONLY works at restaurants/cafes with menus, or at home with groceries)
+- shop: Buy groceries or snacks
+- rest: Rest/nap/sleep at current location
+  * Sleep at home (22:00-06:00): resets energy to 100
+  * Nap at workplace (11:00-15:00): +10 energy
+  * Invalid at other times/locations
+- idle: Relaxing/free time with no energy gain (for general relaxation, waiting, etc.)
+- converse: Talk with another agent (if at same location, respects cooldown)
+
+⚠️ CRITICAL ACTION RULES:
+1. Use "eat" action ONLY for actual meals - never for napping!
+2. Use "rest" action ONLY for napping (workplace 11-15) or sleeping (home 23-6)
+3. Use "idle" action for relaxing/waiting at other times (no energy gain)
+4. "eat" action requires being at a restaurant with a menu OR at home with groceries
+5. Don't confuse eating, resting, and idle activities!
+
+Travel Times:
+- Most trips take 1 step (1 energy + natural decay)
+- Plan travel time into your schedule
+
+Financial System:
+- Restaurant meals cost varies by location and meal type (see dining locations above)
+- Snacks/beverages cost varies by location and item type
+- Groceries cost $1 per level purchased
+- You earn a daily wage by working
+
+CRITICAL PLANNING RULES:
+1. Plan ALL 17 hours (7:00-23:00) - no gaps allowed!
+2. Include meals during appropriate times: breakfast (6-9), lunch (11-14), dinner (17-20)
+3. ⚠️ NEVER skip lunch! Working 8 hours costs 80 energy - you MUST eat lunch to survive
+4. Monitor energy - you lose 5 energy per hour automatically + 5 per hour working
+5. Work standard hours (9:00-17:00) to earn money
+6. Use 'rest' action ONLY for napping (workplace 11-15) or sleeping (home 23-6)
+7. Use 'idle' action for evening relaxation, waiting, general free time (no energy gain)
+8. Each hour must have exactly one action with a target location
+9. ⚠️ CRITICAL: Only eat at RESTAURANTS/CAFES (with menus) or at HOME - NOT at grocery stores or workplaces!
+10. Examples: "action": "idle" at home during hours 20-22 for evening relaxation before sleep
+"""
