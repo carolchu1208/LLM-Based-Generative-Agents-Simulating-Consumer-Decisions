@@ -1,0 +1,686 @@
+{
+  "day_1": {
+    "energy": {
+      "Kevin Chen": 95,
+      "Sophie Martinez": 95,
+      "David Kim": 3.0,
+      "Lisa Kim": 40.0,
+      "Rebecca Queen": 95,
+      "Alex Thompson": 95,
+      "Jordan Lee": 19.0,
+      "Maria Rodriguez": 95,
+      "Sarah Chen": 18.0,
+      "Mike Johnson": 24.0,
+      "Emma Wilson": 95
+    },
+    "grocery": {
+      "Kevin Chen": 90,
+      "Sophie Martinez": 100,
+      "David Kim": 100,
+      "Lisa Kim": 100,
+      "Rebecca Queen": 100,
+      "Alex Thompson": 90,
+      "Jordan Lee": 100,
+      "Maria Rodriguez": 100,
+      "Sarah Chen": 90,
+      "Mike Johnson": 100,
+      "Emma Wilson": 100
+    },
+    "financial": {
+      "Kevin Chen": {
+        "money": 434.5,
+        "daily_income": 55.5,
+        "daily_expenses": 65.0
+      },
+      "Sophie Martinez": {
+        "money": 955.7142857142858,
+        "daily_income": 85.71428571428571,
+        "daily_expenses": 30.0
+      },
+      "David Kim": {
+        "money": 1255.0,
+        "daily_income": 0.0,
+        "daily_expenses": 20.0
+      },
+      "Lisa Kim": {
+        "money": 1146.875,
+        "daily_income": 46.875,
+        "daily_expenses": 25.0
+      },
+      "Rebecca Queen": {
+        "money": 436.0,
+        "daily_income": 37.0,
+        "daily_expenses": 45.0
+      },
+      "Alex Thompson": {
+        "money": 335.0,
+        "daily_income": 16.0,
+        "daily_expenses": 65.0
+      },
+      "Jordan Lee": {
+        "money": 678.125,
+        "daily_income": 28.125,
+        "daily_expenses": 25.0
+      },
+      "Maria Rodriguez": {
+        "money": 865.0,
+        "daily_income": 130.0,
+        "daily_expenses": 45.0
+      },
+      "Sarah Chen": {
+        "money": 365.0,
+        "daily_income": 45.0,
+        "daily_expenses": 40.0
+      },
+      "Mike Johnson": {
+        "money": 675.0,
+        "daily_income": 0.0,
+        "daily_expenses": 45.0
+      },
+      "Emma Wilson": {
+        "money": 565.0,
+        "daily_income": 0.0,
+        "daily_expenses": 65.0
+      }
+    },
+    "activities": {
+      "Kevin Chen": "sleeping",
+      "Sophie Martinez": "sleeping",
+      "David Kim": "traveling",
+      "Lisa Kim": "eating",
+      "Rebecca Queen": "sleeping",
+      "Alex Thompson": "sleeping",
+      "Jordan Lee": "traveling",
+      "Maria Rodriguez": "sleeping",
+      "Sarah Chen": "traveling",
+      "Mike Johnson": "traveling",
+      "Emma Wilson": "sleeping"
+    },
+    "locations": {
+      "Kevin Chen": "Maple Street Apartments",
+      "Sophie Martinez": "Oak View Condos",
+      "David Kim": "Oak View Condos",
+      "Lisa Kim": "Oak View Condos",
+      "Rebecca Queen": "Oak View Condos",
+      "Alex Thompson": "Maple Street Apartments",
+      "Jordan Lee": "Maple Street Apartments",
+      "Maria Rodriguez": "Oak View Condos",
+      "Sarah Chen": "Oak View Condos",
+      "Mike Johnson": "Maple Street Apartments",
+      "Emma Wilson": "Maple Street Apartments"
+    },
+    "metadata": {
+      "day": 1
+    }
+  },
+  "day_2": {
+    "energy": {
+      "Kevin Chen": 23.0,
+      "Sophie Martinez": 95,
+      "David Kim": 95,
+      "Lisa Kim": 95,
+      "Rebecca Queen": 4.0,
+      "Alex Thompson": 17.0,
+      "Jordan Lee": 95,
+      "Maria Rodriguez": 95,
+      "Sarah Chen": 95,
+      "Mike Johnson": 4.0,
+      "Emma Wilson": 95
+    },
+    "grocery": {
+      "Kevin Chen": 70,
+      "Sophie Martinez": 90,
+      "David Kim": 100,
+      "Lisa Kim": 100,
+      "Rebecca Queen": 90,
+      "Alex Thompson": 90,
+      "Jordan Lee": 100,
+      "Maria Rodriguez": 90,
+      "Sarah Chen": 90,
+      "Mike Johnson": 90,
+      "Emma Wilson": 90
+    },
+    "financial": {
+      "Kevin Chen": {
+        "money": 460.0,
+        "daily_income": 55.5,
+        "daily_expenses": 30.0
+      },
+      "Sophie Martinez": {
+        "money": 1064.2857142857144,
+        "daily_income": 128.57142857142856,
+        "daily_expenses": 20.0
+      },
+      "David Kim": {
+        "money": 1308.125,
+        "daily_income": 53.125,
+        "daily_expenses": 0.0
+      },
+      "Lisa Kim": {
+        "money": 1146.875,
+        "daily_income": 0.0,
+        "daily_expenses": 0.0
+      },
+      "Rebecca Queen": {
+        "money": 490.0,
+        "daily_income": 74.0,
+        "daily_expenses": 20.0
+      },
+      "Alex Thompson": {
+        "money": 385.0,
+        "daily_income": 80.0,
+        "daily_expenses": 30.0
+      },
+      "Jordan Lee": {
+        "money": 676.25,
+        "daily_income": 28.125,
+        "daily_expenses": 30.0
+      },
+      "Maria Rodriguez": {
+        "money": 892.5,
+        "daily_income": 97.5,
+        "daily_expenses": 70.0
+      },
+      "Sarah Chen": {
+        "money": 385.0,
+        "daily_income": 30.0,
+        "daily_expenses": 10.0
+      },
+      "Mike Johnson": {
+        "money": 685.0,
+        "daily_income": 30.0,
+        "daily_expenses": 20.0
+      },
+      "Emma Wilson": {
+        "money": 598.75,
+        "daily_income": 78.75,
+        "daily_expenses": 45.0
+      }
+    },
+    "activities": {
+      "Kevin Chen": "idling",
+      "Sophie Martinez": "sleeping",
+      "David Kim": "sleeping",
+      "Lisa Kim": "sleeping",
+      "Rebecca Queen": "idling",
+      "Alex Thompson": "idling",
+      "Jordan Lee": "sleeping",
+      "Maria Rodriguez": "sleeping",
+      "Sarah Chen": "sleeping",
+      "Mike Johnson": "idling",
+      "Emma Wilson": "sleeping"
+    },
+    "locations": {
+      "Kevin Chen": "Maple Street Apartments",
+      "Sophie Martinez": "Oak View Condos",
+      "David Kim": "Oak View Condos",
+      "Lisa Kim": "Oak View Condos",
+      "Rebecca Queen": "Oak View Condos",
+      "Alex Thompson": "Maple Street Apartments",
+      "Jordan Lee": "Maple Street Apartments",
+      "Maria Rodriguez": "Oak View Condos",
+      "Sarah Chen": "Oak View Condos",
+      "Mike Johnson": "Maple Street Apartments",
+      "Emma Wilson": "Maple Street Apartments"
+    },
+    "metadata": {
+      "day": 2
+    }
+  },
+  "day_3": {
+    "energy": {
+      "Kevin Chen": 95,
+      "Sophie Martinez": 95,
+      "David Kim": 7.0,
+      "Lisa Kim": 95,
+      "Rebecca Queen": 95,
+      "Alex Thompson": 95,
+      "Jordan Lee": 95,
+      "Maria Rodriguez": 95,
+      "Sarah Chen": 95,
+      "Mike Johnson": 46.0,
+      "Emma Wilson": 33.0
+    },
+    "grocery": {
+      "Kevin Chen": 70,
+      "Sophie Martinez": 90,
+      "David Kim": 100,
+      "Lisa Kim": 90,
+      "Rebecca Queen": 90,
+      "Alex Thompson": 90,
+      "Jordan Lee": 100,
+      "Maria Rodriguez": 90,
+      "Sarah Chen": 80,
+      "Mike Johnson": 90,
+      "Emma Wilson": 80
+    },
+    "financial": {
+      "Kevin Chen": {
+        "money": 469.5,
+        "daily_income": 55.5,
+        "daily_expenses": 46.0
+      },
+      "Sophie Martinez": {
+        "money": 1174.8571428571431,
+        "daily_income": 128.57142857142856,
+        "daily_expenses": 18.0
+      },
+      "David Kim": {
+        "money": 1409.375,
+        "daily_income": 106.25,
+        "daily_expenses": 5.0
+      },
+      "Lisa Kim": {
+        "money": 1261.5,
+        "daily_income": 140.625,
+        "daily_expenses": 26.0
+      },
+      "Rebecca Queen": {
+        "money": 497.5,
+        "daily_income": 55.5,
+        "daily_expenses": 48.0
+      },
+      "Alex Thompson": {
+        "money": 419.0,
+        "daily_income": 64.0,
+        "daily_expenses": 30.0
+      },
+      "Jordan Lee": {
+        "money": 640.25,
+        "daily_income": 0.0,
+        "daily_expenses": 36.0
+      },
+      "Maria Rodriguez": {
+        "money": 978.5,
+        "daily_income": 130.0,
+        "daily_expenses": 44.0
+      },
+      "Sarah Chen": {
+        "money": 385.0,
+        "daily_income": 45.0,
+        "daily_expenses": 45.0
+      },
+      "Mike Johnson": {
+        "money": 661.0,
+        "daily_income": 0.0,
+        "daily_expenses": 24.0
+      },
+      "Emma Wilson": {
+        "money": 658.75,
+        "daily_income": 105.0,
+        "daily_expenses": 45.0
+      }
+    },
+    "activities": {
+      "Kevin Chen": "sleeping",
+      "Sophie Martinez": "sleeping",
+      "David Kim": "traveling",
+      "Lisa Kim": "sleeping",
+      "Rebecca Queen": "sleeping",
+      "Alex Thompson": "sleeping",
+      "Jordan Lee": "sleeping",
+      "Maria Rodriguez": "sleeping",
+      "Sarah Chen": "sleeping",
+      "Mike Johnson": "eating",
+      "Emma Wilson": "traveling"
+    },
+    "locations": {
+      "Kevin Chen": "Maple Street Apartments",
+      "Sophie Martinez": "Oak View Condos",
+      "David Kim": "Oak View Condos",
+      "Lisa Kim": "Oak View Condos",
+      "Rebecca Queen": "Oak View Condos",
+      "Alex Thompson": "Maple Street Apartments",
+      "Jordan Lee": "Maple Street Apartments",
+      "Maria Rodriguez": "Oak View Condos",
+      "Sarah Chen": "Oak View Condos",
+      "Mike Johnson": "Maple Street Apartments",
+      "Emma Wilson": "Maple Street Apartments"
+    },
+    "metadata": {
+      "day": 3
+    }
+  },
+  "day_4": {
+    "energy": {
+      "Kevin Chen": 95,
+      "Sophie Martinez": 95,
+      "David Kim": 16.0,
+      "Lisa Kim": 95,
+      "Rebecca Queen": 95,
+      "Alex Thompson": 95,
+      "Jordan Lee": 95,
+      "Maria Rodriguez": 33.0,
+      "Sarah Chen": 10.0,
+      "Mike Johnson": 95,
+      "Emma Wilson": 95
+    },
+    "grocery": {
+      "Kevin Chen": 70,
+      "Sophie Martinez": 80,
+      "David Kim": 90,
+      "Lisa Kim": 90,
+      "Rebecca Queen": 90,
+      "Alex Thompson": 80,
+      "Jordan Lee": 90,
+      "Maria Rodriguez": 90,
+      "Sarah Chen": 80,
+      "Mike Johnson": 90,
+      "Emma Wilson": 80
+    },
+    "financial": {
+      "Kevin Chen": {
+        "money": 488.0,
+        "daily_income": 55.5,
+        "daily_expenses": 37.0
+      },
+      "Sophie Martinez": {
+        "money": 1224.571428571429,
+        "daily_income": 85.71428571428571,
+        "daily_expenses": 36.0
+      },
+      "David Kim": {
+        "money": 1527.75,
+        "daily_income": 159.375,
+        "daily_expenses": 41.0
+      },
+      "Lisa Kim": {
+        "money": 1339.25,
+        "daily_income": 93.75,
+        "daily_expenses": 16.0
+      },
+      "Rebecca Queen": {
+        "money": 530.5,
+        "daily_income": 74.0,
+        "daily_expenses": 41.0
+      },
+      "Alex Thompson": {
+        "money": 446.0,
+        "daily_income": 48.0,
+        "daily_expenses": 21.0
+      },
+      "Jordan Lee": {
+        "money": 732.75,
+        "daily_income": 112.5,
+        "daily_expenses": 20.0
+      },
+      "Maria Rodriguez": {
+        "money": 987.5,
+        "daily_income": 65.0,
+        "daily_expenses": 56.0
+      },
+      "Sarah Chen": {
+        "money": 405.0,
+        "daily_income": 60.0,
+        "daily_expenses": 40.0
+      },
+      "Mike Johnson": {
+        "money": 661.0,
+        "daily_income": 0.0,
+        "daily_expenses": 0.0
+      },
+      "Emma Wilson": {
+        "money": 658.75,
+        "daily_income": 0.0,
+        "daily_expenses": 0.0
+      }
+    },
+    "activities": {
+      "Kevin Chen": "sleeping",
+      "Sophie Martinez": "sleeping",
+      "David Kim": "traveling",
+      "Lisa Kim": "sleeping",
+      "Rebecca Queen": "sleeping",
+      "Alex Thompson": "sleeping",
+      "Jordan Lee": "sleeping",
+      "Maria Rodriguez": "idling",
+      "Sarah Chen": "traveling",
+      "Mike Johnson": "sleeping",
+      "Emma Wilson": "sleeping"
+    },
+    "locations": {
+      "Kevin Chen": "Maple Street Apartments",
+      "Sophie Martinez": "Oak View Condos",
+      "David Kim": "Oak View Condos",
+      "Lisa Kim": "Oak View Condos",
+      "Rebecca Queen": "Oak View Condos",
+      "Alex Thompson": "Maple Street Apartments",
+      "Jordan Lee": "Maple Street Apartments",
+      "Maria Rodriguez": "Oak View Condos",
+      "Sarah Chen": "Oak View Condos",
+      "Mike Johnson": "Maple Street Apartments",
+      "Emma Wilson": "Maple Street Apartments"
+    },
+    "metadata": {
+      "day": 4
+    }
+  },
+  "day_5": {
+    "energy": {
+      "Kevin Chen": 0,
+      "Sophie Martinez": 95,
+      "David Kim": 36.0,
+      "Lisa Kim": 11.0,
+      "Rebecca Queen": 95,
+      "Alex Thompson": 95,
+      "Jordan Lee": 0,
+      "Maria Rodriguez": 95,
+      "Sarah Chen": 0,
+      "Mike Johnson": 95,
+      "Emma Wilson": 95
+    },
+    "grocery": {
+      "Kevin Chen": 60,
+      "Sophie Martinez": 70,
+      "David Kim": 90,
+      "Lisa Kim": 90,
+      "Rebecca Queen": 90,
+      "Alex Thompson": 70,
+      "Jordan Lee": 90,
+      "Maria Rodriguez": 90,
+      "Sarah Chen": 80,
+      "Mike Johnson": 90,
+      "Emma Wilson": 80
+    },
+    "financial": {
+      "Kevin Chen": {
+        "money": 505.0,
+        "daily_income": 37.0,
+        "daily_expenses": 20.0
+      },
+      "Sophie Martinez": {
+        "money": 1270.2857142857147,
+        "daily_income": 85.71428571428571,
+        "daily_expenses": 40.0
+      },
+      "David Kim": {
+        "money": 1540.875,
+        "daily_income": 53.125,
+        "daily_expenses": 40.0
+      },
+      "Lisa Kim": {
+        "money": 1346.125,
+        "daily_income": 46.875,
+        "daily_expenses": 40.0
+      },
+      "Rebecca Queen": {
+        "money": 532.5,
+        "daily_income": 37.0,
+        "daily_expenses": 35.0
+      },
+      "Alex Thompson": {
+        "money": 474.0,
+        "daily_income": 48.0,
+        "daily_expenses": 20.0
+      },
+      "Jordan Lee": {
+        "money": 833.375,
+        "daily_income": 140.625,
+        "daily_expenses": 40.0
+      },
+      "Maria Rodriguez": {
+        "money": 987.5,
+        "daily_income": 0.0,
+        "daily_expenses": 0.0
+      },
+      "Sarah Chen": {
+        "money": 460.0,
+        "daily_income": 60.0,
+        "daily_expenses": 5.0
+      },
+      "Mike Johnson": {
+        "money": 616.0,
+        "daily_income": 0.0,
+        "daily_expenses": 45.0
+      },
+      "Emma Wilson": {
+        "money": 593.75,
+        "daily_income": 0.0,
+        "daily_expenses": 65.0
+      }
+    },
+    "activities": {
+      "Kevin Chen": "traveling",
+      "Sophie Martinez": "sleeping",
+      "David Kim": "eating",
+      "Lisa Kim": "traveling",
+      "Rebecca Queen": "sleeping",
+      "Alex Thompson": "sleeping",
+      "Jordan Lee": "traveling",
+      "Maria Rodriguez": "sleeping",
+      "Sarah Chen": "traveling",
+      "Mike Johnson": "sleeping",
+      "Emma Wilson": "sleeping"
+    },
+    "locations": {
+      "Kevin Chen": "Maple Street Apartments",
+      "Sophie Martinez": "Oak View Condos",
+      "David Kim": "Oak View Condos",
+      "Lisa Kim": "Oak View Condos",
+      "Rebecca Queen": "Oak View Condos",
+      "Alex Thompson": "Maple Street Apartments",
+      "Jordan Lee": "Maple Street Apartments",
+      "Maria Rodriguez": "Oak View Condos",
+      "Sarah Chen": "Oak View Condos",
+      "Mike Johnson": "Maple Street Apartments",
+      "Emma Wilson": "Maple Street Apartments"
+    },
+    "metadata": {
+      "day": 5
+    }
+  },
+  "day_6": {
+    "energy": {
+      "Kevin Chen": 24.0,
+      "Sophie Martinez": 19.0,
+      "David Kim": 5,
+      "Lisa Kim": 20.0,
+      "Rebecca Queen": 10.0,
+      "Alex Thompson": 9.0,
+      "Jordan Lee": 29.0,
+      "Maria Rodriguez": 67.0,
+      "Sarah Chen": 82.0,
+      "Mike Johnson": 55.0,
+      "Emma Wilson": 5
+    },
+    "grocery": {
+      "Kevin Chen": 50,
+      "Sophie Martinez": 60,
+      "David Kim": 90,
+      "Lisa Kim": 90,
+      "Rebecca Queen": 90,
+      "Alex Thompson": 60,
+      "Jordan Lee": 80,
+      "Maria Rodriguez": 90,
+      "Sarah Chen": 70,
+      "Mike Johnson": 90,
+      "Emma Wilson": 80
+    },
+    "financial": {
+      "Kevin Chen": {
+        "money": 559.0,
+        "daily_income": 74.0,
+        "daily_expenses": 20.0
+      },
+      "Sophie Martinez": {
+        "money": 1311.0000000000005,
+        "daily_income": 85.71428571428571,
+        "daily_expenses": 45.0
+      },
+      "David Kim": {
+        "money": 1540.875,
+        "daily_income": 0.0,
+        "daily_expenses": 0.0
+      },
+      "Lisa Kim": {
+        "money": 1306.125,
+        "daily_income": 0.0,
+        "daily_expenses": 40.0
+      },
+      "Rebecca Queen": {
+        "money": 586.5,
+        "daily_income": 74.0,
+        "daily_expenses": 20.0
+      },
+      "Alex Thompson": {
+        "money": 486.0,
+        "daily_income": 32.0,
+        "daily_expenses": 20.0
+      },
+      "Jordan Lee": {
+        "money": 872.75,
+        "daily_income": 84.375,
+        "daily_expenses": 45.0
+      },
+      "Maria Rodriguez": {
+        "money": 987.5,
+        "daily_income": 65.0,
+        "daily_expenses": 65.0
+      },
+      "Sarah Chen": {
+        "money": 445.0,
+        "daily_income": 30.0,
+        "daily_expenses": 45.0
+      },
+      "Mike Johnson": {
+        "money": 656.0,
+        "daily_income": 90.0,
+        "daily_expenses": 50.0
+      },
+      "Emma Wilson": {
+        "money": 593.75,
+        "daily_income": 0.0,
+        "daily_expenses": 0.0
+      }
+    },
+    "activities": {
+      "Kevin Chen": "eating",
+      "Sophie Martinez": "traveling",
+      "David Kim": "forced_rest",
+      "Lisa Kim": "idling",
+      "Rebecca Queen": "traveling",
+      "Alex Thompson": "idling",
+      "Jordan Lee": "idling",
+      "Maria Rodriguez": "idling",
+      "Sarah Chen": "idling",
+      "Mike Johnson": "idling",
+      "Emma Wilson": "forced_rest"
+    },
+    "locations": {
+      "Kevin Chen": "Maple Street Apartments",
+      "Sophie Martinez": "Oak View Condos",
+      "David Kim": "Oak View Condos",
+      "Lisa Kim": "Oak View Condos",
+      "Rebecca Queen": "Oak View Condos",
+      "Alex Thompson": "Maple Street Apartments",
+      "Jordan Lee": "Maple Street Apartments",
+      "Maria Rodriguez": "Oak View Condos",
+      "Sarah Chen": "Oak View Condos",
+      "Mike Johnson": "Maple Street Apartments",
+      "Emma Wilson": "Maple Street Apartments"
+    },
+    "metadata": {
+      "day": 6
+    }
+  }
+}

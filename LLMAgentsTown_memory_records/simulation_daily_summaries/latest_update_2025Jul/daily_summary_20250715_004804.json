@@ -1,0 +1,104 @@
+{
+  "day_1": {
+    "energy": {
+      "Kevin Chen": 95,
+      "Sophie Martinez": 0,
+      "David Kim": 95,
+      "Lisa Kim": 95
+    },
+    "grocery": {
+      "Kevin Chen": 90,
+      "Sophie Martinez": 90,
+      "David Kim": 90,
+      "Lisa Kim": 81
+    },
+    "financial": {
+      "Kevin Chen": {
+        "money": 515.0,
+        "daily_income": 0.0,
+        "daily_expenses": 40.0
+      },
+      "Sophie Martinez": {
+        "money": 900.0,
+        "daily_income": 0.0,
+        "daily_expenses": 0.0
+      },
+      "David Kim": {
+        "money": 1235.0,
+        "daily_income": 0.0,
+        "daily_expenses": 40.0
+      },
+      "Lisa Kim": {
+        "money": 1084.0,
+        "daily_income": 0.0,
+        "daily_expenses": 41.0
+      }
+    },
+    "activities": {
+      "Kevin Chen": "resting",
+      "Sophie Martinez": "working",
+      "David Kim": "resting",
+      "Lisa Kim": "resting"
+    },
+    "locations": {
+      "Kevin Chen": "Maple Street Apartments",
+      "Sophie Martinez": "Oak View Condos",
+      "David Kim": "Oak View Condos",
+      "Lisa Kim": "Oak View Condos"
+    },
+    "metadata": {
+      "day": 1
+    }
+  },
+  "day_2": {
+    "energy": {
+      "Kevin Chen": 49.0,
+      "Sophie Martinez": 0,
+      "David Kim": 18.0,
+      "Lisa Kim": 38.0
+    },
+    "grocery": {
+      "Kevin Chen": 80,
+      "Sophie Martinez": 90,
+      "David Kim": 80,
+      "Lisa Kim": 71
+    },
+    "financial": {
+      "Kevin Chen": {
+        "money": 586.0,
+        "daily_income": 0.0,
+        "daily_expenses": 80.0
+      },
+      "Sophie Martinez": {
+        "money": 900.0,
+        "daily_income": 0.0,
+        "daily_expenses": 0.0
+      },
+      "David Kim": {
+        "money": 1195.0,
+        "daily_income": 0.0,
+        "daily_expenses": 80.0
+      },
+      "Lisa Kim": {
+        "money": 1044.0,
+        "daily_income": 0.0,
+        "daily_expenses": 81.0
+      }
+    },
+    "activities": {
+      "Kevin Chen": "eating",
+      "Sophie Martinez": "working",
+      "David Kim": "eating",
+      "Lisa Kim": "eating"
+    },
+    "locations": {
+      "Kevin Chen": "Maple Street Apartments",
+      "Sophie Martinez": "Oak View Condos",
+      "David Kim": "Oak View Condos",
+      "Lisa Kim": "Oak View Condos"
+    },
+    "metadata": {
+      "day": 2
+    }
+  }
+}

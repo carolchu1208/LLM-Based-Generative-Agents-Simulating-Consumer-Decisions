@@ -1,0 +1,15 @@
+{
+  "day_1_hour_7": {
+    "day": 1,
+    "hour": 7,
+    "timestamp": "2025-07-15T06:43:12.627639",
+    "simulation_timestamp": "20250715_064225",
+    "plans": {
+      "Kevin Chen": {
+        "activities": [],
+        "status": "failed_to_parse",
+        "day": 1
+      }
+    }
+  }
+}

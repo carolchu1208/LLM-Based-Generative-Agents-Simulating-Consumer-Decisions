@@ -1,0 +1,442 @@
+{
+  "day_8_hour_0": {
+    "day": 8,
+    "hour": 0,
+    "timestamp": "2025-07-15T11:28:11.772969",
+    "simulation_timestamp": "20250715_100836",
+    "plans": {
+      "Kevin Chen": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Heading to The Coffee Shop for breakfast before work."
+          },
+          {
+            "time": 8,
+            "action": "eat",
+            "target": "The Coffee Shop",
+            "description": "Eating breakfast at The Coffee Shop to gain energy for the workday."
+          },
+          {
+            "time": 9,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to the restaurant because my energy level is low and I need to eat soon."
+          },
+          {
+            "time": 10,
+            "action": "eat",
+            "target": "The Coffee Shop",
+            "description": "Eating a meal to regain energy and avoid failure due to low energy."
+          },
+          {
+            "time": 11,
+            "action": "work",
+            "target": "Fried Chicken Shop",
+            "description": "Continuing work duties during lunch service."
+          },
+          {
+            "time": 12,
+            "action": "eat",
+            "target": "Fried Chicken Shop",
+            "description": "Eating lunch at work to maintain energy levels."
+          },
+          {
+            "time": 13,
+            "action": "work",
+            "target": "Fried Chicken Shop",
+            "description": "Returning to work after lunch break."
+          },
+          {
+            "time": 14,
+            "action": "work",
+            "target": "Fried Chicken Shop",
+            "description": "Continuing afternoon work shift."
+          },
+          {
+            "time": 15,
+            "action": "rest",
+            "target": "Fried Chicken Shop",
+            "description": "Taking a short nap during allowed workplace rest hours."
+          },
+          {
+            "time": 16,
+            "action": "work",
+            "target": "Fried Chicken Shop",
+            "description": "Finishing up the workday."
+          },
+          {
+            "time": 17,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Heading to Local Diner for dinner after work."
+          },
+          {
+            "time": 18,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Eating dinner to replenish energy after a long workday."
+          },
+          {
+            "time": 19,
+            "action": "go_to",
+            "target": "Target",
+            "description": "Going to Target to buy groceries for home meals."
+          },
+          {
+            "time": 20,
+            "action": "shop",
+            "target": "Target",
+            "description": "Purchasing groceries to maintain home meal options."
+          },
+          {
+            "time": 21,
+            "action": "go_to",
+            "target": "Maple Street Apartments",
+            "description": "Returning home after grocery shopping."
+          },
+          {
+            "time": 22,
+            "action": "idle",
+            "target": "Maple Street Apartments",
+            "description": "Relaxing at home before bedtime."
+          },
+          {
+            "time": 23,
+            "action": "rest",
+            "target": "Maple Street Apartments",
+            "description": "Preparing for sleep at home. Automatic sleep system will handle energy recovery through the night."
+          }
+        ],
+        "status": "success",
+        "day": 7
+      },
+      "Sophie Martinez": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "go_to",
+            "target": "Local Market",
+            "description": "Heading to work early to prepare for the day."
+          },
+          {
+            "time": 8,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to 'The Coffee Shop' to get food as my energy is critically low."
+          },
+          {
+            "time": 9,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to 'The Coffee Shop' to get food urgently due to critical energy levels."
+          },
+          {
+            "time": 10,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Heading to Fried Chicken Shop immediately to address my critical energy level."
+          },
+          {
+            "time": 11,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the Fried Chicken Shop to get food as my energy is critically low."
+          },
+          {
+            "time": 12,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the Fried Chicken Shop to get food as my energy is critically low."
+          },
+          {
+            "time": 13,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the restaurant because my energy level is critically low and I need food immediately."
+          },
+          {
+            "time": 14,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the restaurant because my energy is critically low and I need food immediately."
+          },
+          {
+            "time": 15,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the restaurant because my energy is critically low and I need food immediately."
+          },
+          {
+            "time": 16,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the Fried Chicken Shop to get food as my energy is critically low."
+          },
+          {
+            "time": 17,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the Fried Chicken Shop to get food as my energy is critically low."
+          },
+          {
+            "time": 18,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Heading to the Fried Chicken Shop to get food as my energy is critically low."
+          },
+          {
+            "time": 19,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the restaurant because my energy level is critically low and I need food immediately."
+          },
+          {
+            "time": 20,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the restaurant because my energy level is critically low and I need food immediately."
+          },
+          {
+            "time": 21,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Heading to the Fried Chicken Shop to get food as my energy is critically low."
+          },
+          {
+            "time": 22,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Heading to the diner immediately to address my critical energy level."
+          },
+          {
+            "time": 23,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Consuming a meal to restore energy and avoid further health risks."
+          }
+        ],
+        "status": "success",
+        "day": 7
+      },
+      "David Kim": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Heading to The Coffee Shop for breakfast since my energy is at 0 and I need food before work."
+          },
+          {
+            "time": 8,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to 'The Coffee Shop' to get food as my energy is critically low."
+          },
+          {
+            "time": 9,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to 'The Coffee Shop' to get food as my energy is critically low."
+          },
+          {
+            "time": 10,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the restaurant because my energy is critically low and I need food immediately."
+          },
+          {
+            "time": 11,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the Fried Chicken Shop to get food as my energy is critically low."
+          },
+          {
+            "time": 12,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the restaurant because my energy is critically low and I need food immediately."
+          },
+          {
+            "time": 13,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the Fried Chicken Shop to get food as my energy is critically low."
+          },
+          {
+            "time": 14,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the Fried Chicken Shop to get food urgently due to critical energy levels."
+          },
+          {
+            "time": 15,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the restaurant because my energy is critically low and I need food immediately."
+          },
+          {
+            "time": 16,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the restaurant because my energy is critically low and I need food immediately."
+          },
+          {
+            "time": 17,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the restaurant immediately to address critical energy levels."
+          },
+          {
+            "time": 18,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the restaurant because my energy is critically low and I need food immediately."
+          },
+          {
+            "time": 19,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the restaurant because my energy is critically low and I need food immediately."
+          },
+          {
+            "time": 20,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the restaurant because my energy is critically low and I need food immediately."
+          },
+          {
+            "time": 21,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to 'Fried Chicken Shop' to get food as my energy is critically low."
+          },
+          {
+            "time": 22,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Traveling to the restaurant because my energy level is critically low and I need food immediately."
+          },
+          {
+            "time": 23,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Eating a meal to restore my energy and avoid further health risks."
+          }
+        ],
+        "status": "success",
+        "day": 7
+      },
+      "Lisa Kim": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "eat",
+            "target": "Oak View Condos",
+            "description": "Having breakfast at home to save money and energy. Home meal provides +30 energy."
+          },
+          {
+            "time": 8,
+            "action": "go_to",
+            "target": "Marketing Agency",
+            "description": "Traveling to work. Need to arrive by 9:00 for work hours."
+          },
+          {
+            "time": 9,
+            "action": "work",
+            "target": "Marketing Agency",
+            "description": "Starting workday. Will work until lunchtime."
+          },
+          {
+            "time": 10,
+            "action": "work",
+            "target": "Marketing Agency",
+            "description": "Continuing work tasks."
+          },
+          {
+            "time": 11,
+            "action": "rest",
+            "target": "Marketing Agency",
+            "description": "Taking a short nap at workplace to recover +10 energy."
+          },
+          {
+            "time": 12,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Going out for lunch during lunch hours (11-14)."
+          },
+          {
+            "time": 13,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Having lunch at the diner to regain energy (+40)."
+          },
+          {
+            "time": 14,
+            "action": "go_to",
+            "target": "Marketing Agency",
+            "description": "Returning to work after lunch."
+          },
+          {
+            "time": 15,
+            "action": "work",
+            "target": "Marketing Agency",
+            "description": "Continuing afternoon work."
+          },
+          {
+            "time": 16,
+            "action": "work",
+            "target": "Marketing Agency",
+            "description": "Finishing up work for the day."
+          },
+          {
+            "time": 17,
+            "action": "go_to",
+            "target": "Oak View Condos",
+            "description": "Heading home after work."
+          },
+          {
+            "time": 18,
+            "action": "eat",
+            "target": "Oak View Condos",
+            "description": "Having dinner at home to save money. Home meal provides +30 energy."
+          },
+          {
+            "time": 19,
+            "action": "go_to",
+            "target": "Local Market",
+            "description": "Going grocery shopping to replenish supplies."
+          },
+          {
+            "time": 20,
+            "action": "shop",
+            "target": "Local Market",
+            "description": "Buying groceries to maintain home meal options."
+          },
+          {
+            "time": 21,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Heading to the Fried Chicken Shop to get some food and replenish my energy."
+          },
+          {
+            "time": 22,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Heading to Local Diner to get food before my energy drops too low."
+          },
+          {
+            "time": 23,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Eating a hearty meal to recover my energy and avoid collapsing."
+          }
+        ],
+        "status": "success",
+        "day": 7
+      }
+    }
+  }
+}

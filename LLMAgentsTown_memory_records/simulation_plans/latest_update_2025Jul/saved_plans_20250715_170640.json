@@ -1,0 +1,1210 @@
+{
+  "day_4_hour_12": {
+    "day": 4,
+    "hour": 12,
+    "timestamp": "2025-07-15T19:44:32.586743",
+    "simulation_timestamp": "20250715_170640",
+    "plans": {
+      "Kevin Chen": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Heading to The Coffee Shop for breakfast since I have no energy and it's breakfast time."
+          },
+          {
+            "time": 8,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to 'The Coffee Shop' because my energy is critically low and I need food immediately."
+          },
+          {
+            "time": 9,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to 'The Coffee Shop' to get food as my energy is critically low."
+          },
+          {
+            "time": 10,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the Fried Chicken Shop to get food urgently due to critical energy levels."
+          },
+          {
+            "time": 11,
+            "action": "eat",
+            "target": "Fried Chicken Shop",
+            "description": "Eating a meal at the Fried Chicken Shop to restore energy and avoid further consequences."
+          },
+          {
+            "time": 12,
+            "action": "rest",
+            "target": "Fried Chicken Shop",
+            "description": "Taking a short nap during my break to recover +10 energy."
+          },
+          {
+            "time": 13,
+            "action": "eat",
+            "target": "Fried Chicken Shop",
+            "description": "Eating lunch at work since it's lunch time and I need energy. Costs $20 for +40 energy."
+          },
+          {
+            "time": 14,
+            "action": "work",
+            "target": "Fried Chicken Shop",
+            "description": "Continuing my work shift after lunch."
+          },
+          {
+            "time": 15,
+            "action": "work",
+            "target": "Fried Chicken Shop",
+            "description": "Working through the afternoon."
+          },
+          {
+            "time": 16,
+            "action": "work",
+            "target": "Fried Chicken Shop",
+            "description": "Final hour of my work shift."
+          },
+          {
+            "time": 17,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Heading to Local Diner for dinner after work."
+          },
+          {
+            "time": 18,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Eating dinner at Local Diner. Costs $25 but gives +40 energy."
+          },
+          {
+            "time": 19,
+            "action": "go_to",
+            "target": "Local Market",
+            "description": "Going grocery shopping to replenish home supplies."
+          },
+          {
+            "time": 20,
+            "action": "shop",
+            "target": "Local Market",
+            "description": "Buying groceries to prepare for future home meals. Spending $28 to bring groceries from 72 to 100."
+          },
+          {
+            "time": 21,
+            "action": "go_to",
+            "target": "Maple Street Apartments",
+            "description": "Returning home after grocery shopping."
+          },
+          {
+            "time": 22,
+            "action": "idle",
+            "target": "Maple Street Apartments",
+            "description": "Relaxing at home before bedtime."
+          },
+          {
+            "time": 23,
+            "action": "rest",
+            "target": "Maple Street Apartments",
+            "description": "Preparing for sleep at home. Automatic sleep system will handle energy recovery through the night."
+          }
+        ],
+        "status": "success",
+        "day": 4
+      },
+      "Sophie Martinez": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Coffee run with Sophie before work"
+          },
+          {
+            "time": 8,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Heading to The Coffee Shop for breakfast."
+          },
+          {
+            "time": 9,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Weekend coffee catch-up with Mike"
+          },
+          {
+            "time": 10,
+            "action": "eat",
+            "target": "Local Market",
+            "description": "Having meal together with Mike Johnson"
+          },
+          {
+            "time": 11,
+            "action": "work",
+            "target": "Local Market",
+            "description": "Starting work at the Local Market."
+          },
+          {
+            "time": 12,
+            "action": "work",
+            "target": "Local Market",
+            "description": "Continuing work at the Local Market."
+          },
+          {
+            "time": 13,
+            "action": "rest",
+            "target": "Local Market",
+            "description": "Taking a short nap during lunch break to regain some energy."
+          },
+          {
+            "time": 14,
+            "action": "eat",
+            "target": "Local Market",
+            "description": "Eating lunch at the Local Market (assuming I brought food from home)."
+          },
+          {
+            "time": 15,
+            "action": "work",
+            "target": "Local Market",
+            "description": "Returning to work after lunch."
+          },
+          {
+            "time": 16,
+            "action": "work",
+            "target": "Local Market",
+            "description": "Finishing up the workday at the Local Market."
+          },
+          {
+            "time": 17,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Heading to the Local Diner for dinner."
+          },
+          {
+            "time": 18,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Eating dinner at the Local Diner to replenish energy."
+          },
+          {
+            "time": 19,
+            "action": "go_to",
+            "target": "Oak View Condos",
+            "description": "Returning home after dinner."
+          },
+          {
+            "time": 20,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Relaxing at home in the evening."
+          },
+          {
+            "time": 21,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Continuing to relax at home."
+          },
+          {
+            "time": 22,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Winding down before bedtime."
+          },
+          {
+            "time": 23,
+            "action": "rest",
+            "target": "Oak View Condos",
+            "description": "Preparing for sleep at home. Automatic sleep system will handle energy recovery through the night."
+          }
+        ],
+        "status": "success",
+        "day": 4
+      },
+      "David Kim": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Heading to The Coffee Shop for breakfast since I have no energy and need to eat before work."
+          },
+          {
+            "time": 8,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to 'The Coffee Shop' to eat because my energy level is critically low."
+          },
+          {
+            "time": 9,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to 'The Coffee Shop' to get food as my energy is critically low."
+          },
+          {
+            "time": 10,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the Fried Chicken Shop to address my critical energy level."
+          },
+          {
+            "time": 11,
+            "action": "eat",
+            "target": "Fried Chicken Shop",
+            "description": "Eating a meal to replenish energy and avoid further health risks."
+          },
+          {
+            "time": 12,
+            "action": "rest",
+            "target": "Tech Hub",
+            "description": "Taking a nap at workplace during lunch break to recover +10 energy."
+          },
+          {
+            "time": 13,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Going to Local Diner for lunch after my nap."
+          },
+          {
+            "time": 14,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Eating lunch at Local Diner to regain energy (+40) for the afternoon work session."
+          },
+          {
+            "time": 15,
+            "action": "go_to",
+            "target": "Tech Hub",
+            "description": "Returning to work at Tech Hub after lunch."
+          },
+          {
+            "time": 16,
+            "action": "work",
+            "target": "Tech Hub",
+            "description": "Continuing afternoon work session at Tech Hub."
+          },
+          {
+            "time": 17,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Leaving work and heading to Local Diner for dinner."
+          },
+          {
+            "time": 18,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Eating dinner at Local Diner to regain energy (+40) for the evening."
+          },
+          {
+            "time": 19,
+            "action": "go_to",
+            "target": "Target",
+            "description": "Going to Target to buy groceries since my grocery level is getting low (currently 80)."
+          },
+          {
+            "time": 20,
+            "action": "shop",
+            "target": "Target",
+            "description": "Purchasing groceries at Target to replenish my home supplies."
+          },
+          {
+            "time": 21,
+            "action": "go_to",
+            "target": "Oak View Condos",
+            "description": "Returning home to Oak View Condos after grocery shopping."
+          },
+          {
+            "time": 22,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Relaxing at home, watching TV or reading before bedtime."
+          },
+          {
+            "time": 23,
+            "action": "rest",
+            "target": "Oak View Condos",
+            "description": "Preparing for sleep at home. Automatic sleep system will handle energy recovery through the night."
+          }
+        ],
+        "status": "success",
+        "day": 4
+      },
+      "Lisa Kim": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Meeting Lisa for coffee before work shift"
+          },
+          {
+            "time": 8,
+            "action": "eat",
+            "target": "The Coffee Shop",
+            "description": "Eating breakfast at The Coffee Shop to gain energy before work."
+          },
+          {
+            "time": 9,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Meeting Lisa Kim as discussed"
+          },
+          {
+            "time": 10,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Meeting Mike Johnson as discussed"
+          },
+          {
+            "time": 11,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Having meal together with Mike Johnson"
+          },
+          {
+            "time": 12,
+            "action": "rest",
+            "target": "Marketing Agency",
+            "description": "Taking a short nap at work to regain some energy."
+          },
+          {
+            "time": 13,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Going to Local Diner for lunch."
+          },
+          {
+            "time": 14,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Eating lunch at Local Diner to replenish energy."
+          },
+          {
+            "time": 15,
+            "action": "go_to",
+            "target": "Marketing Agency",
+            "description": "Returning to work after lunch."
+          },
+          {
+            "time": 16,
+            "action": "work",
+            "target": "Marketing Agency",
+            "description": "Working at the Marketing Agency."
+          },
+          {
+            "time": 17,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Heading to Fried Chicken Shop for dinner."
+          },
+          {
+            "time": 18,
+            "action": "eat",
+            "target": "Fried Chicken Shop",
+            "description": "Eating dinner at Fried Chicken Shop."
+          },
+          {
+            "time": 19,
+            "action": "go_to",
+            "target": "Oak View Condos",
+            "description": "Returning home after dinner."
+          },
+          {
+            "time": 20,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Relaxing at home, watching TV or reading."
+          },
+          {
+            "time": 21,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Continuing to relax at home."
+          },
+          {
+            "time": 22,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Winding down before bedtime."
+          },
+          {
+            "time": 23,
+            "action": "rest",
+            "target": "Oak View Condos",
+            "description": "Preparing for sleep at home. Automatic sleep system will handle energy recovery through the night."
+          }
+        ],
+        "status": "success",
+        "day": 4
+      },
+      "Rebecca Queen": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Heading to work early to prepare for the day. Energy is at 0, so I need to eat soon."
+          },
+          {
+            "time": 8,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Heading to 'The Coffee Shop' immediately to address my critical energy level."
+          },
+          {
+            "time": 9,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to 'The Coffee Shop' to get food urgently due to critical energy levels."
+          },
+          {
+            "time": 10,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Walking to Fried Chicken Shop to get food as my energy is critically low."
+          },
+          {
+            "time": 11,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the restaurant because my energy level is critically low and I need food immediately."
+          },
+          {
+            "time": 12,
+            "action": "eat",
+            "target": "Fried Chicken Shop",
+            "description": "Eating a meal to replenish my energy and avoid further health risks."
+          },
+          {
+            "time": 13,
+            "action": "work",
+            "target": "Fried Chicken Shop",
+            "description": "Back to work after lunch. Energy is at 50 (60 -5 work -5 natural decay)."
+          },
+          {
+            "time": 14,
+            "action": "work",
+            "target": "Fried Chicken Shop",
+            "description": "Continuing work. Energy is at 40 (50 -5 work -5 natural decay)."
+          },
+          {
+            "time": 15,
+            "action": "work",
+            "target": "Fried Chicken Shop",
+            "description": "Final hour of work. Energy is at 30 (40 -5 work -5 natural decay)."
+          },
+          {
+            "time": 16,
+            "action": "go_to",
+            "target": "Oak View Condos",
+            "description": "Heading home after work. Energy is at 24 (30 -1 travel -5 natural decay)."
+          },
+          {
+            "time": 17,
+            "action": "eat",
+            "target": "Oak View Condos",
+            "description": "Eating dinner at home. Energy is at 49 (24 -5 natural decay +30 meal). Grocery level drops to 80."
+          },
+          {
+            "time": 18,
+            "action": "leave_work",
+            "target": "Fried Chicken Shop",
+            "description": "End of shift"
+          },
+          {
+            "time": 18,
+            "action": "meet",
+            "target": "Local Diner",
+            "description": "Dinner plans with Alex"
+          },
+          {
+            "time": 19,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Continuing to relax at home. Energy is at 39 (44 -5 natural decay)."
+          },
+          {
+            "time": 20,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Evening relaxation before bed. Energy is at 34 (39 -5 natural decay)."
+          },
+          {
+            "time": 21,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Winding down for the night. Energy is at 29 (34 -5 natural decay)."
+          },
+          {
+            "time": 22,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Preparing for sleep. Energy is at 24 (29 -5 natural decay)."
+          },
+          {
+            "time": 23,
+            "action": "rest",
+            "target": "Oak View Condos",
+            "description": "Preparing for sleep at home. Automatic sleep system will handle energy recovery through the night."
+          }
+        ],
+        "status": "success",
+        "day": 4
+      },
+      "Alex Thompson": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Meeting Lisa for coffee before work shift"
+          },
+          {
+            "time": 8,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to work at The Coffee Shop (1 step)."
+          },
+          {
+            "time": 9,
+            "action": "work",
+            "target": "The Coffee Shop",
+            "description": "Starting my work shift at The Coffee Shop."
+          },
+          {
+            "time": 10,
+            "action": "work",
+            "target": "The Coffee Shop",
+            "description": "Continuing my work shift, serving customers."
+          },
+          {
+            "time": 11,
+            "action": "rest",
+            "target": "The Coffee Shop",
+            "description": "Taking a short nap during my break to recover some energy."
+          },
+          {
+            "time": 12,
+            "action": "eat",
+            "target": "The Coffee Shop",
+            "description": "Having lunch at work (snack option since it's not breakfast time)."
+          },
+          {
+            "time": 13,
+            "action": "work",
+            "target": "The Coffee Shop",
+            "description": "Returning to work after lunch break."
+          },
+          {
+            "time": 14,
+            "action": "work",
+            "target": "The Coffee Shop",
+            "description": "Continuing my afternoon shift."
+          },
+          {
+            "time": 15,
+            "action": "work",
+            "target": "The Coffee Shop",
+            "description": "Final hour of my work shift."
+          },
+          {
+            "time": 16,
+            "action": "go_to",
+            "target": "Maple Street Apartments",
+            "description": "Traveling back home after work (1 step)."
+          },
+          {
+            "time": 17,
+            "action": "eat",
+            "target": "Maple Street Apartments",
+            "description": "Having dinner at home to save money (grocery level 70 \u2192 60)."
+          },
+          {
+            "time": 18,
+            "action": "leave_work",
+            "target": "Fried Chicken Shop",
+            "description": "End of shift"
+          },
+          {
+            "time": 18,
+            "action": "meet",
+            "target": "Local Diner",
+            "description": "Dinner plans with Alex"
+          },
+          {
+            "time": 19,
+            "action": "shop",
+            "target": "Local Market",
+            "description": "Purchasing groceries to restock (spending $40 to increase grocery level from 60 to 100)."
+          },
+          {
+            "time": 20,
+            "action": "go_to",
+            "target": "Maple Street Apartments",
+            "description": "Returning home after grocery shopping."
+          },
+          {
+            "time": 21,
+            "action": "idle",
+            "target": "Maple Street Apartments",
+            "description": "Relaxing at home, maybe watching some TV or reading."
+          },
+          {
+            "time": 22,
+            "action": "idle",
+            "target": "Maple Street Apartments",
+            "description": "Continuing to relax before bedtime."
+          },
+          {
+            "time": 23,
+            "action": "rest",
+            "target": "Maple Street Apartments",
+            "description": "Preparing for sleep at home. Automatic sleep system will handle energy recovery through the night."
+          }
+        ],
+        "status": "success",
+        "day": 4
+      },
+      "Jordan Lee": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "eat",
+            "target": "Maple Street Apartments",
+            "description": "Having breakfast at home to gain energy before work. Home meal provides +30 energy."
+          },
+          {
+            "time": 8,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to 'The Coffee Shop' to address critical energy levels."
+          },
+          {
+            "time": 9,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to 'The Coffee Shop' to address my critical energy level and avoid failure."
+          },
+          {
+            "time": 10,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the restaurant because my energy is critically low and I need food immediately."
+          },
+          {
+            "time": 11,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the restaurant to address critical energy levels."
+          },
+          {
+            "time": 12,
+            "action": "eat",
+            "target": "Fried Chicken Shop",
+            "description": "Eating a meal to restore energy and avoid failure."
+          },
+          {
+            "time": 13,
+            "action": "go_to",
+            "target": "Office Complex",
+            "description": "Returning to work after lunch break."
+          },
+          {
+            "time": 14,
+            "action": "work",
+            "target": "Office Complex",
+            "description": "Continuing afternoon work session."
+          },
+          {
+            "time": 15,
+            "action": "work",
+            "target": "Office Complex",
+            "description": "Final hour of work before end of business day."
+          },
+          {
+            "time": 16,
+            "action": "work",
+            "target": "Office Complex",
+            "description": "Wrapping up work for the day."
+          },
+          {
+            "time": 17,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Heading to Local Diner for dinner during dinner hours (17-20)."
+          },
+          {
+            "time": 18,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Having dinner at Local Diner. Restaurant meal provides +40 energy."
+          },
+          {
+            "time": 19,
+            "action": "go_to",
+            "target": "Target",
+            "description": "Going to Target to restock groceries for home meals."
+          },
+          {
+            "time": 20,
+            "action": "shop",
+            "target": "Target",
+            "description": "Purchasing groceries to replenish home supplies ($1 per grocery level)."
+          },
+          {
+            "time": 21,
+            "action": "go_to",
+            "target": "Maple Street Apartments",
+            "description": "Returning home after grocery shopping."
+          },
+          {
+            "time": 22,
+            "action": "idle",
+            "target": "Maple Street Apartments",
+            "description": "Relaxing at home before bedtime. Watching TV or reading."
+          },
+          {
+            "time": 23,
+            "action": "rest",
+            "target": "Maple Street Apartments",
+            "description": "Preparing for sleep at home. Automatic sleep system will handle energy recovery through the night."
+          }
+        ],
+        "status": "success",
+        "day": 4
+      },
+      "Maria Rodriguez": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Heading to work early to prepare for the breakfast shift."
+          },
+          {
+            "time": 8,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Heading to 'The Coffee Shop' immediately to address my critical energy level."
+          },
+          {
+            "time": 9,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to 'The Coffee Shop' to get food urgently due to critical energy levels."
+          },
+          {
+            "time": 10,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Heading to the Fried Chicken Shop immediately to address my critical energy level."
+          },
+          {
+            "time": 11,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Heading to the Fried Chicken Shop immediately to address my critical energy level."
+          },
+          {
+            "time": 12,
+            "action": "eat",
+            "target": "Fried Chicken Shop",
+            "description": "Eating a meal to restore energy and avoid further health risks."
+          },
+          {
+            "time": 13,
+            "action": "work",
+            "target": "Local Diner",
+            "description": "Returning to work after lunch break."
+          },
+          {
+            "time": 14,
+            "action": "work",
+            "target": "Local Diner",
+            "description": "Continuing afternoon work shift."
+          },
+          {
+            "time": 15,
+            "action": "work",
+            "target": "Local Diner",
+            "description": "Preparing for dinner service during my shift."
+          },
+          {
+            "time": 16,
+            "action": "work",
+            "target": "Local Diner",
+            "description": "Final hour of my work shift, finishing dinner preparations."
+          },
+          {
+            "time": 17,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Eating dinner at work during dinner hours (17:00-20:00) before heading home."
+          },
+          {
+            "time": 18,
+            "action": "go_to",
+            "target": "Oak View Condos",
+            "description": "Leaving work and heading back home to rest."
+          },
+          {
+            "time": 19,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Relaxing at home after a long work day."
+          },
+          {
+            "time": 20,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Continuing to relax at home, maybe watching TV or reading."
+          },
+          {
+            "time": 21,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Evening relaxation time before bed."
+          },
+          {
+            "time": 22,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Winding down for the night, preparing for sleep."
+          },
+          {
+            "time": 23,
+            "action": "rest",
+            "target": "Oak View Condos",
+            "description": "Preparing for sleep at home. Automatic sleep system will handle energy recovery through the night."
+          }
+        ],
+        "status": "success",
+        "day": 4
+      },
+      "Sarah Chen": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "eat",
+            "target": "Oak View Condos",
+            "description": "Having breakfast at home to gain energy before starting the day."
+          },
+          {
+            "time": 8,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to the restaurant because my energy level is critically low and I need food immediately."
+          },
+          {
+            "time": 9,
+            "action": "eat",
+            "target": "The Coffee Shop",
+            "description": "Eating a meal to replenish my energy and avoid further consequences."
+          },
+          {
+            "time": 10,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Heading to the Fried Chicken Shop to get food as my energy is critically low."
+          },
+          {
+            "time": 11,
+            "action": "eat",
+            "target": "Fried Chicken Shop",
+            "description": "Eating a meal at the Fried Chicken Shop to restore my energy levels."
+          },
+          {
+            "time": 12,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Having lunch at work to replenish energy."
+          },
+          {
+            "time": 13,
+            "action": "work",
+            "target": "Local Diner",
+            "description": "Continuing my shift after lunch."
+          },
+          {
+            "time": 14,
+            "action": "work",
+            "target": "Local Diner",
+            "description": "Working through the afternoon."
+          },
+          {
+            "time": 15,
+            "action": "work",
+            "target": "Local Diner",
+            "description": "Finishing up my shift at the Local Diner."
+          },
+          {
+            "time": 16,
+            "action": "go_to",
+            "target": "Oak View Condos",
+            "description": "Heading back home after work."
+          },
+          {
+            "time": 17,
+            "action": "eat",
+            "target": "Oak View Condos",
+            "description": "Having dinner at home to regain energy."
+          },
+          {
+            "time": 18,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Relaxing at home after dinner."
+          },
+          {
+            "time": 19,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Continuing to relax and unwind."
+          },
+          {
+            "time": 20,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Enjoying some free time at home."
+          },
+          {
+            "time": 21,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Preparing for bed soon."
+          },
+          {
+            "time": 22,
+            "action": "idle",
+            "target": "Oak View Condos",
+            "description": "Winding down before sleep."
+          },
+          {
+            "time": 23,
+            "action": "rest",
+            "target": "Oak View Condos",
+            "description": "Preparing for sleep at home. Automatic sleep system will handle energy recovery through the night."
+          }
+        ],
+        "status": "success",
+        "day": 4
+      },
+      "Mike Johnson": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Heading to The Coffee Shop for breakfast since it's within the breakfast time window (6:00-9:00)."
+          },
+          {
+            "time": 8,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to The Coffee Shop to eat because my energy level is critically low."
+          },
+          {
+            "time": 9,
+            "action": "eat",
+            "target": "The Coffee Shop",
+            "description": "Eating a meal at The Coffee Shop to restore my energy."
+          },
+          {
+            "time": 10,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Meeting Mike Johnson as discussed"
+          },
+          {
+            "time": 11,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the Fried Chicken Shop to get food as my energy is critically low."
+          },
+          {
+            "time": 12,
+            "action": "eat",
+            "target": "Fried Chicken Shop",
+            "description": "Eating a meal at the Fried Chicken Shop to restore my energy levels."
+          },
+          {
+            "time": 13,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Heading to Local Diner for lunch within the lunch time window (11:00-14:00)."
+          },
+          {
+            "time": 14,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Eating lunch at Local Diner to regain energy (+40 energy)."
+          },
+          {
+            "time": 15,
+            "action": "go_to",
+            "target": "Target",
+            "description": "Returning to Target to continue working after lunch."
+          },
+          {
+            "time": 16,
+            "action": "work",
+            "target": "Target",
+            "description": "Working at Target. Energy decreases by 10 this hour."
+          },
+          {
+            "time": 17,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Heading to Local Diner for dinner within the dinner time window (17:00-20:00)."
+          },
+          {
+            "time": 18,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Eating dinner at Local Diner to regain energy (+40 energy)."
+          },
+          {
+            "time": 19,
+            "action": "go_to",
+            "target": "Maple Street Apartments",
+            "description": "Returning home after dinner to relax for the evening."
+          },
+          {
+            "time": 20,
+            "action": "idle",
+            "target": "Maple Street Apartments",
+            "description": "Relaxing at home with some free time. No energy gain, just unwinding."
+          },
+          {
+            "time": 21,
+            "action": "idle",
+            "target": "Maple Street Apartments",
+            "description": "Continuing to relax at home, maybe watching TV or reading."
+          },
+          {
+            "time": 22,
+            "action": "idle",
+            "target": "Maple Street Apartments",
+            "description": "Winding down before bedtime. Preparing for sleep."
+          },
+          {
+            "time": 23,
+            "action": "rest",
+            "target": "Maple Street Apartments",
+            "description": "Preparing for sleep at home. Automatic sleep system will handle energy recovery through the night."
+          }
+        ],
+        "status": "success",
+        "day": 4
+      },
+      "Emma Wilson": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Heading to The Coffee Shop for breakfast since my energy is at 0 and I need to eat soon."
+          },
+          {
+            "time": 8,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to 'The Coffee Shop' because my energy is critically low and I need food immediately."
+          },
+          {
+            "time": 9,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Traveling to 'The Coffee Shop' because my energy is critically low and I need food immediately."
+          },
+          {
+            "time": 10,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Traveling to the Fried Chicken Shop because my energy is critically low and I need to eat immediately."
+          },
+          {
+            "time": 11,
+            "action": "eat",
+            "target": "Fried Chicken Shop",
+            "description": "Eating a meal at the Fried Chicken Shop to replenish my energy and avoid further health risks."
+          },
+          {
+            "time": 12,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Going to the Local Diner for lunch to replenish energy."
+          },
+          {
+            "time": 13,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Eating lunch at the Local Diner to regain energy for the rest of the workday."
+          },
+          {
+            "time": 14,
+            "action": "go_to",
+            "target": "Marketing Agency",
+            "description": "Returning to the Marketing Agency to continue working."
+          },
+          {
+            "time": 15,
+            "action": "work",
+            "target": "Marketing Agency",
+            "description": "Continuing work at the Marketing Agency."
+          },
+          {
+            "time": 16,
+            "action": "work",
+            "target": "Marketing Agency",
+            "description": "Finishing up the workday at the Marketing Agency."
+          },
+          {
+            "time": 17,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Heading to the Local Diner for dinner after work."
+          },
+          {
+            "time": 18,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Eating dinner at the Local Diner to regain energy for the evening."
+          },
+          {
+            "time": 19,
+            "action": "go_to",
+            "target": "Maple Street Apartments",
+            "description": "Returning home to relax for the evening."
+          },
+          {
+            "time": 20,
+            "action": "idle",
+            "target": "Maple Street Apartments",
+            "description": "Relaxing at home, watching TV or reading a book."
+          },
+          {
+            "time": 21,
+            "action": "idle",
+            "target": "Maple Street Apartments",
+            "description": "Continuing to relax at home, maybe doing some light chores."
+          },
+          {
+            "time": 22,
+            "action": "idle",
+            "target": "Maple Street Apartments",
+            "description": "Winding down for the night, preparing for sleep."
+          },
+          {
+            "time": 23,
+            "action": "rest",
+            "target": "Maple Street Apartments",
+            "description": "Preparing for sleep at home. Automatic sleep system will handle energy recovery through the night."
+          }
+        ],
+        "status": "success",
+        "day": 4
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "day_1_hour_20": {
+    "day": 1,
+    "hour": 20,
+    "timestamp": "2025-07-15T06:48:39.999082",
+    "simulation_timestamp": "20250715_064419",
+    "plans": {
+      "Kevin Chen": {
+        "activities": [],
+        "status": "failed_to_parse",
+        "day": 1
+      },
+      "Sophie Martinez": {
+        "activities": [],
+        "status": "failed_to_parse",
+        "day": 1
+      },
+      "David Kim": {
+        "activities": [],
+        "status": "failed_to_parse",
+        "day": 1
+      },
+      "Lisa Kim": {
+        "activities": [],
+        "status": "failed_to_parse",
+        "day": 1
+      }
+    }
+  }
+}

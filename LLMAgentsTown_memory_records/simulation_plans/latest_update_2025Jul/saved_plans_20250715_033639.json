@@ -1,0 +1,442 @@
+{
+  "day_1_hour_18": {
+    "day": 1,
+    "hour": 18,
+    "timestamp": "2025-07-15T03:43:55.469429",
+    "simulation_timestamp": "20250715_033639",
+    "plans": {
+      "Kevin Chen": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "go_to",
+            "target": "Fried Chicken Shop",
+            "description": "Heading to work early to prepare for the day."
+          },
+          {
+            "time": 8,
+            "action": "eat",
+            "target": "Fried Chicken Shop",
+            "description": "Eating breakfast at work since it's convenient and within breakfast hours."
+          },
+          {
+            "time": 9,
+            "action": "work",
+            "target": "Fried Chicken Shop",
+            "description": "Starting my work shift as supervisor at the fried chicken shop."
+          },
+          {
+            "time": 10,
+            "action": "work",
+            "target": "Fried Chicken Shop",
+            "description": "Continuing my work shift, managing shop operations."
+          },
+          {
+            "time": 11,
+            "action": "work",
+            "target": "Fried Chicken Shop",
+            "description": "Working through the lunch rush hour at the shop."
+          },
+          {
+            "time": 12,
+            "action": "eat",
+            "target": "Fried Chicken Shop",
+            "description": "Eating lunch at work during my break to maintain energy."
+          },
+          {
+            "time": 13,
+            "action": "work",
+            "target": "Fried Chicken Shop",
+            "description": "Returning to work after lunch break."
+          },
+          {
+            "time": 14,
+            "action": "work",
+            "target": "Fried Chicken Shop",
+            "description": "Continuing afternoon work shift."
+          },
+          {
+            "time": 15,
+            "action": "work",
+            "target": "Fried Chicken Shop",
+            "description": "Final hour of the standard work shift."
+          },
+          {
+            "time": 16,
+            "action": "go_to",
+            "target": "Local Market",
+            "description": "Going to the market after work to buy groceries for home meals."
+          },
+          {
+            "time": 17,
+            "action": "shop",
+            "target": "Local Market",
+            "description": "Purchasing groceries to replenish home supplies."
+          },
+          {
+            "time": 18,
+            "action": "go_to",
+            "target": "Maple Street Apartments",
+            "description": "Returning home after grocery shopping."
+          },
+          {
+            "time": 19,
+            "action": "eat",
+            "target": "Maple Street Apartments",
+            "description": "Having dinner at home using groceries I just bought."
+          },
+          {
+            "time": 20,
+            "action": "rest",
+            "target": "Maple Street Apartments",
+            "description": "Relaxing at home after a long day of work."
+          },
+          {
+            "time": 21,
+            "action": "rest",
+            "target": "Maple Street Apartments",
+            "description": "Continuing to relax and unwind at home."
+          },
+          {
+            "time": 22,
+            "action": "rest",
+            "target": "Maple Street Apartments",
+            "description": "Preparing for bed and winding down."
+          },
+          {
+            "time": 23,
+            "action": "rest",
+            "target": "Maple Street Apartments",
+            "description": "Going to sleep to rest and reset energy for tomorrow."
+          }
+        ],
+        "status": "success",
+        "day": 1
+      },
+      "Sophie Martinez": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "eat",
+            "target": "Oak View Condos",
+            "description": "Having breakfast at home to start the day with +30 energy."
+          },
+          {
+            "time": 8,
+            "action": "go_to",
+            "target": "Local Market",
+            "description": "Traveling to work at the Local Market."
+          },
+          {
+            "time": 9,
+            "action": "work",
+            "target": "Local Market",
+            "description": "Starting my work shift at the Local Market."
+          },
+          {
+            "time": 10,
+            "action": "work",
+            "target": "Local Market",
+            "description": "Continuing work at the Local Market."
+          },
+          {
+            "time": 11,
+            "action": "rest",
+            "target": "Local Market",
+            "description": "Taking a short nap at work during allowed hours to regain +10 energy."
+          },
+          {
+            "time": 12,
+            "action": "work",
+            "target": "Local Market",
+            "description": "Resuming work after my nap."
+          },
+          {
+            "time": 13,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Going to the Local Diner for lunch to regain +40 energy."
+          },
+          {
+            "time": 14,
+            "action": "go_to",
+            "target": "Local Market",
+            "description": "Returning to work after lunch."
+          },
+          {
+            "time": 15,
+            "action": "work",
+            "target": "Local Market",
+            "description": "Continuing my work shift."
+          },
+          {
+            "time": 16,
+            "action": "work",
+            "target": "Local Market",
+            "description": "Finishing up my work day."
+          },
+          {
+            "time": 17,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Heading to the Local Diner for dinner."
+          },
+          {
+            "time": 18,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Having dinner at the Local Diner to regain +40 energy."
+          },
+          {
+            "time": 19,
+            "action": "go_to",
+            "target": "Target",
+            "description": "Going to Target to buy some groceries."
+          },
+          {
+            "time": 20,
+            "action": "shop",
+            "target": "Target",
+            "description": "Purchasing groceries to replenish home supplies."
+          },
+          {
+            "time": 21,
+            "action": "go_to",
+            "target": "Oak View Condos",
+            "description": "Returning home after grocery shopping."
+          },
+          {
+            "time": 22,
+            "action": "rest",
+            "target": "Oak View Condos",
+            "description": "Relaxing at home before bedtime."
+          },
+          {
+            "time": 23,
+            "action": "rest",
+            "target": "Oak View Condos",
+            "description": "Going to sleep to rest and reset energy for tomorrow."
+          }
+        ],
+        "status": "success",
+        "day": 1
+      },
+      "David Kim": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Heading to The Coffee Shop for breakfast since it's within breakfast hours (6-9)."
+          },
+          {
+            "time": 8,
+            "action": "eat",
+            "target": "The Coffee Shop",
+            "description": "Eating breakfast at The Coffee Shop to gain energy before work."
+          },
+          {
+            "time": 9,
+            "action": "go_to",
+            "target": "Tech Hub",
+            "description": "Traveling to work at Tech Hub for the standard workday."
+          },
+          {
+            "time": 10,
+            "action": "work",
+            "target": "Tech Hub",
+            "description": "Working at Tech Hub, earning daily wage."
+          },
+          {
+            "time": 11,
+            "action": "work",
+            "target": "Tech Hub",
+            "description": "Continuing work at Tech Hub."
+          },
+          {
+            "time": 12,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Going to Local Diner for lunch during lunch hours (11-14)."
+          },
+          {
+            "time": 13,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Eating lunch at Local Diner to replenish energy."
+          },
+          {
+            "time": 14,
+            "action": "go_to",
+            "target": "Tech Hub",
+            "description": "Returning to work at Tech Hub after lunch."
+          },
+          {
+            "time": 15,
+            "action": "work",
+            "target": "Tech Hub",
+            "description": "Working at Tech Hub."
+          },
+          {
+            "time": 16,
+            "action": "work",
+            "target": "Tech Hub",
+            "description": "Finishing up work at Tech Hub."
+          },
+          {
+            "time": 17,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Heading to Local Diner for dinner during dinner hours (17-20)."
+          },
+          {
+            "time": 18,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Eating dinner at Local Diner to gain energy."
+          },
+          {
+            "time": 19,
+            "action": "go_to",
+            "target": "Oak View Condos",
+            "description": "Returning home to Oak View Condos after dinner."
+          },
+          {
+            "time": 20,
+            "action": "rest",
+            "target": "Oak View Condos",
+            "description": "Relaxing at home after work."
+          },
+          {
+            "time": 21,
+            "action": "rest",
+            "target": "Oak View Condos",
+            "description": "Continuing to relax at home."
+          },
+          {
+            "time": 22,
+            "action": "rest",
+            "target": "Oak View Condos",
+            "description": "Preparing for sleep at home."
+          },
+          {
+            "time": 23,
+            "action": "rest",
+            "target": "Oak View Condos",
+            "description": "Going to sleep to rest and reset energy for tomorrow."
+          }
+        ],
+        "status": "success",
+        "day": 1
+      },
+      "Lisa Kim": {
+        "activities": [
+          {
+            "time": 7,
+            "action": "go_to",
+            "target": "The Coffee Shop",
+            "description": "Heading to The Coffee Shop for breakfast before work."
+          },
+          {
+            "time": 8,
+            "action": "eat",
+            "target": "The Coffee Shop",
+            "description": "Having breakfast ($20) to gain energy before work."
+          },
+          {
+            "time": 9,
+            "action": "go_to",
+            "target": "Marketing Agency",
+            "description": "Traveling to work at the Marketing Agency."
+          },
+          {
+            "time": 10,
+            "action": "work",
+            "target": "Marketing Agency",
+            "description": "Working at the Marketing Agency."
+          },
+          {
+            "time": 11,
+            "action": "work",
+            "target": "Marketing Agency",
+            "description": "Continuing work at the Marketing Agency."
+          },
+          {
+            "time": 12,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Going to Local Diner for lunch to replenish energy."
+          },
+          {
+            "time": 13,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Having lunch ($20) to regain energy for afternoon work."
+          },
+          {
+            "time": 14,
+            "action": "go_to",
+            "target": "Marketing Agency",
+            "description": "Returning to work after lunch."
+          },
+          {
+            "time": 15,
+            "action": "work",
+            "target": "Marketing Agency",
+            "description": "Working at the Marketing Agency."
+          },
+          {
+            "time": 16,
+            "action": "work",
+            "target": "Marketing Agency",
+            "description": "Finishing up the workday at the Marketing Agency."
+          },
+          {
+            "time": 17,
+            "action": "go_to",
+            "target": "Local Diner",
+            "description": "Going to Local Diner for dinner after work."
+          },
+          {
+            "time": 18,
+            "action": "eat",
+            "target": "Local Diner",
+            "description": "Having dinner ($25) to replenish energy after work."
+          },
+          {
+            "time": 19,
+            "action": "go_to",
+            "target": "Target",
+            "description": "Going to Target to restock groceries."
+          },
+          {
+            "time": 20,
+            "action": "shop",
+            "target": "Target",
+            "description": "Buying groceries ($100 worth) to prepare for home meals."
+          },
+          {
+            "time": 21,
+            "action": "go_to",
+            "target": "Oak View Condos",
+            "description": "Returning home after grocery shopping."
+          },
+          {
+            "time": 22,
+            "action": "rest",
+            "target": "Oak View Condos",
+            "description": "Relaxing at home before bedtime."
+          },
+          {
+            "time": 23,
+            "action": "rest",
+            "target": "Oak View Condos",
+            "description": "Going to sleep to rest and reset energy for tomorrow."
+          }
+        ],
+        "status": "success",
+        "day": 1
+      }
+    }
+  }
+}
