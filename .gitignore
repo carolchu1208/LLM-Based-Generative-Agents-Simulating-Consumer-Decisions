@@ -1,3 +1,121 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs and data
+logs/
+*.log
+LLMAgentsTown_memory_records/
+saved_plans/
+simulation_data/
+
+# Configuration files with sensitive data
+Stability_Agents_Config.json
+config.json
+secrets.json
+.env
+
+# Test and debug files
+test_*.py
+debug_*.py
+*_test.py
+*_debug.py
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Large data files
+*.csv
+*.parquet
+*.h5
+*.hdf5
+
+# API keys and credentials
+api_keys.txt
+credentials.json
+secrets/
+
+# Ignore everything in LLMAgentsTown_memory_records
+LLMAgentsTown_memory_records/*
+
+# Except the 5 simulation subfolders
+!LLMAgentsTown_memory_records/simulation_agents/
+!LLMAgentsTown_memory_records/simulation_daily_summaries/
+!LLMAgentsTown_memory_records/simulation_conversations/
+!LLMAgentsTown_memory_records/simulation_plans/
+!LLMAgentsTown_memory_records/simulation_metrics/
+
+# Ignore everything in those subfolders
+LLMAgentsTown_memory_records/simulation_agents/*
+LLMAgentsTown_memory_records/simulation_daily_summaries/*
+LLMAgentsTown_memory_records/simulation_conversations/*
+LLMAgentsTown_memory_records/simulation_plans/*
+LLMAgentsTown_memory_records/simulation_metrics/*
+
+# Except the latest_update_2025Jul folders in each
+!LLMAgentsTown_memory_records/simulation_agents/latest_update_2025Jul/
+!LLMAgentsTown_memory_records/simulation_agents/latest_update_2025Jul/**
+!LLMAgentsTown_memory_records/simulation_daily_summaries/latest_update_2025Jul/
+!LLMAgentsTown_memory_records/simulation_daily_summaries/latest_update_2025Jul/**
+!LLMAgentsTown_memory_records/simulation_conversations/latest_update_2025Jul/
+!LLMAgentsTown_memory_records/simulation_conversations/latest_update_2025Jul/**
+!LLMAgentsTown_memory_records/simulation_plans/latest_update_2025Jul/
+!LLMAgentsTown_memory_records/simulation_plans/latest_update_2025Jul/**
+!LLMAgentsTown_memory_records/simulation_metrics/latest_update_2025Jul/
+!LLMAgentsTown_memory_records/simulation_metrics/latest_update_2025Jul/**
+
+# Ignore .jsonl files except specific experiment records
+*.jsonl
+!LLMAgentsTown_memory_records/simulation_agents/latest_update_2025Jul/agents_memories_20250716_013356.jsonl
+!LLMAgentsTown_memory_records/simulation_conversations/latest_update_2025Jul/conversations_20250716_013356.jsonl
+!LLMAgentsTown_memory_records/simulation_metrics/latest_update_2025Jul/metrics_log_20250716_013356.jsonl
+
+# Ignore .json files except specific experiment records
+*.json
+!LLMAgentsTown_memory_records/simulation_daily_summaries/latest_update_2025Jul/daily_summary_20250716_013356.json
+!LLMAgentsTown_memory_records/simulation_plans/latest_update_2025Jul/saved_plans_20250716_013356.json
