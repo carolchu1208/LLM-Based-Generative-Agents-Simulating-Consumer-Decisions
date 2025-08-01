@@ -46,11 +46,29 @@ class ModelManager(ModelManagerInterface):
         if not hasattr(self, '_initialized'):
             self._initialized = True
             self._initialize()
+    def _load_api_key(self) -> Optional[str]:
+        """Load API key securely from environment variables"""
+        key = os.getenv('DEEPSEEK_API_KEY')
+        
+        # Basic validation
+        if not key:
+            logging.error("No API key found in DEEPSEEK_API_KEY environment variable")
+            return None
+            
+        if not key.startswith('sk-'):
+            logging.error("Invalid API key format")
+            return None
+            
+        # Mask key in logs
+        logging.debug(f"API key loaded (last 4: ...{key[-4:]})")
+        return key
     
     def _initialize(self):
         """Initialize the model manager with settings."""
         # Set API key
-        self.api_key = 'sk-4e401a02a7084517bcf02541fa87be78'
+        self.api_key = self._load_api_key()
+        if not self.api_key:
+            raise RuntimeError("API key not configured")
         self.use_fallback = False
         
         # Model configuration
@@ -91,7 +109,12 @@ class ModelManager(ModelManagerInterface):
         print("[DEBUG] ModelManager initialized with API key")
         print(f"[DEBUG] Using model: {self.model_config['model']}")
     
-    def _make_api_call(self, prompt: str, prompt_type: str, max_retries=3, **kwargs) -> Optional[str]:
+    def _make_api_call(self, prompt: str, prompt_type: str, max_retries=3, connect_timeout=10, read_timeout=60, **kwargs):
+        """Secure API call implementation"""
+        if not hasattr(self, 'api_key') or not self.api_key:
+            logging.error("API call attempted without valid key")
+            return None
+        
         """Process the prompt and generate appropriate response."""
         try:
             # Validate prompt type
@@ -113,11 +136,12 @@ class ModelManager(ModelManagerInterface):
             print(f"[DEBUG] Prompt length: {len(prompt)} characters")
             
             # Initialize retry variables
-            retry_delay = 2  # Initial delay in seconds
+            
             last_error = None
             
             # Make the actual API call to DeepSeek with retries
             for attempt in range(max_retries):
+                retry_delay = min(0.5 * (2 ** attempt), 10) # Initial delay in seconds
                 try:
                     print(f"[DEBUG] Making API call attempt {attempt + 1}/{max_retries}")
                     print(f"[DEBUG] API endpoint: https://api.deepseek.com/v1/chat/completions")
