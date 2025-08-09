@@ -106,7 +106,7 @@ class TownSimulation:
         self.running = True
         self.paused = False
         
-        # Reset time to simulation start
+        # Reset time to simulation startJ
         TimeManager.reset_time()
         
         # Set simulation reference for location tracker
@@ -379,7 +379,37 @@ class TownSimulation:
             current_time = TimeManager.get_current_hour()
             current_day = TimeManager.get_current_day()
 
-            # Step 1: Find a viable alternative location
+            # Check if it's end of day (late evening when agent should sleep instead)
+            def is_end_of_day(hour):
+                return hour >= 22  # 10 PM or later is considered end of day
+            
+            if is_end_of_day(current_time):
+                print(f"[INFO] {agent.name} is at end of day ({current_time}:00), skipping dinner and going to sleep.")
+                
+                # Create a simple sleep plan
+                sleep_plan = {
+                    'activities': [
+                        {
+                            'start_time': current_time,
+                            'end_time': current_time + 1,
+                            'duration': 1,
+                            'activity': 'sleep',
+                            'location': agent.residence,
+                            'description': f"Go home to {agent.residence} and sleep to recover energy"
+                        }
+                    ]
+                }
+                
+                # Update the agent's plan
+                agent.update_plan_slice(sleep_plan['activities'], start_hour=current_time)
+                
+                # Clear any interrupted travel state
+                if hasattr(agent, 'clear_interrupted_travel'):
+                    agent.clear_interrupted_travel()
+                    print(f"[INFO] Cleared interrupted travel state for {agent.name} due to end-of-day sleep.")
+                return
+
+            # Step 1: Find a viable alternative location (only if not end of day)
             target_location = None
             for loc_name, location in self.locations.items():
                 if location.location_type in ['restaurant', 'local_shop'] and location.is_open(current_time):
@@ -453,7 +483,6 @@ class TownSimulation:
         except Exception as e:
             print(f"[ERROR] Critical error during emergency replan for {agent.name}: {str(e)}")
             traceback.print_exc()
-
     def _process_hour_end(self, current_day: int, current_hour: int):
         """Process end of hour events."""
         print(f"[DEBUG] _process_hour_end() started for Day {current_day}, Hour {current_hour}")

@@ -77,17 +77,17 @@ MEMORY_TYPES: Dict[str, str] = {
 ENERGY_MAX: int = 100
 ENERGY_MIN: int = 0
 ENERGY_COST_PER_STEP: int = 1
-ENERGY_DECAY_PER_HOUR: int = 10
-ENERGY_COST_WORK_HOUR: int = 15
+ENERGY_DECAY_PER_HOUR: int = 1
+ENERGY_COST_WORK_HOUR: int = 10
 ENERGY_COST_PER_HOUR_TRAVEL: int = 5
 ENERGY_COST_PER_HOUR_IDLE: int = 1
 ENERGY_GAIN_RESTAURANT_MEAL: int = 40
 ENERGY_GAIN_SNACK: int = 5
-ENERGY_GAIN_HOME_MEAL: int = 20
-ENERGY_GAIN_SLEEP: int = 50
+ENERGY_GAIN_HOME_MEAL: int = 25
+ENERGY_GAIN_SLEEP: int = 55
 ENERGY_GAIN_NAP: int = 10
 ENERGY_GAIN_CONVERSATION: int = 5
-ENERGY_THRESHOLD_LOW: int = 20  # Threshold below which agent should prioritize getting food
+ENERGY_THRESHOLD_LOW: int = 50  # Threshold below which agent should prioritize getting food
 
 class MemoryEvent:
     """Base class for memory events with validation and serialization."""
