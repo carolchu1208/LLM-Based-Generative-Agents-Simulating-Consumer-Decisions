@@ -26,22 +26,23 @@ Building on the [Generative Agents framework by Park et al. (2023)](https://gith
   - Word-of-mouth style information diffusion.  
   - Consumer loyalty, substitution effects, and habit formation—without hard-coded rules.  
 
----
-
+--- 
 ## 🏗️ Project Structure  
-├── LLMAgentsTown_experiment (Simulation codebase)
-                            ├── Agents_Config_Test.json (Ageng Persona Setup)
-                            ├── Memory_Manager.py(Memory System Setup)
-                            ├── Metrics_Manager.py(Purchase Metrics System Setup)
-                            ├── Prompt_Manager.py(Prompt System Setup)
-                            ├── deepseek_model_manager.py(Deepseek API Response System Setup)
-                            ├── simulation_constants.py(Simulation Basic System Setup, e.g:Energy, Money levels)
-                            ├── shared_trackers.py(Agent Location Traking System)
-                            ├── thread_safe_base.py(Memory Saveing & Excution Thread Safe Setup)
-                            ├── classes.py (Main Execution Functions Setup)
-├── LLMAgentsTown_memory_records (Logs of interactions, memory records, and purchase data)
-└── README.md ← Project documentation
 
+LLMAgentsTown_experiment/ # Simulation codebase
+├── Agents_Config_Test.json # Agent persona setup
+├── Memory_Manager.py # Memory system setup
+├── Metrics_Manager.py # Purchase metrics system setup
+├── Prompt_Manager.py # Prompt system setup
+├── deepseek_model_manager.py # DeepSeek API response system setup
+├── simulation_constants.py # Simulation constants (energy, money levels, etc.)
+├── shared_trackers.py # Agent location tracking system
+├── thread_safe_base.py # Thread-safe execution & memory saving
+├── classes.py # Main execution functions
+│
+LLMAgentsTown_memory_records/ # Logs of interactions, memory records, and purchase data
+│
+README.md # Project documentation
 
 ---
 
