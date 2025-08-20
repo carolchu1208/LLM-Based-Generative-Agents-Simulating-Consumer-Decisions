@@ -28,18 +28,21 @@ Building on the [Generative Agents framework by Park et al. (2023)](https://gith
 
 --- 
 ## 🏗️ Project Structure  
-LLMAgentsTown_experiment/ # Simulation codebase
-├── Agents_Config_Test.json # Agent persona setup
-├── Memory_Manager.py # Memory system setup
-├── Metrics_Manager.py # Purchase metrics system setup
-├── Prompt_Manager.py # Prompt system setup
-├── deepseek_model_manager.py # DeepSeek API response system setup
-├── simulation_constants.py # Simulation constants (energy, money levels, etc.)
-├── shared_trackers.py # Agent location tracking system
-├── thread_safe_base.py # Thread-safe execution & memory saving
-├── classes.py # Main execution functions
-LLMAgentsTown_memory_records/ # Logs of interactions, memory records, and purchase data
-README.md # Project documentation
+```text
+LLMAgentsTown_experiment/         # Simulation codebase
+├── Agents_Config_Test.json        # Agent persona setup
+├── Memory_Manager.py              # Memory system setup
+├── Metrics_Manager.py             # Purchase metrics system setup
+├── Prompt_Manager.py              # Prompt system setup
+├── deepseek_model_manager.py      # DeepSeek API response system setup
+├── simulation_constants.py        # Simulation constants (energy, money levels, etc.)
+├── shared_trackers.py             # Agent location tracking system
+├── thread_safe_base.py            # Thread-safe execution & memory saving
+├── classes.py                     # Main execution functions
+
+LLMAgentsTown_memory_records/      # Logs of interactions, memory records, and purchase data
+
+README.md                          # Project documentation
 
 ---
 
