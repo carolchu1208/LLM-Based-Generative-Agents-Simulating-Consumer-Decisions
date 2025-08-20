@@ -28,7 +28,6 @@ Building on the [Generative Agents framework by Park et al. (2023)](https://gith
 
 --- 
 ## 🏗️ Project Structure  
-
 LLMAgentsTown_experiment/ # Simulation codebase
 ├── Agents_Config_Test.json # Agent persona setup
 ├── Memory_Manager.py # Memory system setup
@@ -39,9 +38,7 @@ LLMAgentsTown_experiment/ # Simulation codebase
 ├── shared_trackers.py # Agent location tracking system
 ├── thread_safe_base.py # Thread-safe execution & memory saving
 ├── classes.py # Main execution functions
-│
 LLMAgentsTown_memory_records/ # Logs of interactions, memory records, and purchase data
-│
 README.md # Project documentation
 
 ---
