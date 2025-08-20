@@ -1,4 +1,5 @@
 # LLM-Based Multi-Agent System for Simulating and Analyzing Marketing and Consumer Behavior
+<img width="2275" height="1234" alt="agents drawio-1" src="https://github.com/user-attachments/assets/9786d838-7e82-4c94-9707-b84a86e62995" />
 
 ---
 
