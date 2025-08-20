@@ -43,9 +43,8 @@ LLMAgentsTown_experiment/         # Simulation codebase
 LLMAgentsTown_memory_records/      # Logs of interactions, memory records, and purchase data
 
 README.md                          # Project documentation
-
+```
 ---
-
 ## ⚙️ Getting Started  
 
 ### Requirements  
