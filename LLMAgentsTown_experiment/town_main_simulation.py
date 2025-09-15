@@ -48,7 +48,7 @@ from prompt_manager import PromptManager
 from deepseek_model_manager import ModelManager
 from shared_trackers import LocationLockManager, SharedLocationTracker
 from Operation_Manager import OperationManager
-
+from agent_simulation_gui import launch_gui
 class TownSimulation:
     """Main town simulation controller."""
     
@@ -1233,15 +1233,26 @@ def main():
         # Initialize simulation
         simulation = TownSimulation(config_path)
         
-        # Set initial time to 7:00 on day 1
-        TimeManager.set_time(7)
-        TimeManager.set_current_day(1)
+        from agent_simulation_gui import launch_gui
+        import threading
         
-        print(f"\nStarting simulation at Day {TimeManager.get_current_day()}, Hour {TimeManager.get_current_hour()}")
-        print("Will run until Day 8, Hour 0 (end of Day 7)")
+        # Create and start GUI thread
+        gui_thread = threading.Thread(
+            target=launch_gui, 
+            args=(simulation,),
+            name="GUI-Thread"
+        )
+        gui_thread.daemon = True  # Allows program to exit if only GUI thread remains
+        gui_thread.start()
         
-        # Run the simulation
+        # Small delay to let GUI initialize
+        time.sleep(1)
+        
+        # Run the simulation in the main thread
         simulation.run_simulation()
+        
+        # Wait for GUI thread to finish if simulation completes normally
+        gui_thread.join(timeout=5)
         
     except KeyboardInterrupt:
         print("\nSimulation interrupted by user. Saving final state...")
