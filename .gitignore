@@ -119,3 +119,4 @@ LLMAgentsTown_memory_records/simulation_metrics/*
 *.json
 !LLMAgentsTown_memory_records/simulation_daily_summaries/latest_update_2025Jul/daily_summary_20250716_013356.json
 !LLMAgentsTown_memory_records/simulation_plans/latest_update_2025Jul/saved_plans_20250716_013356.json
+**/.DS_Store
