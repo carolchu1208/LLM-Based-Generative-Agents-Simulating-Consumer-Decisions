@@ -17,6 +17,7 @@ from typing import (
 import requests
 
 # Local imports
+from menu_validator import MenuValidator
 from simulation_types import (
     MemoryType, MemoryEvent, ActivityType,
     ACTIVITY_TYPES, MEMORY_TYPES,
@@ -624,6 +625,7 @@ class PlanExecutor:
         self.prompt_mgr = prompt_mgr
         self.model_mgr = model_mgr
         self.config_data = config_data
+        self.menu_validator = MenuValidator(config_data)  # Add menu validation
         self._active_agent_activities = {}
         self.agent_plans = {}
         self.agent_activities = {}
@@ -1676,50 +1678,54 @@ class PlanExecutor:
             if purchase_type == 'meal':
                 # Determine meal type based on current time
                 from simulation_types import get_meal_period
-                meal_type = get_meal_period(current_time)
-                
-                # Get menu configuration from config data
-                dining_locations = self.config_data.get('town_areas', {}).get('dining', {})
-                location_config = dining_locations.get(location.name, {})
-                location_menu = location_config.get('menu', {})
-                
-                if not location_menu:
-                    return False, {'error': f"No menu found for {location.name} - only restaurants in dining section can serve meals"}
-                
-                # Check if the determined meal type is available at this location and time
-                if meal_type in location_menu:
-                    menu_item = location_menu[meal_type]
-                    available_hours = menu_item.get('available_hours', [])
-                    
-                    if current_time in available_hours:
-                        selected_meal_type = meal_type
-                        selected_item = menu_item
-                    else:
-                        # Meal type not available at this time, fallback to snack if available
-                        if 'snack' in location_menu:
-                            snack_item = location_menu['snack']
-                            snack_hours = snack_item.get('available_hours', [])
-                            if current_time in snack_hours:
-                                selected_meal_type = 'snack'
-                                selected_item = snack_item
-                            else:
-                                return False, {'error': f"No meals available at {location.name} at {current_time}:00"}
-                        else:
-                            return False, {'error': f"No {meal_type} available at {location.name}"}
+                requested_meal_type = get_meal_period(current_time)
+
+                # Use menu validator to validate and get the best available option
+                is_valid, validation_result = self.menu_validator.validate_food_request(
+                    agent.name, location.name, requested_meal_type, current_time
+                )
+
+                if is_valid:
+                    # Validation successful, use the validated item
+                    selected_meal_type = validation_result['meal_type']
+                    base_cost = validation_result['price']
+                    valid_item_name = validation_result['valid_item']
+
+                    print(f"[MENU] {agent.name} ordering {valid_item_name} at {location.name} (${base_cost})")
+
                 else:
-                    # Requested meal type not on menu, try snack
-                    if 'snack' in location_menu:
-                        snack_item = location_menu['snack']
-                        snack_hours = snack_item.get('available_hours', [])
-                        if current_time in snack_hours:
-                            selected_meal_type = 'snack'
-                            selected_item = snack_item
-                        else:
-                            return False, {'error': f"No meals available at {location.name} at {current_time}:00"}
+                    # Validation failed, try emergency food options
+                    print(f"[MENU] {agent.name} requested {requested_meal_type} at {location.name} failed: {validation_result['error']}")
+
+                    # Try to get emergency food options within agent's budget
+                    emergency_options = self.menu_validator.get_emergency_food_options(
+                        current_time, agent.money
+                    )
+
+                    if emergency_options:
+                        # Use the cheapest available option
+                        emergency_food = emergency_options[0]
+                        print(f"[EMERGENCY] {agent.name} switching to emergency food: {emergency_food['item']} at {emergency_food['location']}")
+
+                        selected_meal_type = emergency_food['meal_type']
+                        base_cost = emergency_food['price']
+                        valid_item_name = emergency_food['item']
+
+                        # If emergency food is at different location, this will fail gracefully
+                        if emergency_food['location'] != location.name:
+                            return False, {
+                                'error': f"No valid food at {location.name}. Suggested: {emergency_food['item']} at {emergency_food['location']}",
+                                'replan_needed': True,
+                                'suggestion': emergency_food['location']
+                            }
                     else:
-                        return False, {'error': f"No {meal_type} available at {location.name}"}
-                
-                base_cost = selected_item.get('base_price', 15.0)
+                        # No emergency options available - agent might starve
+                        self.menu_validator.log_invalid_request(agent.name, location.name, requested_meal_type, current_time, validation_result)
+                        return False, {
+                            'error': f"No affordable food available. {validation_result.get('suggestion', '')}",
+                            'replan_needed': True,
+                            'reason_code': 'NO_AFFORDABLE_FOOD'
+                        }
                 
                 # Create simplified item record
                 items_to_purchase = [{

@@ -47,7 +47,6 @@ from simulation_types import TimeManager, ENERGY_DECAY_PER_HOUR, ENERGY_THRESHOL
 from prompt_manager import PromptManager
 from deepseek_model_manager import ModelManager
 from shared_trackers import LocationLockManager, SharedLocationTracker
-from Operation_Manager import OperationManager
 
 class TownSimulation:
     """Main town simulation controller."""
