@@ -62,71 +62,17 @@ LLMAgentsTown_memory_records/
 
 ## ⚙️ Critical System Parameters
 
-### 🔋 Energy System Constants (**DO NOT MODIFY**)
+> **📋 For detailed parameter documentation, see [`LLMAgentsTown_experiment/CRITICAL_PARAMETERS.md`](LLMAgentsTown_experiment/CRITICAL_PARAMETERS.md)**
+
+### Quick Reference
 These values are **calibrated** to match paper results and prevent agent death:
 
-```python
-# Energy Thresholds (simulation_constants.py)
-ENERGY_MAX = 100                    # Maximum agent energy
-ENERGY_THRESHOLD_LOW = 20           # 🚨 Critical: Triggers food-seeking behavior
-ENERGY_THRESHOLD_FOOD = 25          # Preventive food planning threshold
+- **Energy System**: Decay 5/hour, Restaurant meals +45, Snacks +10, Sleep sets to 100
+- **Agent Count**: 11 agents with specific demographics and relationships
+- **Discount Strategy**: 20% off at Fried Chicken Shop on Days 3-4
+- **Menu Configuration**: Defined in `agent_configuration.json`
 
-# Energy Decay Rates (per simulation hour)
-ENERGY_DECAY_PER_HOUR = 5          # 🚨 Critical: Base energy loss rate
-ENERGY_COST_WORK_HOUR = 5          # Energy cost during work hours
-ENERGY_COST_PER_STEP = 1           # Energy cost per movement step
-
-# Energy Recovery Rates
-ENERGY_GAIN_RESTAURANT_MEAL = 45    # 🚨 Critical: Restaurant meal recovery
-ENERGY_GAIN_HOME_MEAL = 25          # Home cooking recovery
-ENERGY_GAIN_SNACK = 10             # Snack energy gain
-ENERGY_GAIN_NAP = 15               # Nap recovery during work hours
-ENERGY_GAIN_CONVERSATION = 5        # Social interaction energy gain
-# Sleep: Sets energy to ENERGY_MAX (100) every hour during 23:00-06:00
-```
-
-**⚠️ WARNING**: Modifying energy values may cause agent starvation and simulation failure!
-
-### 🍽️ Menu Configuration (**DO NOT MODIFY**)
-Restaurant menus are **precisely defined** in `Stability_Agents_Config_Test.json`:
-
-```json
-"Fried Chicken Shop": {
-  "menu": {
-    "lunch": {
-      "available_hours": [11, 12, 13, 14],
-      "item": "Fried Chicken Tender Meal Set",
-      "base_price": 20.0
-    },
-    "dinner": {
-      "available_hours": [17, 18, 19, 20],
-      "item": "Fried Chicken Wings Meal Set",
-      "base_price": 20.0
-    },
-    "snack": {
-      "available_hours": [10, 15, 16, 21, 22],
-      "item": "Fried Chicken Nugget 6pcs",
-      "base_price": 10.0
-    }
-  },
-  "discount": {
-    "type": "percentage",
-    "value": 20,           # 🚨 Critical: 20% discount rate
-    "days": [3, 4]         # 🚨 Critical: Discount applied on days 3-4
-  }
-}
-```
-
-### 👥 Agent Configuration (**CALIBRATED - DO NOT MODIFY**)
-11 agents with **specific demographics** required for paper results:
-- **Kevin Chen**: Fried Chicken Shop supervisor (age 23, income $18.50/hour)
-- **Sophie Martinez**: Local Market owner (age 27, income $6000/month)
-- **David Kim & Lisa Kim**: Married couple (tech worker + marketing manager)
-- **Rebecca Queen**: Fried Chicken employee (age 22)
-- **Alex Thompson & Jordan Lee**: Roommates (barista + designer)
-- **Maria Rodriguez & Sarah Chen**: Dating couple (chef + waitress)
-- **Mike Johnson**: Retail manager (age 31)
-- **Emma Wilson**: Marketing assistant (age 28)
+**⚠️ WARNING**: Modifying these parameters may cause simulation failure or prevent reproducibility of paper results. See detailed documentation in `CRITICAL_PARAMETERS.md` before making changes.
 
 ---
 
