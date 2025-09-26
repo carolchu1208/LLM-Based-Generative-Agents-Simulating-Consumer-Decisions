@@ -49,8 +49,14 @@ class ModelManager(ModelManagerInterface):
     
     def _initialize(self):
         """Initialize the model manager with settings."""
-        # Set API key from environment variable or use default
-        self.api_key = os.getenv('DEEPSEEK_API_KEY', 'sk-4e401a02a7084517bcf02541fa87be78')
+        # Set API key from environment variable
+        self.api_key = os.getenv('DEEPSEEK_API_KEY')
+        if not self.api_key:
+            raise ValueError(
+                "DEEPSEEK_API_KEY environment variable is not set. "
+                "Please set it using: export DEEPSEEK_API_KEY='your-api-key-here' "
+                "or follow the setup instructions in README.md"
+            )
         self.use_fallback = False
         
         # Model configuration

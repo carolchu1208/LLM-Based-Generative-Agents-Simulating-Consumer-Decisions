@@ -177,9 +177,7 @@ For **Windows** users:
 echo $env:DEEPSEEK_API_KEY
 ```
 
-**Method C: Use Default Key (For Testing Only)**
-> The code includes a fallback API key. If no environment variable is set, it will use the hardcoded key in `llm_deepseek_manager.py`.
-> ⚠️ **Not recommended for production or sharing code publicly!**
+**⚠️ IMPORTANT**: You **must** set the API key before running the simulation. The code will raise an error if `DEEPSEEK_API_KEY` is not set.
 
 #### 3️⃣ Run Simulation
 ```bash
