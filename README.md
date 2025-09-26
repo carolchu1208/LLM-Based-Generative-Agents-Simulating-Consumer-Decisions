@@ -192,28 +192,6 @@ cd LLMAgentsTown_experiment/debug_file
 python debug_with_saved_plans.py --list-saves    # Show available saved plans
 python debug_with_saved_plans.py                 # Run with most recent saves
 ```
-
----
-
-## 📊 Expected Results & Findings
-
-### 💰 Revenue & Market Share Impact
-- **51% revenue increase** for Fried Chicken Shop during discount period (Day 2 → Day 3)
-- **Market share shift**: Fried Chicken Shop 30% → 41%, Local Diner 62% → 48%
-- **Substitution effects**: Local Diner loses customers, Coffee Shop remains stable
-
-### 🧠 Consumer Behavior Patterns
-- **Deal Promotion Proneness (DPP)**: Varied agent sensitivity to discounts
-- **Habit Formation**: Repeat visits persist beyond discount period
-- **Social Coordination**: Natural group dining and word-of-mouth diffusion
-- **Loyalty Development**: Emergent brand preferences without hard-coding
-
-### 📈 Business Intelligence Outputs
-- Hourly customer traffic patterns
-- Agent-specific purchasing behavior
-- Conversation topic analysis (food, work, social themes)
-- Relationship strength tracking between agents
-
 ---
 
 ## 🛡️ Agent Death Prevention System
@@ -245,29 +223,6 @@ This repository includes **robust safeguards** to prevent simulation failure:
 
 ---
 
-## 🔧 Development & Customization
-
-### ✅ Safe to Modify
-- **Agent names** and basic demographics
-- **Conversation topics** and social relationships
-- **Business hours** for shops
-- **Simulation duration** (currently 7 days)
-- **Output file locations**
-
-### ⚠️ Modify with Caution
-- **Energy constants** (may break agent survival)
-- **Menu items** and pricing (affects paper reproducibility)
-- **Town layout** and location coordinates
-- **Discount timing** and percentages
-
-### ❌ Do NOT Modify
-- **Core agent count** (11 agents required)
-- **Fried Chicken Shop discount** (Days 3-4, 20% off)
-- **Menu availability hours**
-- **Energy threshold values**
-
----
-
 ## 📂 Related Work & References
 
 - [Park et al. (2023). Generative Agents: Interactive Simulacra of Human Behavior](https://github.com/joonspk-research/generative_agents)
@@ -284,7 +239,9 @@ M.S. Business Analytics, Clark University
 
 **Co-authors:**
 Lucian Terhorst, Kadin Reed, Tom Ni, Weiwei Chen (Clark University)
-Rongyu Lin (Quinnipiac University)
+
+**Co-authors:**
+Rongyu Lin (Quinnipiac University) - Rongyu.Lin@quinnipiac.edu
 
 ---
 
