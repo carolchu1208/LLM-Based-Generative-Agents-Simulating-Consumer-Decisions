@@ -134,18 +134,55 @@ Restaurant menus are **precisely defined** in `Stability_Agents_Config_Test.json
 
 ### Prerequisites
 - Python 3.9+
-- DeepSeek API key (set as environment variable: `DEEPSEEK_API_KEY`)
+- DeepSeek API key ([Get one here](https://platform.deepseek.com/))
 
-### Installation
+### Installation & Setup
+
+#### 1️⃣ Clone Repository
 ```bash
-# Clone repository
 git clone https://github.com/carolchu1208/LLM-Based-Generative-Agents-Simulating-Consumer-Decisions.git
 cd LLM-Based-Generative-Agents-Simulating-Consumer-Decisions
+```
 
-# Set API key
+#### 2️⃣ Configure API Key (Choose One Method)
+
+**Method A: Temporary (Current Session Only)**
+```bash
 export DEEPSEEK_API_KEY='your-api-key-here'
+```
+> ⚠️ This only works for the current terminal session. You'll need to set it again if you close the terminal.
 
-# Run simulation
+**Method B: Permanent (Recommended)**
+
+For **macOS/Linux** users:
+```bash
+# Add to your shell configuration file
+echo 'export DEEPSEEK_API_KEY="your-api-key-here"' >> ~/.bashrc
+
+# Apply changes immediately
+source ~/.bashrc
+
+# Verify it's set
+echo $DEEPSEEK_API_KEY
+```
+
+> 💡 **Note**: If you're using **zsh** (default on newer macOS), replace `~/.bashrc` with `~/.zshrc`
+
+For **Windows** users:
+```powershell
+# PowerShell
+[System.Environment]::SetEnvironmentVariable('DEEPSEEK_API_KEY', 'your-api-key-here', 'User')
+
+# Restart terminal and verify
+echo $env:DEEPSEEK_API_KEY
+```
+
+**Method C: Use Default Key (For Testing Only)**
+> The code includes a fallback API key. If no environment variable is set, it will use the hardcoded key in `llm_deepseek_manager.py`.
+> ⚠️ **Not recommended for production or sharing code publicly!**
+
+#### 3️⃣ Run Simulation
+```bash
 cd LLMAgentsTown_experiment
 python main_simulation.py
 ```
