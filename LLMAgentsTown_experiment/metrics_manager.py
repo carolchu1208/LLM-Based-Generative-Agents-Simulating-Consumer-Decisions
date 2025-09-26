@@ -17,18 +17,18 @@ class StabilityMetricsManager:
     def __init__(self, memory_manager, agents: Dict[str, 'Agent'] = None):
         self.memory_manager = memory_manager
         self.agents = agents or {}  # Store agents dictionary
-        
+
         # Create metrics directory in the workspace root
         main_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'LLMAgentsTown_memory_records')
         metrics_dir = os.path.join(main_dir, 'simulation_metrics')
         if not os.path.exists(metrics_dir):
             os.makedirs(metrics_dir)
-            
-        # Use simulation timestamp for file naming
-        self.simulation_start_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        # Use same timestamp as memory_manager for consistent file naming
+        self.simulation_start_time = memory_manager.simulation_timestamp
         self.metrics_file = os.path.join(metrics_dir, f'metrics_log_{self.simulation_start_time}.jsonl')
         print(f"Metrics log file will be saved to: {self.metrics_file}")
-        
+
         # Set up daily summaries directory and file path
         self.daily_summaries_dir = os.path.join(main_dir, 'simulation_daily_summaries')
         if not os.path.exists(self.daily_summaries_dir):
