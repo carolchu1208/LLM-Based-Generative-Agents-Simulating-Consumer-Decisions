@@ -36,12 +36,12 @@ Building on the [Generative Agents framework by Park et al. (2023)](https://gith
 LLMAgentsTown_experiment/
 ├── town_main_simulation.py             # 🚀 Main simulation runner - Start here!
 ├── stability_classes.py               # 🤖 Agent, Location, PlanExecutor classes
-├── menu_validator.py                  # 🛡️ Agent death prevention system
-├── simulation_constants.py            # ⚙️ Critical system parameters (see below)
+├── menu_validator.py                  # 🛡️ LLM response and menuvalidation system - prevent unmatch food needs
+├── simulation_constants.py            # ⚙️ Critical system parameters (energy, costs setup, etc)
 ├── Stability_Agents_Config_Test.json  # 👥 Agent personas & town configuration
 ├── Stability_Memory_Manager.py        # 🧠 Agent memory & conversation system
 ├── Stability_Metrics_Manager.py       # 📊 Business analytics & performance tracking
-├── prompt_manager.py                  # 💬 LLM prompt templates & management
+├── prompt_manager.py                  # 💬 LLM prompt (cache rules, templates)
 ├── deepseek_model_manager.py          # 🔗 DeepSeek API interface
 ├── simulation_types.py                # 📋 Core data types & utilities
 └── debug_file/                        # 🐛 Debugging utilities
