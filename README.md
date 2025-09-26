@@ -168,7 +168,7 @@ This repository includes **robust safeguards** to prevent simulation failure:
 
 ## 👩‍💻 Authors
 
-**Man-Lin Chu** (First Author)
+**First Author: Man Lin Chu**
 📧 mchu@clarku.edu | manlin.chu1998@gmail.com
 
 **Co-authors:**
@@ -207,5 +207,3 @@ For technical issues:
 ## 📄 License
 
 This project is released under the MIT License. See LICENSE file for details.
-
-**🎯 Ready for arXiv submission and academic reproducibility!**
