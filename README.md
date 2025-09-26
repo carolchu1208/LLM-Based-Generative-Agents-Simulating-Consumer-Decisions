@@ -158,17 +158,6 @@ This repository includes **robust safeguards** to prevent simulation failure:
 
 ---
 
-## 📌 Known Limitations & Solutions
-
-| Issue | Impact | Solution Implemented |
-|-------|--------|---------------------|
-| **LLM Hallucination** | Agents request non-existent food | Menu validation system |
-| **Energy Depletion** | Agents "die" from starvation | Improved energy constants + emergency recovery |
-| **Invalid Locations** | Agents try to visit non-existent places | Location validation in prompts |
-| **Demographic Bias** | Child/elderly agents act like adults | Acknowledged limitation (future work) |
-
----
-
 ## 📂 Related Work & References
 
 - [Park et al. (2023). Generative Agents: Interactive Simulacra of Human Behavior](https://github.com/joonspk-research/generative_agents)
