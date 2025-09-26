@@ -35,7 +35,7 @@ from shared_trackers import (
     SharedLocationTracker, SharedResourceManager,
     LocationLockManager
 )
-from thread_safe_base import (
+from simulation_constants import (
     AgentError, LocationError,
     MemoryError, MetricsError, ThreadSafeBase
 )
@@ -990,7 +990,7 @@ CRITICAL PLANNING RULES:
 3. ⚠️ NEVER skip lunch! Working 8 hours costs {ENERGY_COST_WORK_HOUR * 8} energy - you MUST eat lunch to survive
 4. Monitor energy - you lose {ENERGY_DECAY_PER_HOUR} energy per hour automatically + {ENERGY_COST_WORK_HOUR} per hour working
 5. Work standard hours (9:00-17:00) to earn money
-   ⚠️ IMPORTANT: Describe work activities based on your occupation as {occupation}
+   ⚠️ IMPORTANT: Describe work activities based on your specific occupation
    - Include specific tasks typical for your role (e.g., chef: preparing meals, managing kitchen; software engineer: coding, meetings; retail: serving customers, stocking)
    - Vary descriptions throughout the day to reflect different work tasks
    - Make work descriptions realistic and occupation-specific

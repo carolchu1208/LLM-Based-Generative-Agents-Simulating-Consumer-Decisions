@@ -6,7 +6,7 @@ import os
 from datetime import datetime
 import hashlib
 from collections import defaultdict
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union, TypeVar, Generic
 
 # Simulation settings
 SIMULATION_SETTINGS: Dict[str, Any] = {
@@ -345,7 +345,35 @@ class ErrorHandler:
             return getattr(obj, attr, default)
         except Exception as e:
             ErrorHandler.handle_error(e, f"Error getting attribute {attr}", raise_error=False)
-            return default 
+            return default
+
+T = TypeVar('T')
+
+class Result(Generic[T]):
+    """Result class for operation outcomes with success/failure states."""
+
+    def __init__(self, success: bool, data: T = None, error: str = None, fallback: T = None):
+        """Initialize a Result.
+
+        Args:
+            success: Whether the operation succeeded
+            data: The result data if successful
+            error: Error message if failed
+            fallback: Fallback value to use if failed
+        """
+        self.success = success
+        self.data = data if success else fallback
+        self.error = error
+
+    @classmethod
+    def success(cls, data: T = None) -> 'Result[T]':
+        """Create a successful result."""
+        return cls(True, data=data)
+
+    @classmethod
+    def failure(cls, error: str, fallback: T = None) -> 'Result[T]':
+        """Create a failed result with optional fallback."""
+        return cls(False, error=error, fallback=fallback)
 
 class ThreadSafeBase:
     """Base class for thread-safe operations."""

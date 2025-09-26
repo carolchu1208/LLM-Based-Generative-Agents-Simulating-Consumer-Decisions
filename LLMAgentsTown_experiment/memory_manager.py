@@ -26,7 +26,7 @@ from simulation_types import (
     DEFAULT_MEMORY_BUFFER_SIZE, MEMORY_SAVE_INTERVAL, MEMORY_CLEANUP_INTERVAL,
     DEFAULT_AGENT_MONEY_MULTIPLIER
 )
-from thread_safe_base import (
+from simulation_constants import (
     Result, SimulationError, AgentError, LocationError,
     MemoryError, MetricsError, ThreadSafeBase
 )

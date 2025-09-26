@@ -19,11 +19,9 @@ from dataclasses import dataclass
 import requests
 
 # Local imports
-from thread_safe_base import (
-    SimulationError, AgentError, LocationError,
-    MemoryError, MetricsError, Result, ThreadSafeBase
-)
 from simulation_constants import (
+    SimulationError, AgentError, LocationError,
+    MemoryError, MetricsError, Result, ThreadSafeBase,
     ENERGY_MAX, ENERGY_MIN, ENERGY_DECAY_PER_HOUR,
     ENERGY_COST_WORK_HOUR, ENERGY_COST_PER_STEP,
     ENERGY_GAIN_RESTAURANT_MEAL, ENERGY_GAIN_SNACK,
@@ -110,8 +108,8 @@ STEPS_PER_MINUTE = MAX_STEPS_PER_HOUR / 60  # 0.33 steps per minute
 ACTIVITY_TYPES = {
     ActivityType.GO_TO.value: {
         'subtypes': ['walking'],
-        'energy_cost': ENERGY_COST_PER_HOUR_TRAVEL,
-        'memory_type': 'TRAVEL'    
+        'energy_cost': ENERGY_COST_PER_STEP,
+        'memory_type': 'TRAVEL'
         },
     ActivityType.WORK.value: {
         'subtypes': ['office_work', 'manual_labor', 'customer_service'],

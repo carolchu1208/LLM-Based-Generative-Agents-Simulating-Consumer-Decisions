@@ -37,7 +37,7 @@ from simulation_constants import (
     ENERGY_GAIN_SNACK, ENERGY_GAIN_HOME_MEAL,
     ENERGY_GAIN_NAP, ENERGY_THRESHOLD_LOW, ENERGY_THRESHOLD_FOOD
 )
-from thread_safe_base import (
+from simulation_constants import (
     Result, SimulationError, AgentError, LocationError,
     MemoryError, MetricsError, ThreadSafeBase
 )

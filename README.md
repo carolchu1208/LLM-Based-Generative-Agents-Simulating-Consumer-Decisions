@@ -81,6 +81,7 @@ These values are **calibrated** to match paper results and prevent agent death:
 ### Prerequisites
 - Python 3.9+
 - DeepSeek API key ([Get one here](https://platform.deepseek.com/))
+- `pip` (Python package installer)
 
 ### Installation & Setup
 
@@ -90,7 +91,28 @@ git clone https://github.com/carolchu1208/LLM-Based-Generative-Agents-Simulating
 cd LLM-Based-Generative-Agents-Simulating-Consumer-Decisions
 ```
 
-#### 2️⃣ Configure API Key (Choose One Method)
+#### 2️⃣ Set Up Virtual Environment & Install Dependencies
+
+**Create and activate virtual environment:**
+```bash
+# Create virtual environment
+python3 -m venv venv
+
+# Activate virtual environment
+# For macOS/Linux:
+source venv/bin/activate
+# For Windows:
+venv\Scripts\activate
+
+# Install required packages
+pip install requests
+```
+
+> 💡 **Why virtual environment?** This isolates the simulation's dependencies from your system Python, preventing conflicts.
+
+> ⚠️ **Important**: Always activate the virtual environment before running the simulation!
+
+#### 3️⃣ Configure API Key (Choose One Method)
 
 **Method A: Temporary (Current Session Only)**
 ```bash
@@ -125,10 +147,14 @@ echo $env:DEEPSEEK_API_KEY
 
 **⚠️ IMPORTANT**: You **must** set the API key before running the simulation. The code will raise an error if `DEEPSEEK_API_KEY` is not set.
 
-#### 3️⃣ Run Simulation
+#### 4️⃣ Run Simulation
 ```bash
+# Make sure virtual environment is activated (you should see (venv) in your terminal)
+source venv/bin/activate  # Skip if already activated
+
+# Navigate to experiment folder and run
 cd LLMAgentsTown_experiment
-python main_simulation.py
+python3 main_simulation.py
 ```
 
 ### 🐛 Debugging Mode
