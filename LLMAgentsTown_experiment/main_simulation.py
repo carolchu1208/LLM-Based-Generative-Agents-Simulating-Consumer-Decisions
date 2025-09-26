@@ -45,7 +45,7 @@ from simulation_execution_classes import (
 )
 from simulation_types import TimeManager
 from simulation_constants import (
-    ENERGY_DECAY_PER_HOUR, ENERGY_THRESHOLD_LOW, ENERGY_THRESHOLD_FOOD,
+    ENERGY_DECAY_PER_HOUR, ENERGY_THRESHOLD_LOW,
     ENERGY_MAX, ENERGY_MIN, ENERGY_COST_WORK_HOUR, ENERGY_COST_PER_STEP,
     ENERGY_GAIN_RESTAURANT_MEAL, ENERGY_GAIN_SNACK, ENERGY_GAIN_HOME_MEAL, ENERGY_GAIN_NAP
 )
@@ -532,7 +532,7 @@ class TownSimulation:
                         self._handle_emergency_replan(agent, emergency_context)
                         print(f"[INFO] Emergency replan completed for {agent_name} due to low energy.")
                     
-                    elif current_energy <= ENERGY_THRESHOLD_FOOD:
+                    elif current_energy <= ENERGY_THRESHOLD_LOW:
                         # Check if agent has a meal planned in the next 2 hours
                         has_upcoming_meal = False
                         if agent.daily_plan and 'activities' in agent.daily_plan:
@@ -1152,8 +1152,7 @@ class TownSimulation:
             'ENERGY_GAIN_SNACK': ENERGY_GAIN_SNACK,
             'ENERGY_GAIN_HOME_MEAL': ENERGY_GAIN_HOME_MEAL,
             'ENERGY_GAIN_NAP': ENERGY_GAIN_NAP,
-            'ENERGY_THRESHOLD_LOW': ENERGY_THRESHOLD_LOW,
-            'ENERGY_THRESHOLD_FOOD': ENERGY_THRESHOLD_FOOD
+            'ENERGY_THRESHOLD_LOW': ENERGY_THRESHOLD_LOW
         }
         
         # DEBUG: Log context for debugging

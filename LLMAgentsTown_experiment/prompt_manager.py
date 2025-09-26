@@ -22,7 +22,7 @@ from simulation_constants import (
     ENERGY_MAX, ENERGY_MIN, ENERGY_DECAY_PER_HOUR, ENERGY_COST_WORK_HOUR,
     ENERGY_COST_PER_STEP, ENERGY_GAIN_RESTAURANT_MEAL,
     ENERGY_GAIN_SNACK, ENERGY_GAIN_HOME_MEAL,
-    ENERGY_GAIN_NAP, ENERGY_THRESHOLD_LOW, ENERGY_THRESHOLD_FOOD
+    ENERGY_GAIN_NAP, ENERGY_THRESHOLD_LOW
 )
 from memory_manager import MemoryManager
 from metrics_manager import StabilityMetricsManager
@@ -94,8 +94,7 @@ class PromptManager(PromptManagerInterface):
             'sleep': f"Sleep at home (23:00-06:00): Energy set to {ENERGY_MAX} every hour (automatic)",
             'nap': f"Nap at workplace (11:00-15:00): +{ENERGY_GAIN_NAP} energy",
             'thresholds': {
-                'low_energy': f"Energy < {ENERGY_THRESHOLD_LOW}: Plan urgent meals or rest",
-                'food_threshold': f"Energy < {ENERGY_THRESHOLD_FOOD}: Must eat soon"
+                'low_energy': f"Energy < {ENERGY_THRESHOLD_LOW}: Plan urgent meals or rest"
             }
         }
         

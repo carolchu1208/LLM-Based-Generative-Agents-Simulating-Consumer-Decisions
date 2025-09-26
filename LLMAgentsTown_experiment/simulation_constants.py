@@ -86,7 +86,6 @@ ENERGY_GAIN_HOME_MEAL: int = 25  # Increased from 20
 ENERGY_GAIN_NAP: int = 15  # Increased from 10
 ENERGY_GAIN_CONVERSATION: int = 5
 ENERGY_THRESHOLD_LOW: int = 20  # Critical threshold for food-seeking behavior (paper requirement)
-ENERGY_THRESHOLD_FOOD: int = 25  # New threshold for preventive food planning
 
 class MemoryEvent:
     """Base class for memory events with validation and serialization."""

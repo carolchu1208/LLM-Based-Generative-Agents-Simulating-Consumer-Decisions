@@ -35,7 +35,7 @@ from simulation_constants import (
     ENERGY_COST_WORK_HOUR, ENERGY_COST_PER_STEP,
     ENERGY_GAIN_RESTAURANT_MEAL,
     ENERGY_GAIN_SNACK, ENERGY_GAIN_HOME_MEAL,
-    ENERGY_GAIN_NAP, ENERGY_THRESHOLD_LOW, ENERGY_THRESHOLD_FOOD
+    ENERGY_GAIN_NAP, ENERGY_THRESHOLD_LOW
 )
 from simulation_constants import (
     Result, SimulationError, AgentError, LocationError,
