@@ -44,7 +44,11 @@ from simulation_execution_classes import (
     ConversationManager, SimulationSettings
 )
 from simulation_types import TimeManager
-from simulation_constants import ENERGY_DECAY_PER_HOUR, ENERGY_THRESHOLD_LOW, ENERGY_THRESHOLD_FOOD, ENERGY_MAX
+from simulation_constants import (
+    ENERGY_DECAY_PER_HOUR, ENERGY_THRESHOLD_LOW, ENERGY_THRESHOLD_FOOD,
+    ENERGY_MAX, ENERGY_MIN, ENERGY_COST_WORK_HOUR, ENERGY_COST_PER_STEP,
+    ENERGY_GAIN_RESTAURANT_MEAL, ENERGY_GAIN_SNACK, ENERGY_GAIN_HOME_MEAL, ENERGY_GAIN_NAP
+)
 from prompt_manager import PromptManager
 from llm_deepseek_manager import ModelManager
 from shared_trackers import LocationLockManager, SharedLocationTracker
@@ -1138,7 +1142,18 @@ class TownSimulation:
             'money': agent.money,
             'agent': agent,
             'memory_manager': self.memory_mgr,
-            'valid_locations': list(self.locations.keys())
+            'valid_locations': list(self.locations.keys()),
+            'ENERGY_MIN': ENERGY_MIN,
+            'ENERGY_MAX': ENERGY_MAX,
+            'ENERGY_DECAY_PER_HOUR': ENERGY_DECAY_PER_HOUR,
+            'ENERGY_COST_WORK_HOUR': ENERGY_COST_WORK_HOUR,
+            'ENERGY_COST_PER_STEP': ENERGY_COST_PER_STEP,
+            'ENERGY_GAIN_RESTAURANT_MEAL': ENERGY_GAIN_RESTAURANT_MEAL,
+            'ENERGY_GAIN_SNACK': ENERGY_GAIN_SNACK,
+            'ENERGY_GAIN_HOME_MEAL': ENERGY_GAIN_HOME_MEAL,
+            'ENERGY_GAIN_NAP': ENERGY_GAIN_NAP,
+            'ENERGY_THRESHOLD_LOW': ENERGY_THRESHOLD_LOW,
+            'ENERGY_THRESHOLD_FOOD': ENERGY_THRESHOLD_FOOD
         }
         
         # DEBUG: Log context for debugging
