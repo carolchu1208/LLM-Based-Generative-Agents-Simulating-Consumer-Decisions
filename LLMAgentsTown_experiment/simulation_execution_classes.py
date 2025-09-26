@@ -605,7 +605,7 @@ class Agent:
     def can_perform_action(self, energy_cost: float) -> bool:
         """Check if agent has enough energy to perform an action."""
         result = self.energy_system.can_perform_action(self.name, int(energy_cost))
-        return result.success and result.value
+        return result.success and result.data
 
     def clear_interrupted_travel(self):
         """Clear interrupted travel state when no longer needed."""
@@ -658,7 +658,7 @@ class PlanExecutor:
             
             # Calculate energy cost for working using centralized system
             result = agent.energy_system.calculate_energy_cost('work', 1)
-            energy_cost = result.value if result.success else ENERGY_COST_WORK_HOUR
+            energy_cost = result.data if result.success else ENERGY_COST_WORK_HOUR
             if not agent.can_perform_action(energy_cost):
                 return False, {'error': 'Not enough energy to work'}
             
@@ -1155,8 +1155,8 @@ class PlanExecutor:
             if not travel_cost_result.success:
                 print(f"Failed to calculate travel cost: {travel_cost_result.error}")
                 return False
-            
-            energy_cost = travel_cost_result.value
+
+            energy_cost = travel_cost_result.data
             
             # Check if agent has enough energy
             if not agent.can_perform_action(energy_cost):
