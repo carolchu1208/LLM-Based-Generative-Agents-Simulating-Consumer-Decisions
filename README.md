@@ -169,14 +169,10 @@ This repository includes **robust safeguards** to prevent simulation failure:
 ## 👩‍💻 Authors
 
 **Man-Lin Chu** (First Author)
-M.S. Business Analytics, Clark University
 📧 mchu@clarku.edu | manlin.chu1998@gmail.com
 
 **Co-authors:**
-Lucian Terhorst, Kadin Reed, Tom Ni, Weiwei Chen (Clark University)
-
-**Co-authors:**
-Rongyu Lin (Quinnipiac University) - Rongyu.Lin@quinnipiac.edu
+Lucian Terhorst, Kadin Reed, Tom Ni, Weiwei Chen, Rongyu Lin
 
 ---
 
