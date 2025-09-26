@@ -34,15 +34,15 @@ Building on the [Generative Agents framework by Park et al. (2023)](https://gith
 ### 📂 Core Simulation Code
 ```
 LLMAgentsTown_experiment/
-├── town_main_simulation.py             # 🚀 Main simulation runner - Start here!
-├── stability_classes.py               # 🤖 Agent, Location, PlanExecutor classes
-├── menu_validator.py                  # 🛡️ LLM response and menuvalidation system - prevent unmatch food needs
+├── main_simulation.py                 # 🚀 Main simulation runner - Start here!
+├── simulation_execution_classes.py    # 🤖 Agent, Location, PlanExecutor classes
+├── menu_validator.py                  # 🛡️ LLM response and menu validation system - prevent unmatch food needs
 ├── simulation_constants.py            # ⚙️ Critical system parameters (energy, costs setup, etc)
-├── Stability_Agents_Config_Test.json  # 👥 Agent personas & town configuration
-├── Stability_Memory_Manager.py        # 🧠 Agent memory & conversation system
-├── Stability_Metrics_Manager.py       # 📊 Business analytics & performance tracking
+├── agent_configuration.json           # 👥 Agent personas & town configuration
+├── memory_manager.py                  # 🧠 Agent memory & conversation system
+├── metrics_manager.py                 # 📊 Business analytics & performance tracking
 ├── prompt_manager.py                  # 💬 LLM prompt (cache rules, templates)
-├── deepseek_model_manager.py          # 🔗 DeepSeek API interface
+├── llm_deepseek_manager.py            # 🔗 DeepSeek API interface
 ├── simulation_types.py                # 📋 Core data types & utilities
 └── debug_file/                        # 🐛 Debugging utilities
     └── debug_with_saved_plans.py      # Debug tool for reproducible testing
@@ -68,19 +68,21 @@ These values are **calibrated** to match paper results and prevent agent death:
 ```python
 # Energy Thresholds (simulation_constants.py)
 ENERGY_MAX = 100                    # Maximum agent energy
-ENERGY_THRESHOLD_LOW = 30           # 🚨 Critical: Triggers food-seeking behavior
+ENERGY_THRESHOLD_LOW = 20           # 🚨 Critical: Triggers food-seeking behavior
 ENERGY_THRESHOLD_FOOD = 25          # Preventive food planning threshold
 
 # Energy Decay Rates (per simulation hour)
-ENERGY_DECAY_PER_HOUR = 8          # 🚨 Critical: Base energy loss rate
-ENERGY_COST_WORK_HOUR = 12         # Energy cost during work hours
-ENERGY_COST_PER_HOUR_TRAVEL = 4    # Energy cost while traveling
+ENERGY_DECAY_PER_HOUR = 5          # 🚨 Critical: Base energy loss rate
+ENERGY_COST_WORK_HOUR = 5          # Energy cost during work hours
+ENERGY_COST_PER_STEP = 1           # Energy cost per movement step
 
 # Energy Recovery Rates
 ENERGY_GAIN_RESTAURANT_MEAL = 45    # 🚨 Critical: Restaurant meal recovery
 ENERGY_GAIN_HOME_MEAL = 25          # Home cooking recovery
-ENERGY_GAIN_SNACK = 8              # Snack energy gain
-ENERGY_GAIN_SLEEP = 60             # Sleep recovery (full night)
+ENERGY_GAIN_SNACK = 10             # Snack energy gain
+ENERGY_GAIN_NAP = 15               # Nap recovery during work hours
+ENERGY_GAIN_CONVERSATION = 5        # Social interaction energy gain
+# Sleep: Sets energy to ENERGY_MAX (100) every hour during 23:00-06:00
 ```
 
 **⚠️ WARNING**: Modifying energy values may cause agent starvation and simulation failure!
@@ -145,7 +147,7 @@ export DEEPSEEK_API_KEY='your-api-key-here'
 
 # Run simulation
 cd LLMAgentsTown_experiment
-python town_main_simulation.py
+python main_simulation.py
 ```
 
 ### 🐛 Debugging Mode
