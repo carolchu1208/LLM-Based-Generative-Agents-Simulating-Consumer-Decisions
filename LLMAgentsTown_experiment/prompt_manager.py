@@ -16,16 +16,18 @@ from typing import (
 # Third-party imports
 import requests
 from simulation_types import (
-    ENERGY_MAX, ENERGY_MIN, ENERGY_DECAY_PER_HOUR, ENERGY_COST_WORK_PER_HOUR,
-    ENERGY_COST_TRAVEL_PER_STEP, ENERGY_GAIN_RESTAURANT_MEAL,
-    ENERGY_GAIN_SNACK, ENERGY_GAIN_HOME_MEAL, ENERGY_GAIN_SLEEP,
-    ENERGY_GAIN_NAP, ENERGY_THRESHOLD_LOW, ENERGY_THRESHOLD_FOOD,
     MAX_CONVERSATION_TURNS, GROCERY_COST_HOME_MEAL, PromptManagerInterface
 )
-from Stability_Memory_Manager import MemoryManager
-from Stability_Metrics_Manager import StabilityMetricsManager
+from simulation_constants import (
+    ENERGY_MAX, ENERGY_MIN, ENERGY_DECAY_PER_HOUR, ENERGY_COST_WORK_HOUR,
+    ENERGY_COST_PER_STEP, ENERGY_GAIN_RESTAURANT_MEAL,
+    ENERGY_GAIN_SNACK, ENERGY_GAIN_HOME_MEAL,
+    ENERGY_GAIN_NAP, ENERGY_THRESHOLD_LOW, ENERGY_THRESHOLD_FOOD
+)
+from memory_manager import MemoryManager
+from metrics_manager import StabilityMetricsManager
 if TYPE_CHECKING:
-    from stability_classes import (
+    from simulation_execution_classes import (
         ConversationManager, Agent, Location, TownMap,
         PlanExecutor, SimulationSettings
     )
@@ -75,40 +77,21 @@ class PromptManager(PromptManagerInterface):
     def _initialize_unified_rules(self):
         """Initialize unified rules system to prevent prompt conflicts."""
         
-        # Import constants from simulation_types
-        try:
-            from simulation_types import (
-                ENERGY_MAX, ENERGY_MIN, ENERGY_DECAY_PER_HOUR, ENERGY_COST_WORK_PER_HOUR,
-                ENERGY_COST_TRAVEL_PER_STEP, ENERGY_GAIN_HOME_MEAL, ENERGY_GAIN_RESTAURANT_MEAL,
-                ENERGY_GAIN_SNACK, ENERGY_GAIN_SLEEP, ENERGY_GAIN_NAP,
-                GROCERY_MAX, GROCERY_MIN, CONVERSATION_COOLDOWN_HOURS,
-                GROCERY_COST_HOME_MEAL
-            )
-        except ImportError:
-            # Fallback constants if import fails
-            ENERGY_MAX, ENERGY_MIN = 100, 0
-            GROCERY_MAX, GROCERY_MIN = 100, 0
-            ENERGY_DECAY_PER_HOUR = 5
-            ENERGY_COST_WORK_PER_HOUR = 5
-            ENERGY_COST_TRAVEL_PER_STEP = 1
-            ENERGY_GAIN_HOME_MEAL = 30
-            ENERGY_GAIN_RESTAURANT_MEAL = 40
-            ENERGY_GAIN_SNACK = 5
-            ENERGY_GAIN_SLEEP = 100
-            ENERGY_GAIN_NAP = 10
-            CONVERSATION_COOLDOWN_HOURS = 4
-            GROCERY_COST_HOME_MEAL = 10
+        # Constants are now imported at module level from simulation_constants and simulation_types
+        # Energy constants come from simulation_constants (already imported)
+        # Grocery and conversation constants come from simulation_types (already imported)
+        from simulation_types import GROCERY_MAX, GROCERY_MIN, CONVERSATION_COOLDOWN_HOURS
         
         # ENERGY SYSTEM - Single definitive rules
         self._unified_rules['energy'] = {
             'range': f"Energy level range: {ENERGY_MIN}-{ENERGY_MAX} (starts at {ENERGY_MAX})",
             'natural_decay': f"Natural decay: -{ENERGY_DECAY_PER_HOUR} energy per hour automatically",
-            'work_cost': f"Work cost: -{ENERGY_COST_WORK_PER_HOUR} energy per hour worked",
-            'travel_cost': f"Travel cost: -{ENERGY_COST_TRAVEL_PER_STEP} energy per step moved",
+            'work_cost': f"Work cost: -{ENERGY_COST_WORK_HOUR} energy per hour worked",
+            'travel_cost': f"Travel cost: -{ENERGY_COST_PER_STEP} energy per step moved (complete path in one hour)",
             'home_meal': f"Home meals: +{ENERGY_GAIN_HOME_MEAL} energy (requires grocery level > {GROCERY_COST_HOME_MEAL}, costs {GROCERY_COST_HOME_MEAL} grocery levels)",
             'restaurant_meal': f"Restaurant meals: +{ENERGY_GAIN_RESTAURANT_MEAL} energy",
             'snack': f"Snacks/beverages: +{ENERGY_GAIN_SNACK} energy",
-            'sleep': f"Sleep at home (22:00-06:00): +{ENERGY_GAIN_SLEEP} energy (resets to {ENERGY_MAX})",
+            'sleep': f"Sleep at home (23:00-06:00): Energy set to {ENERGY_MAX} every hour (automatic)",
             'nap': f"Nap at workplace (11:00-15:00): +{ENERGY_GAIN_NAP} energy",
             'thresholds': {
                 'low_energy': f"Energy < {ENERGY_THRESHOLD_LOW}: Plan urgent meals or rest",
@@ -117,11 +100,18 @@ class PromptManager(PromptManagerInterface):
         }
         
         # GROCERY SYSTEM - Single definitive rules with range specification
+        # Get grocery store names dynamically from config
+        grocery_stores = []
+        if self.config_data:
+            retail_grocery = self.config_data.get('town_areas', {}).get('retail_and_grocery', {})
+            grocery_stores = list(retail_grocery.keys())
+        grocery_locations_text = ', '.join(grocery_stores) if grocery_stores else "grocery stores"
+
         self._unified_rules['grocery'] = {
             'range': f"Grocery level range: {GROCERY_MIN}-{GROCERY_MAX} (starts at {GROCERY_MAX})",
             'home_cooking': f"Home meals require grocery level > {GROCERY_COST_HOME_MEAL} and cost {GROCERY_COST_HOME_MEAL} grocery levels",
             'shopping': "Grocery shopping: $1 per grocery level gained",
-            'locations': "Grocery shopping available at Target and Local Market"
+            'locations': f"Grocery shopping available at {grocery_locations_text}"
         }
         
         # ACTION SYSTEM - Single definitive rules
@@ -131,12 +121,12 @@ class PromptManager(PromptManagerInterface):
                 'shop': "Purchase items at stores", 
                 'work': "Work-related activities at workplace",
                 'eat': "Consume ANY food or drinks at ANY location (including home)",
-                'rest': "ONLY for nap (11:00-15:00 at workplace) or sleep (23:00-06:00 at home)",
+                'rest': "For nap (11:00-15:00 at workplace) or sleep (23:00-06:00 at home)",
                 'idle': "Relaxing/free time with no energy gain (use for evening relaxation, waiting, etc.)"
             },
             'rest_timing_rules': {
-                'nap': "rest action at workplace during 11:00-15:00 for +10 energy",
-                'sleep': "rest action at home during 23:00-06:00 for full energy reset",
+                'nap': f"rest action at workplace during 11:00-15:00 for +{ENERGY_GAIN_NAP} energy",
+                'sleep': f"rest action at home during 23:00-06:00 for sleep (system sets energy to {ENERGY_MAX} automatically)",
                 'other_times': "Use 'idle' action instead - no energy gain but valid activity"
             },
             'meal_planning': {
@@ -144,11 +134,8 @@ class PromptManager(PromptManagerInterface):
                 'no_item_names': "Do NOT specify exact menu items",
                 'auto_selection': "System automatically selects appropriate items based on location and time",
                 'examples': [
-                    "eat breakfast at Coffee Shop",
-                    "eat lunch at Local Diner", 
-                    "eat dinner at Fried Chicken Shop",
-                    "eat snack at Coffee Shop",
-                    "eat breakfast at residence (home cooking)"
+                    "eat [meal_type] at [restaurant name from valid locations]",
+                    "eat [meal_type] at residence (home cooking)"
                 ]
             }
         }
@@ -164,7 +151,7 @@ class PromptManager(PromptManagerInterface):
             'locations': {
                 'home': f"Any eating/drinking at residence = home meal (+{ENERGY_GAIN_HOME_MEAL} energy, requires grocery level > {GROCERY_COST_HOME_MEAL}, costs {GROCERY_COST_HOME_MEAL} grocery levels)"
             },
-            'critical_planning': f"Working 8 hours costs {ENERGY_COST_WORK_PER_HOUR * 8} energy (work activity) + {ENERGY_DECAY_PER_HOUR * 8} energy (natural decay) = {(ENERGY_COST_WORK_PER_HOUR + ENERGY_DECAY_PER_HOUR) * 8} total - plan meals accordingly"
+            'critical_planning': f"Working 8 hours costs {ENERGY_COST_WORK_HOUR * 8} energy (work activity) + {ENERGY_DECAY_PER_HOUR * 8} energy (natural decay) = {(ENERGY_COST_WORK_HOUR + ENERGY_DECAY_PER_HOUR) * 8} total - plan meals accordingly"
         }
         
         # FORMAT SYSTEM - Single definitive rules
@@ -248,8 +235,14 @@ class PromptManager(PromptManagerInterface):
             return '\n'.join(rules_text)
 
         elif context_type == 'conversation':
-            # Minimal rules for conversations
-            rules_text.append(f"🗣️ CONVERSATION RULES:")
+            # Include energy rules for travel decision-making
+            energy_rules = self._unified_rules['energy']
+            rules_text.append("🔋 ENERGY RULES:")
+            rules_text.append(f"• {energy_rules['travel_cost']}")
+            rules_text.append(f"• {energy_rules['natural_decay']}")
+            rules_text.append(f"• Current energy: {agent_state.get('energy_level', 'Unknown') if agent_state else 'Unknown'}")
+
+            rules_text.append(f"\n🗣️ CONVERSATION RULES:")
             rules_text.append(f" per turn (max {MAX_CONVERSATION_TURNS} turns)")
             rules_text.append(f"• Duration: 5-15 minutes per turn")
             rules_text.append(f"• Can occur at any location")
@@ -267,7 +260,7 @@ Current State:
 - Current Time: {current_time}:00
 - Current Day: {current_day}
 - Current Location: {current_location}
-- Energy Level: {energy_level} (range: 0-100, capped at 100)
+- Energy Level: {energy_level} (range: {ENERGY_MIN}-{ENERGY_MAX}, capped at {ENERGY_MAX})
 - Grocery Level: {grocery_level} (range: 0-100)
 - Available Money: ${money:.2f}
 
@@ -277,7 +270,7 @@ Current State:
 You MUST ONLY use locations that exist in the simulation. Do NOT create, invent, or mention any new locations.
 ONLY use the exact location names listed above in "Available Locations".
 Example INVALID locations: "new bistro", "nearby cafe", "local restaurant", "downtown mall"
-Example VALID locations: "Local Diner", "Coffee Shop", "Fried Chicken Shop" (use exact names from the list)
+Example VALID: Use exact names from the "Available Locations" list above
 
 Your Task:
 Create a detailed 17-hour daily plan from {current_time}:00 to 23:00 (hours {current_time} through 23).
@@ -288,7 +281,7 @@ CRITICAL REQUIREMENTS:
 - ONLY use locations from the "Available Locations" list above - NO made-up locations allowed
 - Include appropriate meals: breakfast (6-9), lunch (11-14), dinner (17-20)
 - Work during business hours (9-17) to earn your daily wage
-- Manage your energy carefully (starts at {energy_level}, decays 5/hour)
+- Manage your energy carefully (starts at {energy_level}, decays {ENERGY_DECAY_PER_HOUR}/hour)
 - End at your residence at hour 23 (automatic sleep system handles hours 23-6)
 
 Format your response as a JSON object with this exact structure:
@@ -298,7 +291,7 @@ Format your response as a JSON object with this exact structure:
       "time": {current_time},
       "action": "action_name",
       "target": "location_name",
-      "description": "Brief description of what you're doing and why."
+      "description": "Brief description of what you're doing and why. For work hours, specify occupation-specific tasks."
     }},
     // ... exactly 17 activities total
     {{
@@ -361,31 +354,11 @@ Example Format:
         }
 
     def _load_menu_information(self):
-        """Load menu information from config."""
+        """Load menu information from config - all data comes from agent_configuration.json."""
         try:
-            # Simple menu structure - can be expanded later
-            self.menu_data = {
-                'Fried Chicken Shop': {
-                    'meals': ['Fried Chicken Meal'],
-                    'price': 15,
-                    'energy': 40
-                },
-                'Local Diner': {
-                    'meals': ['Diner Special'],
-                    'price': 15,
-                    'energy': 40
-                },
-                'Coffee Shop': {
-                    'snacks': ['Coffee', 'Pastry'],
-                    'price': 5,
-                    'energy': 5
-                },
-                'Convenience Store': {
-                    'snacks': ['Snack', 'Drink'],
-                    'price': 5,
-                    'energy': 5
-                }
-            }
+            # Load menu data from config's town_areas.dining section
+            # Menu information is already in self.config_data
+            self.menu_data = self.config_data.get('town_areas', {}).get('dining', {})
         except Exception as e:
             print(f"Error loading menu information: {str(e)}")
             self.menu_data = {}
@@ -731,6 +704,11 @@ Your Background:
 - Workplace: {context.get('speaker_workplace', 'Unknown')}
 - Current Activity: {context.get('current_activity', 'Unknown')}
 
+🔋 ENERGY RULES FOR PLANNING:
+- Travel costs {ENERGY_COST_PER_STEP} energy per step moved (complete path in one hour)
+- Natural decay: -{ENERGY_DECAY_PER_HOUR} energy per hour automatically
+- Consider travel costs when suggesting meeting places
+
 ⚠️ VALID LOCATIONS ONLY:
 If you make plans to meet somewhere, you MUST use locations from this list:
 {', '.join(context.get('valid_locations', []))}
@@ -793,6 +771,11 @@ Your Background:
 - Employment: {context.get('typical_work_hours', 'Unknown schedule')}
 - Workplace: {context.get('speaker_workplace', 'Unknown')}
 - Current Activity: {context.get('current_activity', 'Unknown')}
+
+🔋 ENERGY RULES FOR PLANNING:
+- Travel costs {ENERGY_COST_PER_STEP} energy per step moved (complete path in one hour)
+- Natural decay: -{ENERGY_DECAY_PER_HOUR} energy per hour automatically
+- Consider travel costs when suggesting meeting places
 
 ⚠️ VALID LOCATIONS ONLY:
 If you make plans to meet somewhere, you MUST use locations from this list:
@@ -963,12 +946,9 @@ Your response:"""
                 else:
                     locations_text += f"- {location}\n"
         else:
-            # Fallback to basic locations if no context provided
+            # Fallback - should not happen if context is properly provided
             locations_text += "- Residence (your home)\n"
-            locations_text += "- Coffee Shop (snacks/beverages only, not full meals)\n"
-            locations_text += "- Fried Chicken Shop (full restaurant meals)\n"
-            locations_text += "- Local Diner (full restaurant meals)\n"
-            locations_text += "- Office (work)\n"
+            locations_text += "- [Locations should be provided dynamically from configuration]\n"
         
         return f"""IMPORTANT SYSTEM RULES - READ CAREFULLY:
 
@@ -977,19 +957,19 @@ Your response:"""
 
 Available Actions:
 - go_to: Travel to a location (costs 1 energy per step + natural decay)
-- work: Work at office (costs 5 energy/hour + natural decay, earns daily wage)
+- work: Work at office (costs {ENERGY_COST_WORK_HOUR} energy/hour + natural decay, earns daily wage)
 - eat: Eat at current location (ONLY works at restaurants/cafes with menus, or at home with groceries)
 - shop: Buy groceries or snacks
 - rest: Rest/nap/sleep at current location
-  * Sleep at home (22:00-06:00): resets energy to 100
-  * Nap at workplace (11:00-15:00): +10 energy
+  * Sleep at home (22:00-06:00): resets energy to {ENERGY_MAX}
+  * Nap at workplace (11:00-15:00): +{ENERGY_GAIN_NAP} energy
   * Invalid at other times/locations
 - idle: Relaxing/free time with no energy gain (for general relaxation, waiting, etc.)
 - converse: Talk with another agent (if at same location, respects cooldown)
 
 ⚠️ CRITICAL ACTION RULES:
 1. Use "eat" action ONLY for actual meals - never for napping!
-2. Use "rest" action ONLY for napping (workplace 11-15) or sleeping (home 23-6)
+2. Use "rest" action for napping (workplace 11-15) or sleep (home 23-6)
 3. Use "idle" action for relaxing/waiting at other times (no energy gain)
 4. "eat" action requires being at a restaurant with a menu OR at home with groceries
 5. Don't confuse eating, resting, and idle activities!
@@ -1007,10 +987,14 @@ Financial System:
 CRITICAL PLANNING RULES:
 1. Plan ALL 17 hours (7:00-23:00) - no gaps allowed!
 2. Include meals during appropriate times: breakfast (6-9), lunch (11-14), dinner (17-20)
-3. ⚠️ NEVER skip lunch! Working 8 hours costs 80 energy - you MUST eat lunch to survive
-4. Monitor energy - you lose 5 energy per hour automatically + 5 per hour working
+3. ⚠️ NEVER skip lunch! Working 8 hours costs {ENERGY_COST_WORK_HOUR * 8} energy - you MUST eat lunch to survive
+4. Monitor energy - you lose {ENERGY_DECAY_PER_HOUR} energy per hour automatically + {ENERGY_COST_WORK_HOUR} per hour working
 5. Work standard hours (9:00-17:00) to earn money
-6. Use 'rest' action ONLY for napping (workplace 11-15) or sleeping (home 23-6)
+   ⚠️ IMPORTANT: Describe work activities based on your occupation as {occupation}
+   - Include specific tasks typical for your role (e.g., chef: preparing meals, managing kitchen; software engineer: coding, meetings; retail: serving customers, stocking)
+   - Vary descriptions throughout the day to reflect different work tasks
+   - Make work descriptions realistic and occupation-specific
+6. Use 'rest' action for napping (workplace 11-15) or sleep (home 23-6)
 7. Use 'idle' action for evening relaxation, waiting, general free time (no energy gain)
 8. Each hour must have exactly one action with a target location
 9. ⚠️ CRITICAL: Only eat at RESTAURANTS/CAFES (with menus) or at HOME - NOT at grocery stores or workplaces!

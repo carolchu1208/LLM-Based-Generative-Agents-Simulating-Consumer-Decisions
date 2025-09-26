@@ -12,7 +12,7 @@ This file orchestrates the town simulation by:
 5. Managing simulation state
 
 File Dependencies:
-1. Stability_Agents_Config_Test.json: Town and agent configuration
+1. agent_configuration.json: Town and agent configuration
 2. town_main_simulation.py: Core simulation components
 3. Stability_Memory_Manager.py: Memory management
 4. Stability_Metrics_Manager.py: Metrics tracking
@@ -37,15 +37,16 @@ from typing import Dict, List, Optional, Any, Union
 import re
 
 # Local imports
-from Stability_Memory_Manager import MemoryManager
-from Stability_Metrics_Manager import StabilityMetricsManager
-from stability_classes import (
+from memory_manager import MemoryManager
+from metrics_manager import StabilityMetricsManager
+from simulation_execution_classes import (
     Agent, Location, TownMap, PlanExecutor,
     ConversationManager, SimulationSettings
 )
-from simulation_types import TimeManager, ENERGY_DECAY_PER_HOUR, ENERGY_THRESHOLD_LOW, ENERGY_THRESHOLD_FOOD, ENERGY_MAX
+from simulation_types import TimeManager
+from simulation_constants import ENERGY_DECAY_PER_HOUR, ENERGY_THRESHOLD_LOW, ENERGY_THRESHOLD_FOOD, ENERGY_MAX
 from prompt_manager import PromptManager
-from deepseek_model_manager import ModelManager
+from llm_deepseek_manager import ModelManager
 from shared_trackers import LocationLockManager, SharedLocationTracker
 
 class TownSimulation:
@@ -1191,7 +1192,7 @@ def main():
         # Get configuration path
         config_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
-            "Stability_Agents_Config_Test.json"
+            "agent_configuration.json"
         )
         
         # Verify config file exists

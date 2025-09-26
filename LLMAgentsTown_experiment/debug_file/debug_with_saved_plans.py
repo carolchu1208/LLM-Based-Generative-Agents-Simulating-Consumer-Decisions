@@ -21,7 +21,7 @@ with other data persistence (memories, conversations, etc.)
 
 import os
 import sys
-from town_main_simulation import TownSimulation, TimeManager
+from main_simulation import TownSimulation, TimeManager
 
 def main():
     """Run simulation with saved plans for debugging."""

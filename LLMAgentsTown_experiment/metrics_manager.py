@@ -11,7 +11,7 @@ import copy
 from simulation_types import TimeManager, METRICS_SAVE_INTERVAL
 
 if TYPE_CHECKING:
-    from stability_classes import Agent
+    from simulation_execution_classes import Agent
 
 class StabilityMetricsManager:
     def __init__(self, memory_manager, agents: Dict[str, 'Agent'] = None):

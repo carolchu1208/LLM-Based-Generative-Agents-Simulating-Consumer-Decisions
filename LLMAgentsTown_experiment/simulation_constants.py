@@ -77,17 +77,15 @@ MEMORY_TYPES: Dict[str, str] = {
 ENERGY_MAX: int = 100
 ENERGY_MIN: int = 0
 ENERGY_COST_PER_STEP: int = 1
-ENERGY_DECAY_PER_HOUR: int = 8  # Reduced from 10 to prevent rapid starvation
-ENERGY_COST_WORK_HOUR: int = 12  # Reduced from 15 to be less punishing
-ENERGY_COST_PER_HOUR_TRAVEL: int = 4  # Reduced from 5
+ENERGY_DECAY_PER_HOUR: int = 5  # Natural energy decay per hour
+ENERGY_COST_WORK_HOUR: int = 5  # Work energy cost per hour (paper requirement)
 ENERGY_COST_PER_HOUR_IDLE: int = 1
 ENERGY_GAIN_RESTAURANT_MEAL: int = 45  # Increased from 40 for better recovery
-ENERGY_GAIN_SNACK: int = 8  # Increased from 5
+ENERGY_GAIN_SNACK: int = 10  # Snack energy recovery (paper requirement)
 ENERGY_GAIN_HOME_MEAL: int = 25  # Increased from 20
-ENERGY_GAIN_SLEEP: int = 60  # Increased from 50 for full recovery
 ENERGY_GAIN_NAP: int = 15  # Increased from 10
 ENERGY_GAIN_CONVERSATION: int = 5
-ENERGY_THRESHOLD_LOW: int = 30  # Increased from 20 for earlier food-seeking
+ENERGY_THRESHOLD_LOW: int = 20  # Critical threshold for food-seeking behavior (paper requirement)
 ENERGY_THRESHOLD_FOOD: int = 25  # New threshold for preventive food planning
 
 class MemoryEvent:

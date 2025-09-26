@@ -23,29 +23,31 @@ from simulation_types import (
     ACTIVITY_TYPES, MEMORY_TYPES,
     TimeManager, EnergySystem, GrocerySystem,
     MemoryManagerInterface,
-    # Energy constants
-    ENERGY_MAX, ENERGY_MIN, ENERGY_DECAY_PER_HOUR,
-    ENERGY_COST_WORK_PER_HOUR, ENERGY_COST_TRAVEL_PER_STEP,
-    ENERGY_GAIN_RESTAURANT_MEAL,
-    ENERGY_GAIN_SNACK, ENERGY_GAIN_HOME_MEAL, ENERGY_GAIN_SLEEP,
-    ENERGY_GAIN_NAP, ENERGY_THRESHOLD_LOW, ENERGY_THRESHOLD_FOOD,
     MAX_CONVERSATION_TURNS, CONVERSATION_COOLDOWN_HOURS,
     # Grocery constants
     GROCERY_THRESHOLD_LOW,
     # Meal period function
     get_meal_period
 )
+from simulation_constants import (
+    # Energy constants
+    ENERGY_MAX, ENERGY_MIN, ENERGY_DECAY_PER_HOUR,
+    ENERGY_COST_WORK_HOUR, ENERGY_COST_PER_STEP,
+    ENERGY_GAIN_RESTAURANT_MEAL,
+    ENERGY_GAIN_SNACK, ENERGY_GAIN_HOME_MEAL,
+    ENERGY_GAIN_NAP, ENERGY_THRESHOLD_LOW, ENERGY_THRESHOLD_FOOD
+)
 from thread_safe_base import (
     Result, SimulationError, AgentError, LocationError,
     MemoryError, MetricsError, ThreadSafeBase
 )
 if TYPE_CHECKING:
-    from deepseek_model_manager import ModelManager
-    from Stability_Memory_Manager import MemoryManagerInterface
-    from Stability_Metrics_Manager import StabilityMetricsManager
+    from llm_deepseek_manager import ModelManager
+    from memory_manager import MemoryManagerInterface
+    from metrics_manager import StabilityMetricsManager
     from shared_trackers import LocationLockManager, SharedLocationTracker
     from prompt_manager import PromptManager
-from Stability_Memory_Manager import MemoryManager
+from memory_manager import MemoryManager
 from shared_trackers import SharedResourceManager
 
 class SimulationSettings:
@@ -293,7 +295,7 @@ class Location:
 
 # Type hints for circular imports
 if TYPE_CHECKING:
-    from town_main_simulation import Location
+    from main_simulation import Location
 
 class Agent:
     """Agent class representing a person in the town simulation."""
@@ -640,9 +642,12 @@ class PlanExecutor:
         with self._lock:
             self.agent_activities[agent_name] = activity
 
-    def _handle_work(self, agent: 'Agent', location: 'Location') -> Tuple[bool, Dict[str, Any]]:
+    def _handle_work(self, agent: 'Agent', location: 'Location', plan: Dict[str, Any] = None) -> Tuple[bool, Dict[str, Any]]:
         """Handle work at a location."""
         try:
+            # Extract work description from plan if provided
+            work_description = plan.get('description', 'Working') if plan else 'Working'
+
             # Check if location matches agent's workplace
             if location.name != agent.workplace:
                 return False, {'error': 'Location is not agent\'s workplace'}
@@ -653,7 +658,7 @@ class PlanExecutor:
             
             # Calculate energy cost for working using centralized system
             result = agent.energy_system.calculate_energy_cost('work', 1)
-            energy_cost = result.value if result.success else 5.0
+            energy_cost = result.value if result.success else ENERGY_COST_WORK_HOUR
             if not agent.can_perform_action(energy_cost):
                 return False, {'error': 'Not enough energy to work'}
             
@@ -702,6 +707,7 @@ class PlanExecutor:
             work_data = {
                 'type': 'work',
                 'location': location.name,
+                'description': work_description,
                 'energy_cost': energy_cost,
                 'money_earned': money_earned,
                 'timestamp': {
@@ -731,7 +737,7 @@ class PlanExecutor:
         """Execute a plan for an agent.
         
         ENERGY THRESHOLD SYSTEM:
-        - If agent energy <= ENERGY_THRESHOLD_LOW (20), trigger emergency replan for food
+        - If agent energy <= ENERGY_THRESHOLD_LOW, trigger emergency replan for food
         - If agent energy <= 0, force agent to residence for recovery
         - Emergency replans take priority over all other activities
         - This prevents agents from getting stuck when they can't travel due to low energy
@@ -920,7 +926,7 @@ class PlanExecutor:
                 # Give minimal energy recovery only outside sleep hours to prevent complete stuckness
                 # During sleep hours, let the sleep system handle energy recovery
                 if not self._is_sleep_hour(current_time):
-                    minimal_recovery = 20  # Small energy boost for resting at home
+                    minimal_recovery = ENERGY_GAIN_NAP  # Small energy boost for resting at home
                     result = agent.energy_system.update_energy(agent.name, minimal_recovery)
                     if result.success:
                         print(f"[CRITICAL] {agent.name} gained {minimal_recovery} energy from resting at home (now at {agent.energy_system.get_energy(agent.name)})")
@@ -1036,22 +1042,19 @@ class PlanExecutor:
             
             # Check if agent is at their residence
             if current_location_name != agent.residence:
-                # Agent is not at residence during sleep hours - this is unusual
-                # They should either be traveling home or have an emergency
-                print(f"[WARNING] {agent.name} is not at residence ({agent.residence}) during sleep hour {current_time}. Currently at: {current_location_name}")
-                
-                # Return a status indicating they should be sleeping but aren't at home
-                return True, {
-                    'status': f'Not at residence during sleep hour {current_time}. Should be sleeping at {agent.residence}.',
-                    'action': 'should_be_sleeping',
-                    'location': current_location_name,
-                    'expected_location': agent.residence
-                }
+                # Agent is not at residence during sleep hours - force them home
+                print(f"[SLEEP FORCE] {agent.name} is not at residence ({agent.residence}) during sleep hour {current_time}. Currently at: {current_location_name}. Forcing travel home.")
+
+                # Force agent to go home immediately for sleep
+                self.location_tracker.update_agent_position(agent.name, agent.residence, 'forced_sleep_travel')
+                print(f"[SLEEP FORCE] {agent.name} forced to travel home to {agent.residence} for sleep")
+
+                # Update current location for sleep processing
+                current_location_name = agent.residence
             
             # Agent is at residence - handle automatic sleep
-            # During all sleep hours (23-6), charge energy to MAX
-            energy_gain = ENERGY_MAX  # Always give full energy during sleep
-            
+            # During all sleep hours (23-6), set energy to 100 to compensate for decay and ensure max energy
+
             if current_time == 23:
                 # Starting sleep at 23:00
                 sleep_type = 'begin_sleep'
@@ -1060,21 +1063,21 @@ class PlanExecutor:
                 # Continuing sleep during hours 0-6
                 sleep_type = 'continue_sleep'
                 description = f"Continuing to sleep peacefully at {agent.residence} and recovering energy."
-            
-            # Apply energy gain (if any)
-            if energy_gain > 0:
-                result = agent.energy_system.update_energy(agent.name, energy_gain)
-                if not result.success:
-                    print(f"[WARNING] Failed to update energy for {agent.name} during sleep: {result.error}")
-                else:
-                    print(f"[SLEEP] {agent.name} gained {energy_gain} energy from sleep (now at {agent.energy_system.get_energy(agent.name)})")
+
+            # Set energy to maximum during sleep (compensates for natural decay + ensures full recovery)
+            result = agent.energy_system.set_energy(agent.name, ENERGY_MAX)
+            if not result.success:
+                print(f"[WARNING] Failed to set energy for {agent.name} during sleep: {result.error}")
+            else:
+                current_energy_after = agent.energy_system.get_energy(agent.name)
+                print(f"[SLEEP] {agent.name} energy set to {ENERGY_MAX} during sleep (now at {current_energy_after})")
             
             # Record sleep activity in memory
             sleep_data = {
                 'type': 'automatic_sleep',
                 'location': agent.residence,
                 'sleep_type': sleep_type,
-                'energy_gain': energy_gain,
+                'energy_set_to': ENERGY_MAX,
                 'timestamp': {
                     'day': TimeManager.get_current_day(),
                     'hour': current_time
@@ -1096,7 +1099,7 @@ class PlanExecutor:
                 'action': 'sleep',
                 'location': agent.residence,
                 'sleep_type': sleep_type,
-                'energy_gain': energy_gain
+                'energy_set_to': ENERGY_MAX
             }
             
         except Exception as e:
@@ -1383,7 +1386,7 @@ class PlanExecutor:
                 
                 # Handle different action types
                 if action == 'work':
-                    return self._handle_work(agent, location)
+                    return self._handle_work(agent, location, plan)
                 elif action == 'eat':
                     # Eating is now a two-step process for dining out: purchase, then consume.
                     if location.name == agent.residence:
@@ -1570,26 +1573,24 @@ class PlanExecutor:
             
             # Check if this is a valid rest scenario
             if is_nap_time and is_at_workplace:
-                # Valid nap at workplace
+                # Valid nap at workplace - use energy gain constant
                 energy_gain = ENERGY_GAIN_NAP
                 rest_type = 'nap'
-            elif is_sleep_time and is_at_home:
-                # Valid sleep at home
-                energy_gain = ENERGY_GAIN_SLEEP
-                rest_type = 'sleep'
+                # Update energy for naps (add energy)
+                result = agent.energy_system.update_energy(agent.name, energy_gain)
+            elif is_sleep_time:
+                # Sleep during 23-6 is handled by automatic sleep system, not manual rest
+                return False, {'error': f'Sleep during hours 23-6 is handled automatically. Use "idle" for manual relaxation during sleep hours.'}
             else:
                 # Invalid rest scenario - provide helpful error message
-                if not (is_nap_time or is_sleep_time):
-                    return False, {'error': f'Invalid rest time: {current_time}:00. Use "rest" only for naps (11-15) or sleep (23-6). Use "idle" for general relaxation.'}
+                if not is_nap_time:
+                    return False, {'error': f'Invalid rest time: {current_time}:00. Use "rest" only for naps (11-15). Sleep (23-6) is automatic. Use "idle" for general relaxation.'}
                 elif is_nap_time and not is_at_workplace:
                     return False, {'error': f'Cannot nap at {location.name} during {current_time}:00. Naps only allowed at workplace ({agent.workplace}) during 11-15.'}
-                elif is_sleep_time and not is_at_home:
-                    return False, {'error': f'Cannot sleep at {location.name} during {current_time}:00. Sleep only allowed at home ({agent.residence}) during 23-6.'}
                 else:
                     return False, {'error': f'Invalid rest conditions: location={location.name}, time={current_time}, home={agent.residence}, workplace={agent.workplace}'}
-            
-            # Update energy
-            result = agent.energy_system.update_energy(agent.name, energy_gain)
+
+            # Check if energy update was successful
             if not result.success:
                 print(f"Failed to update energy for {agent.name}: {result.error}")
                 return False, {"error": f"Failed to update energy: {result.error}"}

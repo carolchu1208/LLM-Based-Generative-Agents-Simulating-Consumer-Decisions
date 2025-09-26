@@ -34,10 +34,10 @@ from shared_trackers import (
     SharedLocationTracker, SharedResourceManager,
     LocationLockManager
 )
-from Stability_Metrics_Manager import StabilityMetricsManager
+from metrics_manager import StabilityMetricsManager
 
 if TYPE_CHECKING:
-    from stability_classes import Agent
+    from simulation_execution_classes import Agent
 
 DISCOUNT_KEYWORDS = [
     # Specific to our 20% discount

@@ -23,10 +23,17 @@ from thread_safe_base import (
     SimulationError, AgentError, LocationError,
     MemoryError, MetricsError, Result, ThreadSafeBase
 )
+from simulation_constants import (
+    ENERGY_MAX, ENERGY_MIN, ENERGY_DECAY_PER_HOUR,
+    ENERGY_COST_WORK_HOUR, ENERGY_COST_PER_STEP,
+    ENERGY_GAIN_RESTAURANT_MEAL, ENERGY_GAIN_SNACK,
+    ENERGY_GAIN_HOME_MEAL, ENERGY_GAIN_NAP,
+    ENERGY_THRESHOLD_LOW, ENERGY_THRESHOLD_FOOD
+)
 
 # Type hints for circular imports
 if TYPE_CHECKING:
-    from town_main_simulation import Location
+    from main_simulation import Location
 
 # Type definitions
 class ActivityType(Enum):
@@ -77,20 +84,6 @@ class MemoryType(Enum):
     # Meta/Failure Types
     FAILED_ACTION = "FAILED_ACTION" # For when a planned action fails due to resource constraints
 
-# Energy Constants
-ENERGY_MAX = 100
-ENERGY_MIN = 0
-ENERGY_DECAY_PER_HOUR = 5
-ENERGY_COST_WORK_PER_HOUR = 5
-ENERGY_COST_TRAVEL_PER_STEP = 1
-ENERGY_GAIN_RESTAURANT_MEAL = 40
-ENERGY_GAIN_SNACK = 5
-ENERGY_GAIN_HOME_MEAL = 30
-ENERGY_GAIN_SLEEP = 100
-ENERGY_GAIN_NAP = 10
-ENERGY_THRESHOLD_LOW = 20
-ENERGY_THRESHOLD_FOOD = 40
-
 # Conversation limits
 MAX_CONVERSATION_TURNS = 4
 CONVERSATION_COOLDOWN_HOURS = 4
@@ -117,14 +110,14 @@ STEPS_PER_MINUTE = MAX_STEPS_PER_HOUR / 60  # 0.33 steps per minute
 ACTIVITY_TYPES = {
     ActivityType.GO_TO.value: {
         'subtypes': ['walking'],
-        'energy_cost': ENERGY_COST_TRAVEL_PER_STEP,
+        'energy_cost': ENERGY_COST_PER_HOUR_TRAVEL,
         'memory_type': 'TRAVEL'    
         },
     ActivityType.WORK.value: {
         'subtypes': ['office_work', 'manual_labor', 'customer_service'],
-        'energy_cost': ENERGY_COST_WORK_PER_HOUR,
+        'energy_cost': ENERGY_COST_WORK_HOUR,
         'min_energy': ENERGY_THRESHOLD_LOW,
-        'total_hourly_cost': ENERGY_COST_WORK_PER_HOUR + ENERGY_DECAY_PER_HOUR
+        'total_hourly_cost': ENERGY_COST_WORK_HOUR + ENERGY_DECAY_PER_HOUR
     },
     ActivityType.REST.value: {
         'subtypes': ['sleeping', 'napping', 'relaxing'],
@@ -370,20 +363,20 @@ class EnergySystem(ThreadSafeBase):
         in the main simulation loop every hour.
         
         Only work and travel cost energy:
-        - Work: ENERGY_COST_WORK_PER_HOUR per hour
-        - Travel: ENERGY_COST_TRAVEL_PER_STEP per step
+        - Work: ENERGY_COST_WORK_HOUR per hour
+        - Travel: ENERGY_COST_PER_STEP per step
         
         Other actions (conversation, shopping, idle, eat, rest) don't cost energy.
         """
         try:
             # Handle travel
             if action_type == 'travel':
-                base_cost = ENERGY_COST_TRAVEL_PER_STEP * steps
+                base_cost = ENERGY_COST_PER_STEP * steps
                 return Result.success(base_cost)
             
             # Handle work
             elif action_type == 'work':
-                base_cost = ENERGY_COST_WORK_PER_HOUR * steps
+                base_cost = ENERGY_COST_WORK_HOUR * steps
                 return Result.success(base_cost)
             
             # All other actions don't cost energy
@@ -652,7 +645,7 @@ class MemoryManagerInterface(Protocol):
 
 
 # Agent defaults
-DEFAULT_AGENT_ENERGY = 100
+DEFAULT_AGENT_ENERGY = ENERGY_MAX
 DEFAULT_AGENT_MONEY_MULTIPLIER = 3  # 3 days of wages
 
 # Memory management constants
