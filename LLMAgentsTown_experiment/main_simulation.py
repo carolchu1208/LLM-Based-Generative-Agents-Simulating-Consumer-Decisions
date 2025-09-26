@@ -713,62 +713,24 @@ class TownSimulation:
             print(f"Error during cleanup: {str(e)}")
             traceback.print_exc()
 
-    def _save_daily_plans(self):
-        """Save all agents' daily plans for debugging reuse in a consolidated file."""
+    def _save_plans_for_debugging(self, current_day: int, current_hour: int):
+        """Save all agents' daily plans for debugging reuse."""
         try:
-            current_day = TimeManager.get_current_day()
-            current_hour = TimeManager.get_current_hour()
-            
             # Collect current plans
             current_plans = {}
             for agent_name, agent in self.agents.items():
                 if agent.daily_plan:
                     current_plans[agent_name] = agent.daily_plan
-            
+
             if not current_plans:
                 print("[SAVE] No plans to save")
                 return
-            
-            # Load existing saved plans or create new structure
-            all_saved_plans = {}
-            if os.path.exists(self.saved_plans_file):
-                try:
-                    with open(self.saved_plans_file, 'r') as f:
-                        all_saved_plans = json.load(f)
-                except Exception as e:
-                    print(f"[SAVE] Error reading existing plans file: {e}")
-                    all_saved_plans = {}
-            
-            # Add current plans with timestamp
-            save_entry = {
-                'day': current_day,
-                'hour': current_hour,
-                'timestamp': datetime.now().isoformat(),
-                'plans': current_plans
-            }
-            
-            # Use a unique key for this save
-            save_key = f"day_{current_day}_hour_{current_hour}"
-            all_saved_plans[save_key] = save_entry
-            
-            # Keep only the 5 most recent saves to avoid file bloat
-            if len(all_saved_plans) > 5:
-                # Sort by day and hour, keep the latest 5
-                sorted_keys = sorted(all_saved_plans.keys(), 
-                                   key=lambda k: (all_saved_plans[k]['day'], all_saved_plans[k]['hour']))
-                for old_key in sorted_keys[:-5]:
-                    del all_saved_plans[old_key]
-            
-            # Save consolidated file
-            with open(self.saved_plans_file, 'w') as f:
-                json.dump(all_saved_plans, f, indent=2)
-            
-            print(f"[SAVE] Daily plans saved to: {self.saved_plans_file}")
-            print(f"[SAVE] Saved plans for {len(current_plans)} agents (Day {current_day}, Hour {current_hour})")
-            print(f"[SAVE] Total saved sessions: {len(all_saved_plans)}")
-            
+
+            # Delegate to memory_manager for actual saving
+            self.memory_mgr.save_daily_plans(current_day, current_hour, current_plans)
+
         except Exception as e:
-            print(f"Error saving daily plans: {str(e)}")
+            print(f"[ERROR] Error saving plans for debugging: {str(e)}")
             traceback.print_exc()
 
 
@@ -1118,7 +1080,10 @@ class TownSimulation:
                     traceback.print_exc()
             
             print(f"[DEBUG] _create_daily_plans() completed for Day {current_day}")
-            
+
+            # Save the generated plans for debugging
+            self._save_plans_for_debugging(current_day, current_hour)
+
         except Exception as e:
             print(f"[ERROR] Error in _create_daily_plans: {str(e)}")
             traceback.print_exc()
