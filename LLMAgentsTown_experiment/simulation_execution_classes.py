@@ -180,26 +180,36 @@ class TownMap:
 
     def find_path(self, start_coord: Tuple[int, int], end_coord: Tuple[int, int]) -> Optional[List[Tuple[int, int]]]:
         """Find the shortest path between two coordinates using BFS."""
-        if not self._is_valid_coordinate(start_coord) or not self._is_valid_coordinate(end_coord):
+        if not self._is_valid_coordinate(start_coord):
+            print(f"[BFS] Start coordinate {start_coord} is not valid!")
             return None
-            
+        if not self._is_valid_coordinate(end_coord):
+            print(f"[BFS] End coordinate {end_coord} is not valid!")
+            return None
+
         # If start and end are the same, return single point
         if start_coord == end_coord:
             return [start_coord]
+
+        # Check if start coordinate is in path_graph
+        if start_coord not in self.path_graph:
+            print(f"[BFS] Start coordinate {start_coord} is not in path_graph!")
+            print(f"[BFS] Available coordinates near start: {[c for c in self.path_graph.keys() if abs(c[0]-start_coord[0]) <= 2 and abs(c[1]-start_coord[1]) <= 2][:10]}")
+            return None
 
         # Initialize BFS with distance tracking
         queue = deque([(start_coord, [start_coord], 0)])  # (coord, path, distance)
         visited = {start_coord: 0}  # coord -> distance
         best_path = None
         best_distance = float('inf')
-        
+
         while queue:
             current, path, distance = queue.popleft()
-            
+
             # If we found a path but it's longer than our best so far, skip
             if distance >= best_distance:
                 continue
-            
+
             # Check all adjacent coordinates
             for next_coord in self.path_graph[current]:
                 if next_coord == end_coord:
@@ -210,16 +220,17 @@ class TownMap:
                         best_path = new_path
                         best_distance = new_distance
                     continue
-                
+
                 # Only explore if we haven't seen this coordinate or found a shorter path to it
                 if next_coord not in visited or distance + 1 < visited[next_coord]:
                     visited[next_coord] = distance + 1
                     queue.append((next_coord, path + [next_coord], distance + 1))
-        
+
         if best_path:
-            print(f"Found path from {start_coord} to {end_coord} with length {best_distance}")
+            print(f"[BFS] Found path from {start_coord} to {end_coord} with length {best_distance}")
             return best_path
-        
+
+        print(f"[BFS] No path found from {start_coord} to {end_coord} - BFS exhausted")
         return None
 
     def get_path_length(self, path: List[Tuple[int, int]]) -> int:
@@ -615,7 +626,7 @@ class Agent:
 class PlanExecutor:
     """Executes plans for agents in the simulation."""
     
-    def __init__(self, location_lock_mgr: 'LocationLockManager', conversation_mgr: 'ConversationManager', memory_mgr: MemoryManagerInterface, metrics_mgr: 'StabilityMetricsManager', location_tracker: 'SharedLocationTracker', agents: Dict[str, 'Agent'], locations: Dict[str, 'Location'], prompt_mgr: 'PromptManager', model_mgr: 'ModelManager', config_data: Dict[str, Any]):
+    def __init__(self, location_lock_mgr: 'LocationLockManager', conversation_mgr: 'ConversationManager', memory_mgr: MemoryManagerInterface, metrics_mgr: 'StabilityMetricsManager', location_tracker: 'SharedLocationTracker', agents: Dict[str, 'Agent'], locations: Dict[str, 'Location'], prompt_mgr: 'PromptManager', model_mgr: 'ModelManager', config_data: Dict[str, Any], town_map: 'TownMap'):
         """Initialize the PlanExecutor."""
         self.location_lock_mgr = location_lock_mgr
         self.conversation_mgr = conversation_mgr
@@ -627,7 +638,8 @@ class PlanExecutor:
         self.prompt_mgr = prompt_mgr
         self.model_mgr = model_mgr
         self.config_data = config_data
-        self.menu_validator = MenuValidator(config_data)  # Add menu validation
+        self.town_map = town_map
+        self.menu_validator = MenuValidator(config_data)
         self._active_agent_activities = {}
         self.agent_plans = {}
         self.agent_activities = {}
@@ -642,6 +654,97 @@ class PlanExecutor:
         with self._lock:
             self.agent_activities[agent_name] = activity
 
+    def generate_emergency_food_plan(self, agent: 'Agent', failure_context: Dict[str, Any]) -> Optional[List[Dict[str, Any]]]:
+        """Handle emergency food intervention by teleporting agent to nearest restaurant.
+
+        Instead of generating a travel plan (which costs energy), this directly teleports
+        the agent to the nearest open restaurant when energy is critically low.
+
+        Returns:
+            None (teleportation is immediate, no plan needed)
+        """
+        try:
+            current_time = TimeManager.get_current_hour()
+
+            # Step 1: Get agent's current position
+            agent_position = self.location_tracker.get_agent_position(agent.name)
+            agent_location_name = agent_position[0] if agent_position else agent.residence
+            agent_location = self.locations.get(agent_location_name)
+
+            if not agent_location:
+                print(f"[ERROR] Could not find agent location {agent_location_name}")
+                return None
+
+            # Get current energy
+            current_energy = agent.energy_system.get_energy(agent.name)
+
+            # Step 2: Find nearest open and affordable restaurant
+            restaurant_options = []
+            for loc_name, location in self.locations.items():
+                if location.location_type in ['restaurant', 'local_shop'] and location.is_open(current_time):
+                    meal_prices = [price for key, price in location.prices.items() if 'meal' in key.lower() or 'snack' in key.lower()]
+                    min_meal_cost = min(meal_prices) if meal_prices else location.prices.get('meal', 20.0)
+
+                    if agent.can_afford_purchase(min_meal_cost):
+                        path = self.town_map.find_path(agent_location.coordinates, location.coordinates)
+                        if path:
+                            distance = len(path) - 1
+                            restaurant_options.append({
+                                'name': loc_name,
+                                'location': location,
+                                'distance': distance,
+                                'min_price': min_meal_cost
+                            })
+
+            if not restaurant_options:
+                print(f"[WARNING] {agent.name} could not find any open and affordable restaurant for emergency!")
+                return None
+
+            # Sort by distance and pick the nearest
+            restaurant_options.sort(key=lambda x: x['distance'])
+            target_restaurant = restaurant_options[0]
+
+            print(f"[EMERGENCY] {agent.name} has {current_energy} energy - teleporting to {target_restaurant['name']} ({target_restaurant['distance']} steps away)")
+
+            # Step 3: TELEPORT - Directly change agent's location to the restaurant
+            target_coords = target_restaurant['location'].coordinates
+            self.location_tracker.update_agent_position(
+                agent.name,
+                target_restaurant['name'],
+                target_coords,
+                current_time
+            )
+            print(f"[EMERGENCY] ✨ {agent.name} teleported to {target_restaurant['name']} for emergency food!")
+
+            # Step 4: Clear any interrupted travel state
+            if hasattr(agent, 'clear_interrupted_travel'):
+                agent.clear_interrupted_travel()
+
+            # Step 5: Clear daily plan so agent will be replanned next hour
+            agent.daily_plan = None
+
+            print(f"[INFO] Emergency teleportation completed for {agent.name}. Agent will replan next hour at restaurant.")
+
+            # Return None because no plan is needed - agent was teleported
+            return None
+
+        except Exception as e:
+            print(f"[ERROR] Critical error during emergency teleportation for {agent.name}: {str(e)}")
+            traceback.print_exc()
+            return None
+
+    def handle_emergency_intervention(self, agent: 'Agent', failure_context: Dict[str, Any]) -> None:
+        """Handle emergency intervention for agent (called from main simulation loop).
+
+        This is the entry point for emergency handling from main_simulation.py.
+        It delegates to generate_emergency_food_plan which performs the teleportation.
+        """
+        try:
+            self.generate_emergency_food_plan(agent, failure_context)
+        except Exception as e:
+            print(f"[ERROR] Critical error during emergency intervention for {agent.name}: {str(e)}")
+            traceback.print_exc()
+
     def _handle_work(self, agent: 'Agent', location: 'Location', plan: Dict[str, Any] = None) -> Tuple[bool, Dict[str, Any]]:
         """Handle work at a location."""
         try:
@@ -655,7 +758,17 @@ class PlanExecutor:
             # Check if workplace is open
             if not location.is_open(TimeManager.get_current_hour()):
                 return False, {'error': 'Workplace is closed'}
-            
+
+            # Check if agent has critically low energy (below threshold) - block work and trigger replan
+            current_energy = agent.energy_system.get_energy(agent.name)
+            if current_energy <= ENERGY_THRESHOLD_LOW:
+                return False, {
+                    'error': f'Energy too low to work ({current_energy}/{ENERGY_MAX}). Must eat or rest first.',
+                    'replan_needed': True,
+                    'reason_code': 'ENERGY_TOO_LOW_FOR_WORK',
+                    'priority': 'high'
+                }
+
             # Calculate energy cost for working using centralized system
             result = agent.energy_system.calculate_energy_cost('work', 1)
             energy_cost = result.data if result.success else ENERGY_COST_WORK_HOUR
@@ -1046,7 +1159,8 @@ class PlanExecutor:
                 print(f"[SLEEP FORCE] {agent.name} is not at residence ({agent.residence}) during sleep hour {current_time}. Currently at: {current_location_name}. Forcing travel home.")
 
                 # Force agent to go home immediately for sleep
-                self.location_tracker.update_agent_position(agent.name, agent.residence, 'forced_sleep_travel')
+                import time
+                self.location_tracker.update_agent_position(agent.name, agent.residence, None, time.time())
                 print(f"[SLEEP FORCE] {agent.name} forced to travel home to {agent.residence} for sleep")
 
                 # Update current location for sleep processing
@@ -1113,29 +1227,40 @@ class PlanExecutor:
             # Get current position
             current_position = self.location_tracker.get_agent_position(agent.name)
             if not current_position:
-                print(f"No current position found for {agent.name}")
+                print(f"[PATHFINDING] No current position found for {agent.name}")
                 return None
-            
+
             current_location, current_coord, _ = current_position
-            
+            print(f"[PATHFINDING] {agent.name} at {current_location} {current_coord}, targeting {target_location}")
+
             # Get target coordinates from agent's town map
             target_coord = None
             if hasattr(agent, 'town_map') and agent.town_map:
                 target_coord = agent.town_map.get_coordinates_for_location(target_location)
-            
+            else:
+                print(f"[PATHFINDING] {agent.name} has no town_map!")
+
             if not target_coord:
-                print(f"No coordinates found for {target_location}")
+                print(f"[PATHFINDING] No coordinates found for {target_location}")
                 return None
-            
+
+            print(f"[PATHFINDING] Target {target_location} is at {target_coord}")
+
             # Find path
             path = None
             if hasattr(agent, 'town_map') and agent.town_map:
                 path = agent.town_map.find_path(current_coord, target_coord)
-            
+                if path:
+                    print(f"[PATHFINDING] Found path with {len(path)} steps")
+                else:
+                    print(f"[PATHFINDING] BFS returned None - no path exists between {current_coord} and {target_coord}")
+
             return path
-            
+
         except Exception as e:
-            print(f"Error finding path for {agent.name}: {str(e)}")
+            print(f"[PATHFINDING] Error finding path for {agent.name}: {str(e)}")
+            import traceback
+            traceback.print_exc()
             return None
 
     def _execute_travel(self, agent: 'Agent', path: List[Tuple[int, int]], current_activity: dict, current_time: int) -> bool:
@@ -1737,6 +1862,7 @@ class PlanExecutor:
                 # Apply discount if applicable
                 final_cost = base_cost
                 has_discount = False
+                location_config = self.config_data.get('town_areas', {}).get('dining', {}).get(location.name, {})
                 discount_config = location_config.get('discount', {})
                 if discount_config:
                     discount_days = discount_config.get('days', [])

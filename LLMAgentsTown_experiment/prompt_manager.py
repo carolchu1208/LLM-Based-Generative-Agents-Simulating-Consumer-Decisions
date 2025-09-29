@@ -117,11 +117,12 @@ class PromptManager(PromptManagerInterface):
         self._unified_rules['actions'] = {
             'types': {
                 'go_to': "Travel to any location",
-                'shop': "Purchase items at stores", 
+                'shop': "Purchase items at stores",
                 'work': "Work-related activities at workplace",
-                'eat': "Consume ANY food or drinks at ANY location (including home)",
+                'eat': "Consume food or drinks ONLY at your residence OR dining locations listed below",
                 'rest': "For nap (11:00-15:00 at workplace) or sleep (23:00-06:00 at home)",
-                'idle': "Relaxing/free time with no energy gain (use for evening relaxation, waiting, etc.)"
+                'socialize': "Visit social locations (cafes/restaurants/homes) to meet people - may trigger conversations",
+                'idle': "Personal relaxation time at residence ONLY - Be creative with description! Examples: reading books, listening to music, doing yoga, watching TV, playing video games, practicing hobbies. NO traveling or socializing with others."
             },
             'rest_timing_rules': {
                 'nap': f"rest action at workplace during 11:00-15:00 for +{ENERGY_GAIN_NAP} energy",
@@ -132,8 +133,9 @@ class PromptManager(PromptManagerInterface):
                 'use_meal_types': "Plan with: breakfast, lunch, dinner, or snack",
                 'no_item_names': "Do NOT specify exact menu items",
                 'auto_selection': "System automatically selects appropriate items based on location and time",
+                'location_restriction': "⚠️ CRITICAL: You can ONLY eat at (1) your residence for home meals, OR (2) dining locations with menus listed below. Workplaces and other locations do NOT serve food.",
                 'examples': [
-                    "eat [meal_type] at [restaurant name from valid locations]",
+                    "eat [meal_type] at [restaurant name from dining locations below]",
                     "eat [meal_type] at residence (home cooking)"
                 ]
             }
@@ -157,8 +159,8 @@ class PromptManager(PromptManagerInterface):
         self._unified_rules['format'] = {
             'requirements': [
                 "Plan for EVERY HOUR from 07:00 to 23:00 (17 hours total)",
-                "Each hour must have: time, action, target, description", 
-                "Actions must be: go_to, shop, work, rest, eat",
+                "Each hour must have: time, action, target, description",
+                "Actions: go_to, shop, work, rest, eat, socialize, idle",
                 "Targets must be exact valid location names",
                 "Use first person perspective",
                 "No gaps or skipped hours allowed"
@@ -219,12 +221,25 @@ class PromptManager(PromptManagerInterface):
             rules_text.append("\n🎯 ACTIONS:")
             for action_type, action_rule in action_rules['types'].items():
                 rules_text.append(f"• {action_type}: {action_rule}")
-            
+
+            # Operating hours rule
+            rules_text.append("\n🕐 LOCATION OPERATING HOURS:")
+            rules_text.append("• ⚠️ CRITICAL: All locations have operating hours shown in brackets [Open: X:00-Y:00]")
+            rules_text.append("• You MUST only plan activities at locations during their open hours")
+            rules_text.append("• Plan work activities only during workplace operating hours")
+            rules_text.append("• Plan shopping/dining only when those locations are open")
+            rules_text.append("• If a location is closed, plan your free personal 'idle' time at your residence or another open location instead")
+
             # Add specific rest timing rules
             rules_text.append("\n⏰ REST TIMING RULES:")
             for timing_type, timing_rule in action_rules['rest_timing_rules'].items():
                 rules_text.append(f"• {timing_rule}")
-            
+
+            # Add meal planning rules with explicit location restriction
+            meal_planning = action_rules['meal_planning']
+            if 'location_restriction' in meal_planning:
+                rules_text.append(f"\n{meal_planning['location_restriction']}")
+
             # Format system
             format_rules = self._unified_rules['format']
             rules_text.append("\n📋 FORMAT REQUIREMENTS:")
@@ -278,10 +293,27 @@ CRITICAL REQUIREMENTS:
 - Plan EXACTLY 17 consecutive hours: {current_time}, {current_time}+1, {current_time}+2, ..., 23
 - Each hour must have exactly one activity
 - ONLY use locations from the "Available Locations" list above - NO made-up locations allowed
-- Include appropriate meals: breakfast (6-9), lunch (11-14), dinner (17-20)
-- Work during business hours (9-17) to earn your daily wage
-- Manage your energy carefully (starts at {energy_level}, decays {ENERGY_DECAY_PER_HOUR}/hour)
+- ⚠️ OPERATING HOURS: Check the [Open: X:00-Y:00] times shown for each location above. You can ONLY plan activities at locations during their open hours. If a location opens at 8:00, you cannot go there at 7:00!
+- ⚠️ MEAL LOCATIONS: You can ONLY eat at (1) your residence, OR (2) the dining locations listed in "🍽️ DINING LOCATIONS" section above. You CANNOT eat at workplaces like Target, Marketing Agency, Office Complex, Tech Hub, etc.
+- ⚠️ WORK SCHEDULE: You MUST work during your scheduled hours ({work_start}:00-{work_end}:00) to earn income. Work takes TOP PRIORITY in your schedule.
+- ⚠️ MEAL BREAKS: If you work at a restaurant/dining location AND your shift covers meal times (lunch 11-14 or dinner 17-20), you CAN and SHOULD take meal breaks during your shift to eat at your workplace. Plan at least one "eat" action during each meal window that overlaps with your work hours.
 - End at your residence at hour 23 (automatic sleep system handles hours 23-6)
+
+⚠️ MANDATORY MEAL PLANNING - YOU WILL DIE WITHOUT 3 MEALS:
+You MUST plan ALL THREE meals every day:
+1. Breakfast (6:00-9:00) - REQUIRED
+2. Lunch (11:00-14:00) - REQUIRED
+3. Dinner (17:00-20:00) - REQUIRED
+Snacks are OPTIONAL but meals are MANDATORY for survival!
+
+Why? Energy calculation:
+• Start: {energy_level} energy
+• 8-hour workday costs: -{ENERGY_COST_WORK_HOUR * 8} energy (work: {ENERGY_COST_WORK_HOUR}/hour)
+• Natural decay: -{ENERGY_DECAY_PER_HOUR * 17} energy (17 hours at {ENERGY_DECAY_PER_HOUR}/hour)
+• Total daily cost: -{ENERGY_COST_WORK_HOUR * 8 + ENERGY_DECAY_PER_HOUR * 17} energy
+• Each meal restores: +{ENERGY_GAIN_RESTAURANT_MEAL} energy (restaurant) or +{ENERGY_GAIN_HOME_MEAL} energy (home)
+• Meals needed per day: At least {meals_needed_restaurant} restaurant meals (or {meals_needed_home} home meals)
+• Plan 2-3 meals spread throughout the day to stay energized!
 
 Format your response as a JSON object with this exact structure:
 {{
@@ -304,7 +336,12 @@ Format your response as a JSON object with this exact structure:
 
 ⚠️ RESPONSE FORMAT: Return ONLY the JSON object, no markdown code blocks, no ```json or ``` markers. Start with {{ and end with }}.
 
-⚠️ FINAL CHECK: Before submitting your plan, verify that EVERY "target" field contains a location name from the "Available Locations" list above. If you use any location not on that list, the plan will fail."""
+⚠️ FINAL CHECK BEFORE SUBMITTING:
+1. Verify that EVERY "target" field contains a location name from the "Available Locations" list above
+2. Verify that ALL activities are scheduled ONLY during each location's open hours shown in [Open: X:00-Y:00]
+3. Verify that ALL "eat" actions have "target" set to EITHER your residence OR one of these dining locations: {dining_locations_list}
+4. Make sure you are NOT eating at work locations (Target, Marketing Agency, Office Complex, Tech Hub, etc.)
+If you use any invalid location or timing, the plan will fail."""
         }
 
         # Emergency Replan Template
@@ -314,37 +351,40 @@ Format your response as a JSON object with this exact structure:
 Current Situation:
 - Time: {current_time}:00 on Day {current_day}
 - Your Location: {current_location}
+- Your Energy: {energy}/100
 - Your Money: ${money:.2f}
 - Failure Reason: {reason}
 
-Available Option:
-- A nearby restaurant, '{target_location}', is open and you can afford a meal there.
+Available Dining Options (ranked by distance and affordability):
+{dining_options_list}
 
 Your Task:
-Create a 2-hour plan starting at {current_time}:00 to travel to '{target_location}' and eat a meal.
+Choose ONE restaurant from the options above and create a 2-hour plan starting at {current_time}:00 to travel there and eat a meal.
+Consider distance (travel time), price, and your current energy level when choosing.
 Follow the exact JSON format rules provided for daily plans, but ONLY for the next two hours.
 
 Format Rules:
 - The plan must cover exactly two consecutive hours: {current_time}:00 and {next_hour}:00.
 - Each hour must have an 'action' ('go_to' or 'eat') and a 'target'.
-- The first hour's action must be 'go_to' with the target '{target_location}'.
-- The second hour's action must be 'eat' with the target '{target_location}'.
+- The first hour's action must be 'go_to' with your chosen restaurant as the target.
+- The second hour's action must be 'eat' with the same restaurant as the target.
+- You MUST choose one of the restaurants listed above.
 
 ⚠️ RESPONSE FORMAT: Return ONLY the JSON object, no markdown code blocks, no ```json or ``` markers. Start with {{ and end with }}.
 
-Example Format:
+Example Format (replace <restaurant_name> with your chosen restaurant):
 {{
   "activities": [
     {{
       "time": {current_time},
       "action": "go_to",
-      "target": "{target_location}",
+      "target": "<restaurant_name>",
       "description": "Traveling to the restaurant because I need to eat.",
     }},
     {{
       "time": {next_hour},
       "action": "eat",
-      "target": "{target_location}",
+      "target": "<restaurant_name>",
       "description": "Eating a meal to regain energy.",
     }}
   ]
@@ -510,24 +550,34 @@ Example Format:
             print(f"Error getting dining information for planning: {str(e)}")
             return "Error retrieving dining information."
 
+    def _get_dining_location_names(self) -> list:
+        """Get list of dining location names from config."""
+        try:
+            if not self.config_data:
+                return []
+            dining_locations = self.config_data.get('town_areas', {}).get('dining', {})
+            return list(dining_locations.keys())
+        except Exception as e:
+            print(f"Error getting dining location names: {str(e)}")
+            return []
+
     def _get_dynamic_dining_info(self) -> str:
         """Get dynamic dining location information from config."""
         try:
             if not self.config_data:
                 return "No dining information available."
-            
+
             dining_locations = self.config_data.get('town_areas', {}).get('dining', {})
             if not dining_locations:
                 return "No dining locations found in config."
-            
+
             dining_info = []
-            dining_info.append("🍽️ AVAILABLE DINING LOCATIONS:")
-            
+            dining_info.append("🍽️ DINING LOCATIONS & MEAL AVAILABILITY BY TIME:")
+            dining_info.append("")
+
             for location_name, location_data in dining_locations.items():
-                location_type = location_data.get('type', 'unknown')
-                description = location_data.get('description', '')
                 menu = location_data.get('menu', {})
-                
+
                 if menu:
                     meal_info = []
                     for meal_type, meal_data in menu.items():
@@ -538,13 +588,39 @@ Example Format:
                         else:
                             hours_str = "Hours not set"
                         meal_info.append(f"{meal_type} (${price}, {hours_str})")
-                    
+
                     dining_info.append(f"• {location_name}: {', '.join(meal_info)}")
                 else:
                     dining_info.append(f"• {location_name}: No menu available")
-            
+
+            dining_info.append("")
+            dining_info.append("⚠️ CRITICAL MEAL PLANNING RULES:")
+            dining_info.append("• Each location ONLY serves the specific meal types listed above during their specified hours")
+            dining_info.append("• You must match the meal type shown above to the location and time")
+            dining_info.append("")
+            dining_info.append("📋 QUICK REFERENCE BY MEAL TYPE:")
+
+            meal_type_map = {}
+
+            for location_name, location_data in dining_locations.items():
+                menu = location_data.get('menu', {})
+                for meal_type, meal_data in menu.items():
+                    available_hours = meal_data.get('available_hours', [])
+                    if available_hours:
+                        hours_str = f"{min(available_hours)}:00-{max(available_hours)}:00"
+                    else:
+                        hours_str = "Hours not set"
+
+                    meal_key = f"{meal_type.upper()} ({hours_str})"
+                    if meal_key not in meal_type_map:
+                        meal_type_map[meal_key] = []
+                    meal_type_map[meal_key].append(location_name)
+
+            for meal_period, locations in sorted(meal_type_map.items()):
+                dining_info.append(f"  {meal_period}: {', '.join(locations)}")
+
             return '\n'.join(dining_info)
-            
+
         except Exception as e:
             print(f"Error getting dynamic dining info: {str(e)}")
             return "Error retrieving dining information."
@@ -627,19 +703,43 @@ Example Format:
             template = self.prompt_templates.get("daily_plan")
             if not template:
                 raise ValueError("Daily plan template not found")
-            
+
             # Get unified rules for planning context (no energy warnings during planning)
             unified_rules = self.get_unified_rules('planning', context)
-            
+
             # Add system info with unified rules and pass context for location information
             system_info = self._get_system_info(context).format(unified_rules=unified_rules)
-            
+
             context['system_info'] = system_info
-            
+
             # Ensure agent_name and current_time are in context
             context['name'] = agent_name
             context['current_time'] = current_time
-            
+
+            # Add dining location names for the final check
+            dining_names = self._get_dining_location_names()
+            context['dining_locations_list'] = ', '.join(dining_names) if dining_names else 'No dining locations available'
+
+            # Add energy constants for meal planning calculations
+            context['ENERGY_COST_WORK_HOUR'] = ENERGY_COST_WORK_HOUR
+            context['ENERGY_DECAY_PER_HOUR'] = ENERGY_DECAY_PER_HOUR
+            context['ENERGY_GAIN_RESTAURANT_MEAL'] = ENERGY_GAIN_RESTAURANT_MEAL
+            context['ENERGY_GAIN_HOME_MEAL'] = ENERGY_GAIN_HOME_MEAL
+
+            # Pre-calculate energy cost expressions (Python .format() doesn't evaluate expressions)
+            work_energy_cost = ENERGY_COST_WORK_HOUR * 8
+            natural_decay_cost = ENERGY_DECAY_PER_HOUR * 17
+            total_energy_cost = work_energy_cost + natural_decay_cost
+            meals_needed_restaurant = total_energy_cost / ENERGY_GAIN_RESTAURANT_MEAL
+            meals_needed_home = total_energy_cost / ENERGY_GAIN_HOME_MEAL
+
+            # Create variable names that match the template placeholders
+            context['ENERGY_COST_WORK_HOUR * 8'] = work_energy_cost
+            context['ENERGY_DECAY_PER_HOUR * 17'] = natural_decay_cost
+            context['ENERGY_COST_WORK_HOUR * 8 + ENERGY_DECAY_PER_HOUR * 17'] = total_energy_cost
+            context['meals_needed_restaurant'] = f"{meals_needed_restaurant:.1f}"
+            context['meals_needed_home'] = f"{meals_needed_home:.1f}"
+
             # Validate required context fields
             if not self.validate_context('daily_plan', context):
                 raise ValueError("Missing required context fields for daily plan")
@@ -827,16 +927,31 @@ Your response:"""
             template = self.prompt_templates.get("emergency_replan")
             if not template:
                 raise ValueError("Emergency replan template not found")
-            
-            # Validate required context fields
-            if not self.validate_context('emergency_replan', context):
+
+            # Validate required context fields (excluding dining_options which is optional)
+            required_fields = ['name', 'current_time', 'current_day', 'current_location',
+                             'money', 'reason', 'target_location']
+            if not all(field in context for field in required_fields):
                 raise ValueError("Missing required context fields for emergency replan")
-            
+
             # Add the next hour to the context
             context['next_hour'] = (context['current_time'] + 1) % 24
 
+            # Format dining options list if available
+            dining_options = context.get('dining_options', [])
+            if dining_options:
+                options_text = []
+                for i, opt in enumerate(dining_options, 1):
+                    options_text.append(
+                        f"{i}. {opt['name']}: {opt['distance']} steps away, minimum ${opt['min_price']:.2f}"
+                    )
+                context['dining_options_list'] = '\n'.join(options_text)
+            else:
+                # Fallback for old code path (single option)
+                context['dining_options_list'] = f"1. {context['target_location']}: Open and affordable"
+
             return template["template"].format(**context)
-            
+
         except Exception as e:
             print(f"Error getting emergency replan prompt: {str(e)}")
             traceback.print_exc()
@@ -933,15 +1048,34 @@ Your response:"""
                 work_locations = set(work_data.keys())
             
             for location in context['valid_locations']:
-                # Categorize based on config data
+                hours_info = ""
+
                 if location in dining_locations:
-                    locations_text += f"- {location} (RESTAURANT/CAFE - for meals and snacks)\n"
+                    location_data = dining_data.get(location, {})
+                    hours = location_data.get('hours', {})
+                    if hours:
+                        open_h = hours.get('open', 0)
+                        close_h = hours.get('close', 24)
+                        hours_info = f" [Open: {open_h}:00-{close_h}:00]"
+                    locations_text += f"- {location} (RESTAURANT/CAFE - for meals and snacks){hours_info}\n"
                 elif location in grocery_locations:
-                    locations_text += f"- {location} (GROCERY STORE - for shopping only, NO meals)\n"
+                    location_data = grocery_data.get(location, {})
+                    hours = location_data.get('hours', {})
+                    if hours:
+                        open_h = hours.get('open', 0)
+                        close_h = hours.get('close', 24)
+                        hours_info = f" [Open: {open_h}:00-{close_h}:00]"
+                    locations_text += f"- {location} (GROCERY STORE - for shopping only, NO meals){hours_info}\n"
                 elif location in residence_locations:
-                    locations_text += f"- {location} (RESIDENCE - for home meals and sleep)\n"
+                    locations_text += f"- {location} (RESIDENCE - for home meals and sleep) [Always accessible]\n"
                 elif location in work_locations:
-                    locations_text += f"- {location} (WORKPLACE - for work and naps)\n"
+                    location_data = work_data.get(location, {})
+                    hours = location_data.get('hours', {})
+                    if hours:
+                        open_h = hours.get('open', 0)
+                        close_h = hours.get('close', 24)
+                        hours_info = f" [Open: {open_h}:00-{close_h}:00]"
+                    locations_text += f"- {location} (WORKPLACE - for work and naps){hours_info}\n"
                 else:
                     locations_text += f"- {location}\n"
         else:
@@ -994,8 +1128,18 @@ CRITICAL PLANNING RULES:
    - Vary descriptions throughout the day to reflect different work tasks
    - Make work descriptions realistic and occupation-specific
 6. Use 'rest' action for napping (workplace 11-15) or sleep (home 23-6)
-7. Use 'idle' action for evening relaxation, waiting, general free time (no energy gain)
+7. Use 'idle' action for personal free time at residence
+   ⚠️ BE SPECIFIC AND CREATIVE with idle descriptions! Match activities to your personality and interests.
+   Examples of GOOD descriptions:
+   - "Reading a mystery novel on the couch"
+   - "Practicing yoga stretches in the living room"
+   - "Watching favorite TV series"
+   - "Playing video games to unwind"
+   - "Listening to jazz music while relaxing"
+   - "Cooking a special dinner for myself"
+   - "Practicing guitar in my room"
+   - "Doing a home workout routine"
+   AVOID generic descriptions like "relaxing at home" or "free time"
 8. Each hour must have exactly one action with a target location
 9. ⚠️ CRITICAL: Only eat at RESTAURANTS/CAFES (with menus) or at HOME - NOT at grocery stores or workplaces!
-10. Examples: "action": "idle" at home during hours 20-22 for evening relaxation before sleep
 """

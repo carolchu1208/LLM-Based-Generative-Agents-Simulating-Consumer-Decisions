@@ -99,7 +99,8 @@ class TownSimulation:
             locations=self.locations,
             prompt_mgr=self.prompt_mgr,
             model_mgr=self.model_mgr,
-            config_data=self.config
+            config_data=self.config,
+            town_map=self.town_map
         )
         
         # Set up signal handlers
@@ -308,7 +309,7 @@ class TownSimulation:
                             'replan_needed': True,
                             'reason_code': 'CRITICAL_ENERGY_WITH_INTERRUPTED_TRAVEL'
                         }
-                        self._handle_emergency_replan(agent, emergency_context)
+                        self.plan_executor.handle_emergency_intervention(agent, emergency_context)
                         print(f"[INFO] Pre-hour emergency replan completed for {agent_name} - interrupted travel cleared and new plan generated.")
                         
                 except Exception as e:
@@ -345,7 +346,7 @@ class TownSimulation:
                             # Check for a replan signal on failure
                             if not success and result.get('replan_needed'):
                                 print(f"[INFO] Plan failed for {agent_name}. Reason: {result.get('error')}. Triggering emergency replan.")
-                                self._handle_emergency_replan(agent, result)
+                                self.plan_executor.handle_emergency_intervention(agent, result)
                                 
                                 # Retry execution with the newly updated plan
                                 print(f"[INFO] Retrying execution for {agent_name} with updated plan.")
@@ -377,86 +378,6 @@ class TownSimulation:
             print(f"[ERROR] Unhandled error in _process_hour: {str(e)}")
             traceback.print_exc()
 
-    def _handle_emergency_replan(self, agent: 'Agent', failure_context: Dict[str, Any]):
-        """Handles the logic for an agent to reactively replan after a failure."""
-        try:
-            current_time = TimeManager.get_current_hour()
-            current_day = TimeManager.get_current_day()
-
-            # Step 1: Find a viable alternative location
-            target_location = None
-            for loc_name, location in self.locations.items():
-                if location.location_type in ['restaurant', 'local_shop'] and location.is_open(current_time):
-                    meal_cost = location.prices.get('meal', 20.0)
-                    if agent.can_afford_purchase(meal_cost):
-                        target_location = location # Found a valid, affordable, open restaurant
-                        break
-            
-            if not target_location:
-                print(f"[WARNING] {agent.name} could not find any open and affordable restaurant to fix failed plan.")
-                return
-
-            # Step 2: Determine emergency plan timing - avoid sleep hours
-            replan_start_hour = current_time
-            replan_end_hour = current_time + 1
-            
-            # Check if current or next hour is sleep time (23-6)
-            def is_sleep_hour(hour):
-                return hour == 23 or (0 <= hour <= 6)
-            
-            if is_sleep_hour(replan_start_hour) or is_sleep_hour(replan_end_hour):
-                print(f"[INFO] Emergency replan during sleep hours detected. Current: {current_time}, Next: {replan_end_hour}")
-                
-                # If we're at hour 22, plan for hours 21-22 (go back 1 hour)
-                if current_time == 22:
-                    replan_start_hour = 21
-                    replan_end_hour = 22
-                    print(f"[INFO] Adjusted emergency replan to hours {replan_start_hour}-{replan_end_hour} to avoid sleep")
-                # If we're in sleep hours (23-6), this shouldn't happen as sleep should override
-                # But if it does, we'll skip the emergency replan since sleep provides energy
-                else:
-                    print(f"[INFO] Skipping emergency replan during sleep hours - agent will recover energy through sleep")
-                    return
-
-            # Step 3: Get the emergency prompt from the PromptManager
-            # Get current location from agent position
-            agent_position = self.location_tracker.get_agent_position(agent.name)
-            current_location = agent_position[0] if agent_position else agent.residence
-            
-            prompt_context = {
-                'name': agent.name,
-                'current_time': replan_start_hour,  # Use adjusted timing
-                'current_day': current_day,
-                'current_location': current_location,
-                'money': agent.money,
-                'reason': failure_context.get('error', 'reason unknown'),
-                'target_location': target_location.name
-            }
-            emergency_prompt = self.prompt_mgr.get_emergency_replan_prompt(prompt_context)
-
-            # Step 4: Call the LLM to generate the 2-hour micro-plan
-            print(f"[INFO] Generating emergency plan for {agent.name} to go to {target_location.name} (hours {replan_start_hour}-{replan_end_hour}).")
-            raw_plan_response = self.model_mgr.generate(emergency_prompt, "daily_plan")
-            
-            # Step 5: Extract and clean the plan
-            cleaned_plan = self.memory_mgr.extract_and_clean_plan(raw_plan_response, "emergency_replan")
-            if cleaned_plan['status'] != 'success' or not cleaned_plan.get('activities'):
-                print(f"[ERROR] Failed to extract a valid emergency plan for {agent.name} from LLM response.")
-                return
-
-            # Step 6: Update the agent's main daily plan with the new micro-plan
-            agent.update_plan_slice(cleaned_plan['activities'], start_hour=replan_start_hour)
-            
-            # Clear any interrupted travel state since agent has a new emergency plan
-            if hasattr(agent, 'clear_interrupted_travel'):
-                agent.clear_interrupted_travel()
-                print(f"[INFO] Cleared interrupted travel state for {agent.name} due to emergency replan.")
-            
-            print(f"[INFO] Successfully updated {agent.name}'s plan with emergency actions for hours {replan_start_hour}-{replan_end_hour}.")
-
-        except Exception as e:
-            print(f"[ERROR] Critical error during emergency replan for {agent.name}: {str(e)}")
-            traceback.print_exc()
 
     def _process_hour_end(self, current_day: int, current_hour: int):
         """Process end of hour events."""
@@ -475,16 +396,6 @@ class TownSimulation:
                     if result.success:
                         energy_after = agent.energy_system.get_energy(agent.name)
                         print(f"  {agent_name}: {energy_before} → {energy_after} (natural decay -{ENERGY_DECAY_PER_HOUR})")
-                        
-                        # Log energy history for debugging
-                        history_result = agent.energy_system.get_energy_history(agent.name)
-                        if history_result.success and len(history_result.value) >= 2:
-                            recent_changes = history_result.value[-3:]  # Last 3 changes
-                            print(f"    Recent energy changes for {agent_name}:")
-                            for change in recent_changes:
-                                change_amount = change.get('change', 0)
-                                new_level = change.get('new_level', 0)
-                                print(f"      {change_amount:+} → {new_level}")
                     else:
                         print(f"  {agent_name}: Failed to apply energy decay - {result.error}")
                 except Exception as e:
@@ -529,7 +440,7 @@ class TownSimulation:
                             'replan_needed': True,
                             'reason_code': 'CRITICAL_ENERGY_LOW'
                         }
-                        self._handle_emergency_replan(agent, emergency_context)
+                        self.plan_executor.handle_emergency_intervention(agent, emergency_context)
                         print(f"[INFO] Emergency replan completed for {agent_name} due to low energy.")
                     
                     elif current_energy <= ENERGY_THRESHOLD_LOW:
@@ -552,7 +463,7 @@ class TownSimulation:
                                 'replan_needed': True,
                                 'reason_code': 'PREVENTIVE_ENERGY_LOW'
                             }
-                            self._handle_emergency_replan(agent, emergency_context)
+                            self.plan_executor.handle_emergency_intervention(agent, emergency_context)
                             print(f"[INFO] Preventive replan completed for {agent_name} due to low energy without upcoming meal.")
                     
                 except Exception as e:
@@ -716,19 +627,7 @@ class TownSimulation:
     def _save_plans_for_debugging(self, current_day: int, current_hour: int):
         """Save all agents' daily plans for debugging reuse."""
         try:
-            # Collect current plans
-            current_plans = {}
-            for agent_name, agent in self.agents.items():
-                if agent.daily_plan:
-                    current_plans[agent_name] = agent.daily_plan
-
-            if not current_plans:
-                print("[SAVE] No plans to save")
-                return
-
-            # Delegate to memory_manager for actual saving
-            self.memory_mgr.save_daily_plans(current_day, current_hour, current_plans)
-
+            self.memory_mgr.save_current_plans(self.agents)
         except Exception as e:
             print(f"[ERROR] Error saving plans for debugging: {str(e)}")
             traceback.print_exc()
@@ -1091,7 +990,13 @@ class TownSimulation:
     def _generate_single_agent_plan(self, agent: 'Agent', current_hour: int, current_day: int):
         """Generate a daily plan for a single agent."""
         print(f"[DEBUG] Generating plan for agent: {agent.name}")
-        
+
+        # Extract work hours from agent's schedule
+        schedule = agent.income_info.get('schedule', {})
+        work_hours = schedule.get('work_hours', {'start': 9, 'end': 17})
+        work_start = work_hours.get('start', 9)
+        work_end = work_hours.get('end', 17)
+
         # Get agent context with all required fields for prompt template
         context = {
             'name': agent.name,
@@ -1108,6 +1013,8 @@ class TownSimulation:
             'agent': agent,
             'memory_manager': self.memory_mgr,
             'valid_locations': list(self.locations.keys()),
+            'work_start': work_start,
+            'work_end': work_end,
             'ENERGY_MIN': ENERGY_MIN,
             'ENERGY_MAX': ENERGY_MAX,
             'ENERGY_DECAY_PER_HOUR': ENERGY_DECAY_PER_HOUR,
