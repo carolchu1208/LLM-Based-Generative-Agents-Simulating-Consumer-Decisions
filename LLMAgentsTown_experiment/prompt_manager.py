@@ -208,9 +208,11 @@ class PromptManager(PromptManagerInterface):
             
             rules_text.append("\n🏠 HOME MEALS:")
             rules_text.append(f"• {meal_rules['locations']['home']}")
-            
+
             # Add dynamic dining information from config (actual locations only)
-            dynamic_dining_info = self._get_dynamic_dining_info()
+            # Extract current_day from agent_state to check for discounts
+            current_day = agent_state.get('current_day', 1) if agent_state else 1
+            dynamic_dining_info = self._get_dynamic_dining_info(current_day)
             if dynamic_dining_info and "Error" not in dynamic_dining_info:
                 rules_text.append(f"\n{dynamic_dining_info}")
             
@@ -561,8 +563,8 @@ Example Format (replace <restaurant_name> with your chosen restaurant):
             print(f"Error getting dining location names: {str(e)}")
             return []
 
-    def _get_dynamic_dining_info(self) -> str:
-        """Get dynamic dining location information from config."""
+    def _get_dynamic_dining_info(self, current_day: int = 1) -> str:
+        """Get dynamic dining location information from config with discount awareness."""
         try:
             if not self.config_data:
                 return "No dining information available."
@@ -578,18 +580,44 @@ Example Format (replace <restaurant_name> with your chosen restaurant):
             for location_name, location_data in dining_locations.items():
                 menu = location_data.get('menu', {})
 
+                # Check for discounts on current day
+                discount_data = location_data.get('discount', {})
+                has_discount = discount_data and current_day in discount_data.get('days', [])
+                discount_label = ""
+
+                if has_discount:
+                    discount_value = discount_data.get('value', 0)
+                    discount_type = discount_data.get('type', 'percentage')
+                    if discount_type == 'percentage':
+                        discount_label = f" 🎉 {discount_value}% OFF TODAY!"
+                    else:
+                        discount_label = f" 🎉 ${discount_value} OFF TODAY!"
+
                 if menu:
                     meal_info = []
                     for meal_type, meal_data in menu.items():
-                        price = meal_data.get('base_price', 'Price not set')
+                        base_price = meal_data.get('base_price', 'Price not set')
+
+                        # Calculate discounted price if applicable
+                        if has_discount and isinstance(base_price, (int, float)):
+                            discount_value = discount_data.get('value', 0)
+                            discount_type = discount_data.get('type', 'percentage')
+                            if discount_type == 'percentage':
+                                final_price = base_price * (1 - discount_value / 100)
+                            else:
+                                final_price = max(0, base_price - discount_value)
+                            price_display = f"${base_price:.0f} → ${final_price:.0f}"
+                        else:
+                            price_display = f"${base_price}" if isinstance(base_price, (int, float)) else base_price
+
                         available_hours = meal_data.get('available_hours', [])
                         if available_hours:
                             hours_str = f"{min(available_hours)}:00-{max(available_hours)}:00"
                         else:
                             hours_str = "Hours not set"
-                        meal_info.append(f"{meal_type} (${price}, {hours_str})")
+                        meal_info.append(f"{meal_type} ({price_display}, {hours_str})")
 
-                    dining_info.append(f"• {location_name}: {', '.join(meal_info)}")
+                    dining_info.append(f"• {location_name}{discount_label}: {', '.join(meal_info)}")
                 else:
                     dining_info.append(f"• {location_name}: No menu available")
 

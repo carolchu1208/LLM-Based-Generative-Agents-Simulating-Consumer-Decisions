@@ -1160,8 +1160,13 @@ class PlanExecutor:
 
                 # Force agent to go home immediately for sleep
                 import time
-                self.location_tracker.update_agent_position(agent.name, agent.residence, None, time.time())
-                print(f"[SLEEP FORCE] {agent.name} forced to travel home to {agent.residence} for sleep")
+                # Get residence coordinates to maintain proper location tracking
+                residence_coords = agent.town_map.get_coordinates_for_location(agent.residence)
+                if not residence_coords:
+                    print(f"[SLEEP FORCE ERROR] Could not find coordinates for {agent.residence}")
+                    residence_coords = None  # fallback
+                self.location_tracker.update_agent_position(agent.name, agent.residence, residence_coords, time.time())
+                print(f"[SLEEP FORCE] {agent.name} forced to travel home to {agent.residence} for sleep (coords: {residence_coords})")
 
                 # Update current location for sleep processing
                 current_location_name = agent.residence
