@@ -135,9 +135,9 @@ LLMAgentsTown_memory_records/       # Simulation output data
 ├── simulation_metrics/             # Sales transactions & KPIs (JSONL)
 └── simulation_plans/               # Saved agent plans for debugging (JSON)
 
-Each output folder contains 2 simulation runs:
-- 20250716_013356: July baseline (no discount)
-- 20251019_125347: Latest run (with discount & pathfinding fix)
+Each output folder contains 2 representative simulation runs:
+- 20250716_013356: July 2025 run
+- 20251019_125347: October 2025 run
 ```
 
 ---
