@@ -4,28 +4,11 @@
 
 ---
 
-## 📄 Paper
+## 📖 Overview
 
-**Authors:** Man-Lin Chu, Lucian Terhorst, Kadin Reed, Tom Ni, Weiwei Chen, Rongyu Lin*
+This repository implements a **multi-LLM generative agent framework** for simulating consumer decision-making and analyzing marketing strategies in virtual environments. Building on the foundational Generative Agents framework by Park et al. (2023), we extend LLM-powered simulations from general human behavior to the specialized domain of marketing and consumer behavior.
 
-*Corresponding author: Rongyu Lin (Rongyu.Lin@quinnipiac.edu)
-
-**Status:** Preprint (2025)
-
-**Built on:** [Generative Agents: Interactive Simulacra of Human Behavior](https://github.com/joonspk-research/generative_agents) (Park et al., 2023)
-
-> **Abstract:** This paper presents a novel multi-agent LLM framework for simulating consumer decision-making and analyzing marketing strategies in virtual environments. Building on the foundational Generative Agents framework by Park et al. (2023), we extend LLM-powered simulations from general human behavior to the specialized domain of marketing and consumer behavior. Our system orchestrates 11 autonomous agents in a virtual town with realistic economic constraints (energy systems, wage-based income, food consumption) to study how price discount promotions influence purchasing behavior, brand loyalty, and emergent social dynamics. We implement a 20% midweek discount strategy at a Fried Chicken Shop across a 7-day simulation and observe emergent behaviors including social coordination, word-of-mouth information diffusion, and consumer substitution effects—without hard-coded rules. The framework demonstrates how LLM-based agents can generate realistic consumer behavior patterns for marketing strategy evaluation.
-
-**Citation:**
-```bibtex
-@article{chu2025multiagent,
-  title={LLM-Based Multi-Agent System for Simulating and Analyzing Marketing and Consumer Behavior},
-  author={Chu, Man-Lin and Terhorst, Lucian and Reed, Kadin and Ni, Tom and Chen, Weiwei and Lin, Rongyu},
-  year={2025},
-  journal={arXiv preprint},
-  url={https://github.com/carolchu1208/LLM-Based-Generative-Agents-Simulating-Consumer-Decisions}
-}
-```
+Our system orchestrates 11 autonomous agents in a virtual town with realistic economic constraints (energy systems, wage-based income, food consumption) to study how price discount promotions influence purchasing behavior, brand loyalty, and emergent social dynamics. We implement a 20% midweek discount strategy at a Fried Chicken Shop across a 7-day simulation and observe emergent behaviors including social coordination, word-of-mouth information diffusion, and consumer substitution effects—without hard-coded rules.
 
 ---
 
@@ -287,11 +270,11 @@ In Proceedings of the 36th Annual ACM Symposium on User Interface Software and T
 
 ## 👩‍💻 Authors
 
-**First Author: Man Lin Chu**
-📧 mchu@clarku.edu | manlin.chu1998@gmail.com
+Man-Lin Chu, Lucian Terhorst, Kadin Reed, Tom Ni, Weiwei Chen, Rongyu Lin*
 
-**Co-authors:**
-Lucian Terhorst, Kadin Reed, Tom Ni, Weiwei Chen, Rongyu Lin
+**Contact:**
+- First author: Man-Lin Chu (mchu@clarku.edu | manlin.chu1998@gmail.com)
+- *Corresponding author: Rongyu Lin (Rongyu.Lin@quinnipiac.edu)
 
 ---
 
