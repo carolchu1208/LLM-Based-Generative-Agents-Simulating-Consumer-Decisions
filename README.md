@@ -6,11 +6,9 @@
 
 ## 📄 Paper
 
-**Authors:** Man-Lin Chu¹, Lucian Terhorst², Kadin Reed², Tom Ni², Weiwei Chen², Rongyu Lin²
+**Authors:** Man-Lin Chu, Lucian Terhorst, Kadin Reed, Tom Ni, Weiwei Chen, Rongyu Lin*
 
-**Affiliations:**
-¹ Clark University
-² Worcester Polytechnic Institute
+*Corresponding author: Rongyu Lin (Rongyu.Lin@quinnipiac.edu)
 
 **Status:** Preprint (2025)
 
