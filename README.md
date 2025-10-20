@@ -4,58 +4,142 @@
 
 ---
 
-## 📖 Overview
-This repository implements a **multi-LLM generative agent framework** designed to simulate consumer decision-making and social interactions in a virtual town environment.
-The project evaluates how marketing strategies—particularly **price discount promotions**—influence consumer behavior, loyalty, and emergent social dynamics.
+## 📄 Paper
 
-Building on the [Generative Agents framework by Park et al. (2023)](https://github.com/joonspk-research/generative_agents), this research extends LLM-powered multi-agent simulations to the **marketing and consumer behavior domain**.
+**Authors:** Man-Lin Chu¹, Lucian Terhorst², Kadin Reed², Tom Ni², Weiwei Chen², Rongyu Lin²
+
+**Affiliations:**
+¹ Clark University
+² Worcester Polytechnic Institute
+
+**Status:** Preprint (2025)
+
+**Built on:** [Generative Agents: Interactive Simulacra of Human Behavior](https://github.com/joonspk-research/generative_agents) (Park et al., 2023)
+
+> **Abstract:** This paper presents a novel multi-agent LLM framework for simulating consumer decision-making and analyzing marketing strategies in virtual environments. Building on the foundational Generative Agents framework by Park et al. (2023), we extend LLM-powered simulations from general human behavior to the specialized domain of marketing and consumer behavior. Our system orchestrates 11 autonomous agents in a virtual town with realistic economic constraints (energy systems, wage-based income, food consumption) to study how price discount promotions influence purchasing behavior, brand loyalty, and emergent social dynamics. We implement a 20% midweek discount strategy at a Fried Chicken Shop across a 7-day simulation and observe emergent behaviors including social coordination, word-of-mouth information diffusion, and consumer substitution effects—without hard-coded rules. The framework demonstrates how LLM-based agents can generate realistic consumer behavior patterns for marketing strategy evaluation.
+
+**Citation:**
+```bibtex
+@article{chu2025multiagent,
+  title={LLM-Based Multi-Agent System for Simulating and Analyzing Marketing and Consumer Behavior},
+  author={Chu, Man-Lin and Terhorst, Lucian and Reed, Kadin and Ni, Tom and Chen, Weiwei and Lin, Rongyu},
+  year={2025},
+  journal={arXiv preprint},
+  url={https://github.com/carolchu1208/LLM-Based-Generative-Agents-Simulating-Consumer-Decisions}
+}
+```
 
 ---
 
-## ✨ Key Contributions
-- **LLM-Powered Agents:**
-  Each agent is equipped with memory, planning, reflection, and conversational abilities, enabling realistic decision-making and social interaction.
+## 📖 Key Contributions
 
-- **Parallel Multi-Agent Town Simulation:**
-  11 agents navigate across 10 locations (dining, shopping, work, leisure, and residential), making daily plans and interacting in real-time with **thread-safe parallel execution**.
+- **LLM-Powered Autonomous Agents:** Each agent possesses memory retrieval (recency, importance, relevance scoring), planning, reflection, and conversational abilities for realistic decision-making.
 
-- **Price Discount Strategy Analysis:**
-  A midweek 20% discount at a Fried Chicken Shop was embedded into the simulation to study its impact on revenue, market share shifts, and consumer loyalty formation.
+- **Parallel Multi-Agent Town Simulation:** 11 agents navigate a 10×10 grid town with 10 locations (dining, shopping, work, leisure, residential) using thread-safe parallel execution.
 
-- **Emergent Behaviors:**
-  - Social coordination through conversations (e.g., planning group dining events).
-  - Word-of-mouth style information diffusion.
-  - Consumer loyalty, substitution effects, and habit formation—without hard-coded rules.
+- **Marketing Strategy Evaluation:** Embedded 20% discount at Fried Chicken Shop on Days 3-4 to analyze impact on revenue, market share shifts, and consumer loyalty formation.
+
+- **Emergent Social Behaviors:** Agents demonstrate social coordination (group dining), word-of-mouth diffusion, loyalty patterns, and substitution effects without hard-coded behavioral rules.
 
 ---
 
-## 🏗️ Repository Structure
+## 🔬 Code Overview
 
-### 📂 Core Simulation Code
+### System Architecture & Methodology
+
+This repository implements the paper's multi-agent simulation methodology through a modular pipeline:
+
+**System Execution Flow:**
 ```
-LLMAgentsTown_experiment/
-├── main_simulation.py                 # 🚀 Main simulation runner - Start here!
-├── simulation_execution_classes.py    # 🤖 Agent, Location, PlanExecutor classes
-├── menu_validator.py                  # 🛡️ LLM response and menu validation system - prevent unmatch food needs
-├── simulation_constants.py            # ⚙️ Critical system parameters (energy, costs setup, etc)
-├── agent_configuration.json           # 👥 Agent personas & town configuration
-├── memory_manager.py                  # 🧠 Agent memory & conversation system
-├── metrics_manager.py                 # 📊 Business analytics & performance tracking
-├── prompt_manager.py                  # 💬 LLM prompt (cache rules, templates)
-├── llm_deepseek_manager.py            # 🔗 DeepSeek API interface
-├── simulation_types.py                # 📋 Core data types & utilities
-└── debug_file/                        # 🐛 Debugging utilities
-    └── debug_with_saved_plans.py      # Debug tool for reproducible testing
+Agent Configuration → Prompt Generation → LLM Planning → Plan Execution → State Tracking → Data Recording
+        ↓                    ↓                  ↓                ↓                ↓              ↓
+agent_configuration  prompt_manager  llm_deepseek_manager  PlanExecutor  shared_trackers  metrics_manager
+                                                                 ↓
+                                                     ┌───────────┴───────────┐
+                                                     ↓                       ↓
+                                            Location Tracker          Memory Manager
+                                            (Position & State)      (Conversations & Reflections)
 ```
 
-### 📂 Simulation Data Storage
+**Pipeline Stages:**
+
+1. **Configuration & Initialization** (`agent_configuration.json`, `simulation_constants.py`)
+   - Defines 11 agent personas with demographics, occupations, relationships, residences
+   - Specifies 10×10 grid town map with 10 locations and coordinates
+   - Configures restaurant menus (food items, prices, energy values)
+   - Sets discount strategy: 20% off at Fried Chicken Shop on Days 3-4
+   - Establishes energy system parameters: -5/hour decay, +45 from meals, +10 from snacks, sleep→100
+   - **Daily schedule**: Agents sleep hours 23-6, wake at hour 7 for planning
+
+2. **Prompt Generation** (`prompt_manager.py`)
+   - **Timing**: Executes at hour 7 each day when agents wake up
+   - Constructs contextualized prompts with agent state (location, energy, time, relationships)
+   - Dynamically displays discount information: "$25 → $20 (20% off on Days 3-4)" only on active days
+   - Implements prompt caching for DeepSeek API efficiency
+
+3. **LLM Planning** (`llm_deepseek_manager.py`)
+   - **Timing**: Daily plans generated at hour 7 after agents wake from sleep
+   - Sends prompts to DeepSeek API for daily plan generation (hours 7-22, skipping sleep hours 23-6)
+   - Handles retry logic, error recovery, and JSON response parsing
+   - Agents autonomously decide activities: dining, working, shopping, socializing
+
+4. **Plan Execution** (`simulation_execution_classes.py`)
+   - **Timing**: Execution begins at hour 7 after planning, continues through hour 22
+   - **PlanExecutor**: Orchestrates hourly action execution in parallel (threading)
+   - **Movement**: BFS pathfinding on 10×10 grid with coordinate tracking
+   - **Dining**: Food ordering → menu validation → payment → energy restoration
+   - **Work**: Wage payment ($10-30/hour based on occupation)
+   - **Conversation**: Multi-turn dialogues between agents at shared locations
+   - **Sleep** (hours 23-6): Energy restoration to 100, automatic sleep force when energy ≤ 0
+
+5. **State Tracking** (`shared_trackers.py`)
+   - **LocationTracker**: Thread-safe tracking of agent positions with coordinates
+   - **StateManager**: Tracks agent states (planning, moving, eating, working, conversing, sleeping)
+
+6. **Memory & Social System** (`memory_manager.py`)
+   - Stores observations, conversations, reflections with timestamps
+   - Retrieves memories using scoring: recency (exponential decay) + importance (LLM-rated 1-10) + relevance (embedding similarity)
+   - Enables agents to remember past interactions and form preferences
+
+7. **Validation & Safety** (`menu_validator.py`)
+   - Validates food orders against actual menus to prevent LLM hallucination
+   - Provides emergency alternatives when invalid orders occur
+   - Prevents agent death from starvation
+
+8. **Data Recording** (`metrics_manager.py`)
+   - Records sales transactions: location, item, price, discount status, timestamp
+   - Generates daily business summaries: revenue by location, item popularity
+   - Enables comparative analysis between baseline and discount periods
+
+### Repository Structure
+
 ```
-LLMAgentsTown_memory_records/
-├── simulation_agents/          # Agent memory records & state history
-├── simulation_conversations/   # Conversation logs & social interactions
-├── simulation_daily_summaries/ # Daily business performance reports
-├── simulation_metrics/         # Detailed analytics & KPI tracking
-└── simulation_plans/          # Saved agent plans for debugging
+LLMAgentsTown_experiment/           # Core simulation code
+├── main_simulation.py              # Entry point: orchestrates 7-day, 168-hour simulation
+├── simulation_execution_classes.py # Agent, Location, PlanExecutor classes
+├── agent_configuration.json        # Agent personas, town map, menus, discount config
+├── simulation_constants.py         # Energy/economic parameters
+├── prompt_manager.py               # Dynamic prompt generation with discount display
+├── llm_deepseek_manager.py         # DeepSeek API interface with caching
+├── memory_manager.py               # Memory retrieval & conversation orchestration
+├── metrics_manager.py              # Sales tracking & business analytics
+├── menu_validator.py               # LLM response validation
+├── shared_trackers.py              # LocationTracker & StateManager
+├── simulation_types.py             # Data structures & utilities (BFS pathfinding)
+├── CRITICAL_PARAMETERS.md          # Detailed parameter documentation
+└── debug_file/
+    └── debug_with_saved_plans.py   # Debug mode with pre-saved plans
+
+LLMAgentsTown_memory_records/       # Simulation output data
+├── simulation_agents/              # Agent memories & state history (JSONL)
+├── simulation_conversations/       # Conversation logs (JSONL, Git LFS for >100MB)
+├── simulation_daily_summaries/     # Daily business performance (JSON)
+├── simulation_metrics/             # Sales transactions & KPIs (JSONL)
+└── simulation_plans/               # Saved agent plans for debugging (JSON)
+
+Each output folder contains 2 simulation runs:
+- 20250716_013356: July baseline (no discount)
+- 20251019_125347: Latest run (with discount & pathfinding fix)
 ```
 
 ---
@@ -184,11 +268,22 @@ This repository includes **robust safeguards** to prevent simulation failure:
 
 ---
 
-## 📂 Related Work & References
+## 📚 Related Work & References
 
-- [Park et al. (2023). Generative Agents: Interactive Simulacra of Human Behavior](https://github.com/joonspk-research/generative_agents)
-- Lichtenstein et al. (1997). Deal Promotion Proneness and Consumer Behavior
+### Foundational Framework
+This work builds directly on:
+
+**Park, J. S., O'Brien, J. C., Cai, C. J., Morris, M. R., Liang, P., & Bernstein, M. S. (2023).**
+*Generative Agents: Interactive Simulacra of Human Behavior.*
+In Proceedings of the 36th Annual ACM Symposium on User Interface Software and Technology (UIST '23).
+[GitHub Repository](https://github.com/joonspk-research/generative_agents) | [Paper PDF](https://arxiv.org/abs/2304.03442)
+
+**Our Extension:** We adapt their agent architecture (memory, planning, reflection) from general human behavior simulation to the specialized domain of marketing and consumer decision-making, adding economic constraints (energy systems, wage-based income), discount strategy evaluation, and business analytics.
+
+### Additional References
+- Lichtenstein, D. R., Netemeyer, R. G., & Burton, S. (1997). Deal proneness and consumer behavior: A meta-analytic review. *Journal of Retailing*, 73(3), 331-361.
 - Consumer journey frameworks: AIDA → AIDMA → AISAS → AIDEES evolution
+- BDI (Belief-Desire-Intention) agent architecture foundations
 
 ---
 
