@@ -2,9 +2,11 @@
 
 <img width="2275" height="1234" alt="agents drawio-1" src="https://github.com/user-attachments/assets/9786d838-7e82-4c94-9707-b84a86e62995" />
 
+**📄 Paper:** [arXiv:2510.18155](https://arxiv.org/abs/2510.18155) | [PDF](https://arxiv.org/pdf/2510.18155v1)
+
 ---
 
-## 📖 Overview
+## 📖 Abstract
 
 This repository implements a **multi-LLM generative agent framework** for simulating consumer decision-making and analyzing marketing strategies in virtual environments. Building on the foundational Generative Agents framework by Park et al. (2023), we extend LLM-powered simulations from general human behavior to the specialized domain of marketing and consumer behavior.
 
@@ -287,8 +289,8 @@ If you use this repository in your research, please cite:
   title={LLM-Based Multi-Agent System for Simulating and Analyzing Marketing and Consumer Behavior},
   author={Chu, Man-Lin and Terhorst, Lucian and Reed, Kadin and Ni, Tom and Chen, Weiwei and Lin, Rongyu},
   year={2025},
-  journal={arXiv preprint},
-  url={https://github.com/carolchu1208/LLM-Based-Generative-Agents-Simulating-Consumer-Decisions}
+  journal={arXiv preprint arXiv:2510.18155},
+  url={https://arxiv.org/abs/2510.18155}
 }
 ```
 
