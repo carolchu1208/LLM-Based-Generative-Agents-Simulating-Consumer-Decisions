@@ -744,6 +744,29 @@ Example Format (replace <restaurant_name> with your chosen restaurant):
             context['name'] = agent_name
             context['current_time'] = current_time
 
+            # Retrieve recent reflection summaries if available (hierarchical memory)
+            print(f"[REFLECT_CHECK] Day {context.get('current_day', 1)}, Agent {agent_name}, memory_mgr present: {self.memory_mgr is not None}")
+            if self.memory_mgr:
+                current_day = context.get('current_day', 1)
+                print(f"[REFLECT_CHECK] current_day={current_day}, checking if {current_day} > 1: {current_day > 1}")
+                if current_day > 1:
+                    # Get recent reflections (up to 3 days)
+                    print(f"[REFLECT_RETRIEVE] About to call get_agent_reflection_summary for {agent_name}, days={min(3, current_day-1)}")
+                    try:
+                        recent_reflections = self.memory_mgr.get_agent_reflection_summary(agent_name, days=min(3, current_day-1))
+                        print(f"[REFLECT_RETRIEVE] Call succeeded, result type: {type(recent_reflections)}, length: {len(recent_reflections) if recent_reflections else 0}")
+                    except Exception as e:
+                        print(f"[REFLECT_ERROR] Exception calling get_agent_reflection_summary: {e}")
+                        recent_reflections = None
+                    if recent_reflections:
+                        context['recent_experiences'] = recent_reflections
+                    else:
+                        context['recent_experiences'] = ""
+                else:
+                    context['recent_experiences'] = ""
+            else:
+                context['recent_experiences'] = ""
+
             # Add dining location names for the final check
             dining_names = self._get_dining_location_names()
             context['dining_locations_list'] = ', '.join(dining_names) if dining_names else 'No dining locations available'
@@ -809,7 +832,14 @@ Example Format (replace <restaurant_name> with your chosen restaurant):
             # Build conversation history context
             previous_interaction = context.get('previous_interaction', [])
             conversation_turn = context.get('conversation_turn', 0)
-            
+
+            # Retrieve recent reflection summaries for the speaker (hierarchical memory)
+            speaker_reflections = ""
+            if self.memory_mgr:
+                current_day = context.get('current_day', 1)
+                if current_day > 1:
+                    speaker_reflections = self.memory_mgr.get_agent_reflection_summary(speaker, days=min(3, current_day-1))
+
             # Determine if this is an initiator or response turn
             is_initiator_turn = len(previous_interaction) == 0
             
@@ -830,6 +860,8 @@ Your Background:
 - Employment: {context.get('typical_work_hours', 'Unknown schedule')}
 - Workplace: {context.get('speaker_workplace', 'Unknown')}
 - Current Activity: {context.get('current_activity', 'Unknown')}
+{f'''
+Your Recent Experiences:{speaker_reflections}''' if speaker_reflections else ''}
 
 🔋 ENERGY RULES FOR PLANNING:
 - Travel costs {ENERGY_COST_PER_STEP} energy per step moved (complete path in one hour)
@@ -898,6 +930,8 @@ Your Background:
 - Employment: {context.get('typical_work_hours', 'Unknown schedule')}
 - Workplace: {context.get('speaker_workplace', 'Unknown')}
 - Current Activity: {context.get('current_activity', 'Unknown')}
+{f'''
+Your Recent Experiences:{speaker_reflections}''' if speaker_reflections else ''}
 
 🔋 ENERGY RULES FOR PLANNING:
 - Travel costs {ENERGY_COST_PER_STEP} energy per step moved (complete path in one hour)

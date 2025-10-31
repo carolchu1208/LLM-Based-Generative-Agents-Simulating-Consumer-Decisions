@@ -71,7 +71,15 @@ class TownSimulation:
         # Initialize prompt and model managers
         self.prompt_mgr = PromptManager(location_tracker=self.location_tracker, config_data=self.config)
         self.model_mgr = ModelManager()
-        
+
+        # Connect managers to MemoryManager for reflection generation
+        self.memory_mgr.set_prompt_manager(self.prompt_mgr)
+        self.memory_mgr.set_model_manager(self.model_mgr)
+
+        # Connect MemoryManager to PromptManager for reflection retrieval
+        self.prompt_mgr.memory_mgr = self.memory_mgr
+        print(f"[INIT] Connected memory_mgr to prompt_mgr: {self.prompt_mgr.memory_mgr is not None}")
+
         # Initialize town map first
         self.town_map = TownMap(
             world_locations_data=self.config.get('town_map_grid', {}).get('world_locations', {}),
@@ -507,10 +515,10 @@ class TownSimulation:
             
             print(f"\n=== End of Day {current_day} Processing ===")
             
-            # 1. Generate and save daily summaries
+            # 1. Generate and save daily summaries (narrative reflections)
             # Hourly saves have already persisted memory, metrics, and conversation logs.
             print("[SAVE] Generating and saving daily summaries...")
-            self.memory_mgr.save_daily_summaries(self.metrics_mgr, current_day)
+            self.memory_mgr.save_daily_summaries(self.metrics_mgr, current_day, self.agents)
             
             # 2. Clear buffers for next day
             print("[CLEANUP] Clearing buffers for next day...")
@@ -1106,7 +1114,7 @@ def main():
             try:
                 current_day = TimeManager.get_current_day()
                 simulation.memory_mgr.save_memories(force=True)
-                simulation.memory_mgr.save_daily_summaries(simulation.metrics_mgr, current_day)
+                simulation.memory_mgr.save_daily_summaries(simulation.metrics_mgr, current_day, simulation.agents)
             except Exception as e:
                 print(f"Error saving final state: {str(e)}")
                 traceback.print_exc()
@@ -1119,7 +1127,7 @@ def main():
             try:
                 current_day = TimeManager.get_current_day()
                 simulation.memory_mgr.save_memories(force=True)
-                simulation.memory_mgr.save_daily_summaries(simulation.metrics_mgr, current_day)
+                simulation.memory_mgr.save_daily_summaries(simulation.metrics_mgr, current_day, simulation.agents)
             except Exception as save_error:
                 print(f"Error during emergency save: {str(save_error)}")
                 traceback.print_exc()

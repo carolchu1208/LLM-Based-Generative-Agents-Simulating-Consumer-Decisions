@@ -102,7 +102,10 @@ class MemoryManager(ThreadSafeBase, MemoryManagerInterface):
         self._pending_memories = []
         self._last_save_time = time.time()
         self._save_interval = MEMORY_SAVE_INTERVAL  # Use constant: 30 minutes
-        
+
+        # Hierarchical memory: agent daily reflections (Plan-Execution-Evaluation)
+        self.agent_reflections = {}  # {agent_name: {day: reflection_dict}}
+
         # No longer store time locally - always use TimeManager
         # self._simulation_day = TimeManager.get_current_day()
         # self._simulation_time = TimeManager.get_current_hour()
@@ -141,11 +144,25 @@ class MemoryManager(ThreadSafeBase, MemoryManagerInterface):
         
         # Mark as initialized
         self._initialized = True
-        
+
+        # Manager references (set later via set_managers)
+        self.prompt_mgr = None
+        self.model_mgr = None
+
         print(f"[DEBUG] Memory Manager initialized with timestamp: {self.simulation_timestamp}")
         print(f"[DEBUG] Initial time: Day {TimeManager.get_current_day()}, Hour {TimeManager.get_current_hour()}")
         print("[DEBUG] Locks initialized successfully")
-        
+
+    def set_prompt_manager(self, prompt_mgr):
+        """Set the PromptManager reference for reflection prompt generation."""
+        self.prompt_mgr = prompt_mgr
+        print("[DEBUG] PromptManager reference set in MemoryManager")
+
+    def set_model_manager(self, model_mgr):
+        """Set the ModelManager reference for LLM calls."""
+        self.model_mgr = model_mgr
+        print("[DEBUG] ModelManager reference set in MemoryManager")
+
     def _file_directories(self):
         """Set up paths for memory storage files."""
         try:
@@ -156,7 +173,7 @@ class MemoryManager(ThreadSafeBase, MemoryManagerInterface):
             agents_dir = os.path.join(main_dir, 'simulation_agents')
             self.conversation_dir = os.path.join(main_dir, 'simulation_conversations')
             plans_dir = os.path.join(main_dir, 'simulation_plans')
-            
+
             # Create directories if they don't exist
             os.makedirs(agents_dir, exist_ok=True)
             os.makedirs(self.conversation_dir, exist_ok=True)
@@ -165,10 +182,10 @@ class MemoryManager(ThreadSafeBase, MemoryManagerInterface):
             # Set up file paths - one file per simulation, using consistent naming
             self.memory_file = os.path.join(agents_dir, f"agents_memories_{self.simulation_timestamp}.jsonl")
             self.conversation_file = os.path.join(self.conversation_dir, f"conversations_{self.simulation_timestamp}.jsonl")
-            
+
             # Set up saved plans file path with simulation timestamp
             self.saved_plans_file = os.path.join(plans_dir, f"saved_plans_{self.simulation_timestamp}.json")
-            
+
             print(f"Set up memory file paths:")
             print(f"- Agents memories: {self.memory_file}")
             print(f"- Conversations: {self.conversation_file}")
@@ -760,24 +777,94 @@ class MemoryManager(ThreadSafeBase, MemoryManagerInterface):
         except Exception as e:
             return Result.failure(f"Error recording initial state for {agent_name}: {str(e)}")
 
-    def save_daily_summaries(self, metrics_manager: 'StabilityMetricsManager', current_day: int = None) -> None:
-        """Save daily summaries using the metrics manager."""
+    def save_daily_summaries(self, metrics_manager: 'StabilityMetricsManager', current_day: int = None, agents_dict: Dict = None) -> None:
+        """
+        Generate and save daily narrative reflections for all agents.
+
+        This replaces the old numeric summaries with Plan-Execution-Evaluation reflections.
+
+        Args:
+            metrics_manager: Metrics manager (kept for backward compatibility, not used)
+            current_day: The day number to generate reflections for
+            agents_dict: Dictionary mapping agent names to agent objects
+        """
         try:
             # Use passed current_day parameter instead of calling TimeManager (prevents deadlocks)
             if current_day is None:
                 # Fallback: try to get from preserved timing in memories
                 if self._pending_memories:
-                    latest_memory = max(self._pending_memories, 
+                    latest_memory = max(self._pending_memories,
                                       key=lambda x: (x[1].get('simulation_day', 0), x[1].get('simulation_hour', 0)))
                     current_day = latest_memory[1].get('simulation_day', 1)
                 else:
                     current_day = 1  # Default fallback
-            
-            # Generate and store the daily summary using metrics manager
-            daily_summary = metrics_manager.generate_daily_summary(current_day)
-            metrics_manager.store_daily_summary(current_day, daily_summary)
+
+            if agents_dict is None:
+                print("[WARNING] No agents_dict provided, skipping reflection generation")
+                return
+
+            print(f"\n[REFLECTION] Generating narrative reflections for all agents at end of Day {current_day}")
+
+            day_reflections = {}
+
+            # Generate reflection for each agent
+            for agent_name, agent_obj in agents_dict.items():
+                reflection = self.generate_agent_daily_reflection(agent_name, current_day, agent_obj)
+                if reflection:
+                    # Store in memory
+                    if agent_name not in self.agent_reflections:
+                        self.agent_reflections[agent_name] = {}
+                    self.agent_reflections[agent_name][current_day] = reflection
+                    day_reflections[agent_name] = reflection
+
+            # Save all reflections to daily_summaries directory
+            self._store_daily_reflections(current_day, day_reflections)
+
+            print(f"[REFLECTION] Completed reflections for {len(day_reflections)} agents on Day {current_day}")
+
         except Exception as e:
             print(f"Error saving daily summaries: {str(e)}")
+            traceback.print_exc()
+
+    def _store_daily_reflections(self, day: int, reflections_dict: Dict[str, Dict]) -> None:
+        """
+        Save daily reflections to the daily_summaries directory.
+
+        This stores narrative reflections (not numeric data) for agent decision-making.
+
+        Args:
+            day: The day number
+            reflections_dict: Dictionary mapping agent names to reflection dictionaries
+        """
+        try:
+            # Get the daily summaries directory path
+            main_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'LLMAgentsTown_memory_records')
+            summaries_dir = os.path.join(main_dir, 'simulation_daily_summaries')
+            os.makedirs(summaries_dir, exist_ok=True)
+
+            # Create filename with simulation timestamp
+            summary_file = os.path.join(summaries_dir, f"daily_summary_{self.simulation_timestamp}.json")
+
+            # Load existing summaries if file exists
+            all_summaries = {}
+            if os.path.exists(summary_file):
+                try:
+                    with open(summary_file, 'r') as f:
+                        all_summaries = json.load(f)
+                except:
+                    pass
+
+            # Add current day's reflections
+            all_summaries[f"day_{day}"] = reflections_dict
+
+            # Save back to file
+            with open(summary_file, 'w') as f:
+                json.dump(all_summaries, f, indent=2)
+
+            print(f"[REFLECTION] Saved narrative reflections to {summary_file}")
+
+        except Exception as e:
+            print(f"[ERROR] Failed to save daily reflections: {str(e)}")
             traceback.print_exc()
 
     def get_plan_for_hour(self, agent_name: str, current_hour: int, current_day: int) -> Optional[Dict[str, Any]]:
@@ -1047,3 +1134,243 @@ class MemoryManager(ThreadSafeBase, MemoryManagerInterface):
     def _get_memory_base_path(self) -> str:
         """Get the base path for memory storage."""
         return self.memory_base_path
+
+    # ============================================================================
+    # HIERARCHICAL MEMORY: AGENT DAILY REFLECTIONS (PLAN-EXECUTION-EVALUATION)
+    # ============================================================================
+
+    def generate_agent_daily_reflection(self, agent_name: str, day: int, agent_obj) -> Dict[str, Any]:
+        """
+        Generate a comprehensive daily reflection for an agent using Plan-Execution-Evaluation cycle.
+
+        This function:
+        1. Retrieves the original plan from PLAN_CREATION
+        2. Retrieves plan updates from PLAN_UPDATE
+        3. Retrieves execution memories (WORK, MEAL, CONVERSATION, TRAVEL, REST)
+        4. Gets current metrics from agent object (money, energy, grocery)
+        5. Sends all data to LLM for evaluation with nuanced language
+        6. Returns structured reflection with evaluation keywords
+
+        Args:
+            agent_name: Name of the agent
+            day: The day number to generate reflection for
+            agent_obj: The agent object to get current state
+
+        Returns:
+            Dict containing reflection with sections: plan, execution, evaluation, metrics
+        """
+        try:
+            print(f"[REFLECTION] Generating daily reflection for {agent_name} on Day {day}")
+
+            # 1. Retrieve original plan (PLAN_CREATION)
+            original_plan = None
+            plan_memories = [m for m in self.agent_memories.get(agent_name, [])
+                           if m.get('type') == 'PLAN_CREATION' and m.get('day') == day]
+            if plan_memories:
+                original_plan = plan_memories[0].get('content', {})
+
+            # 2. Retrieve plan updates (PLAN_UPDATE)
+            plan_updates = [m for m in self.agent_memories.get(agent_name, [])
+                          if m.get('type') == 'PLAN_UPDATE' and m.get('day') == day]
+
+            # 3. Retrieve execution memories
+            execution_types = ['WORK', 'MEAL', 'CONVERSATION', 'TRAVEL', 'REST', 'STATE_UPDATE']
+            execution_memories = [m for m in self.agent_memories.get(agent_name, [])
+                                if m.get('type') in execution_types and m.get('day') == day]
+
+            # Sort by hour
+            execution_memories.sort(key=lambda m: m.get('hour', 0))
+
+            # 4. Get current metrics from agent object
+            current_metrics = {
+                'money': getattr(agent_obj, 'money', 0),
+                'energy': getattr(agent_obj.energy_system, 'get_energy', lambda x: 0)(agent_name) if hasattr(agent_obj, 'energy_system') else 0,
+                'grocery': getattr(agent_obj.grocery_system, 'get_level', lambda x: 0)(agent_name) if hasattr(agent_obj, 'grocery_system') else 0,
+                'daily_income': getattr(agent_obj, 'daily_income', 0),
+                'daily_expenses': getattr(agent_obj, 'daily_expenses', 0)
+            }
+
+            # 5. Prepare LLM prompt for evaluation
+            prompt = self._build_reflection_prompt(
+                agent_name, day, original_plan, plan_updates,
+                execution_memories, current_metrics
+            )
+
+            # 6. Call LLM to generate reflection
+            if not self.model_mgr:
+                raise RuntimeError("ModelManager not set. Call set_model_manager() first.")
+
+            llm_response = self.model_mgr.generate(prompt, 'action')
+
+            # 7. Structure the reflection
+            reflection = {
+                'agent_name': agent_name,
+                'day': day,
+                'timestamp': datetime.now().isoformat(),
+                'original_plan': original_plan,
+                'plan_updates_count': len(plan_updates),
+                'execution_summary': llm_response,  # LLM-generated narrative with evaluation
+                'metrics': current_metrics,
+                'memory_counts': {
+                    'work': len([m for m in execution_memories if m.get('type') == 'WORK']),
+                    'meals': len([m for m in execution_memories if m.get('type') == 'MEAL']),
+                    'conversations': len([m for m in execution_memories if m.get('type') == 'CONVERSATION']),
+                    'travel': len([m for m in execution_memories if m.get('type') == 'TRAVEL']),
+                }
+            }
+
+            print(f"[REFLECTION] Successfully generated reflection for {agent_name} on Day {day}")
+            return reflection
+
+        except Exception as e:
+            print(f"[ERROR] Failed to generate reflection for {agent_name} on Day {day}: {str(e)}")
+            traceback.print_exc()
+            return None
+
+    def _build_reflection_prompt(self, agent_name: str, day: int,
+                                original_plan: Dict, plan_updates: List[Dict],
+                                execution_memories: List[Dict], metrics: Dict) -> str:
+        """
+        Build the LLM prompt for generating agent daily reflection.
+
+        This prompt instructs the LLM to:
+        - Compare original plan vs actual execution
+        - Include plan changes and reasons
+        - Evaluate outcomes using numerical metrics
+        - Use nuanced evaluation language organically
+        """
+
+        prompt = f"""You are generating a daily reflection summary for {agent_name} at the end of Day {day}.
+
+This reflection should follow a Plan-Execution-Evaluation structure:
+
+## ORIGINAL PLAN (Morning)
+"""
+
+        # Add original plan
+        if original_plan and 'activities' in original_plan:
+            prompt += "The agent planned to:\n"
+            for activity in original_plan['activities']:
+                time = activity.get('time', '?')
+                action = activity.get('action', '?')
+                target = activity.get('target', '?')
+                desc = activity.get('description', '')
+                prompt += f"- Hour {time}: {action} at {target}"
+                if desc:
+                    prompt += f" ({desc})"
+                prompt += "\n"
+        else:
+            prompt += "No formal plan was recorded.\n"
+
+        # Add plan updates
+        prompt += f"\n## PLAN MODIFICATIONS (During Day)\n"
+        if plan_updates:
+            prompt += f"The plan was modified {len(plan_updates)} times:\n"
+            for i, update in enumerate(plan_updates[:5], 1):  # Show first 5 updates
+                hour = update.get('hour', '?')
+                reason = update.get('content', {}).get('reason', 'Unknown reason')
+                prompt += f"{i}. Hour {hour}: {reason}\n"
+        else:
+            prompt += "No modifications were made to the original plan.\n"
+
+        # Add execution summary
+        prompt += f"\n## ACTUAL EXECUTION (What Happened)\n"
+
+        # Group memories by type
+        work_mems = [m for m in execution_memories if m.get('type') == 'WORK']
+        meal_mems = [m for m in execution_memories if m.get('type') == 'MEAL']
+        conv_mems = [m for m in execution_memories if m.get('type') == 'CONVERSATION']
+
+        if work_mems:
+            prompt += f"\nWork ({len(work_mems)} sessions):\n"
+            for mem in work_mems[:3]:  # Show first 3
+                hour = mem.get('hour', '?')
+                content = mem.get('content', {})
+                location = content.get('location', '?')
+                wage = content.get('wage', 0)
+                prompt += f"- Hour {hour}: Worked at {location}, earned ${wage}\n"
+
+        if meal_mems:
+            prompt += f"\nMeals ({len(meal_mems)} times):\n"
+            for mem in meal_mems[:5]:  # Show first 5
+                hour = mem.get('hour', '?')
+                content = mem.get('content', {})
+                food = content.get('food_name', '?')
+                location = content.get('location', '?')
+                cost = content.get('price', 0)
+                prompt += f"- Hour {hour}: Ate {food} at {location} (${cost})\n"
+
+        if conv_mems:
+            prompt += f"\nConversations ({len(conv_mems)} interactions):\n"
+            for mem in conv_mems[:3]:  # Show first 3
+                hour = mem.get('hour', '?')
+                content = mem.get('content', {})
+                participants = content.get('participants', [])
+                location = content.get('location', '?')
+                prompt += f"- Hour {hour}: Talked with {', '.join(participants)} at {location}\n"
+
+        # Add metrics
+        prompt += f"\n## OUTCOMES (Metrics)\n"
+        prompt += f"Financial: Started with some money, earned ${metrics['daily_income']}, spent ${metrics['daily_expenses']}, ended with ${metrics['money']}\n"
+        prompt += f"Energy: Current level is {metrics['energy']}\n"
+        prompt += f"Grocery: Stock level is {metrics['grocery']}\n"
+
+        # Instructions for LLM
+        prompt += f"""
+
+## YOUR TASK
+Write a concise 2-3 paragraph reflection that:
+1. Compares what was planned vs what actually happened
+2. Notes any significant changes or unexpected events
+3. Evaluates the day's outcome based on metrics (money earned/spent, energy management)
+4. Uses natural evaluative language when appropriate (e.g., "successful", "productive", "delayed", "incomplete", "valuable", "careless")
+
+The evaluation should flow naturally from the numerical outcomes - if the agent earned good money and maintained energy, describe it positively; if plans were disrupted or resources depleted, describe challenges.
+
+Keep the tone third-person and objective, like a behavioral researcher's notes.
+
+REFLECTION:"""
+
+        return prompt
+
+    def get_agent_reflection_summary(self, agent_name: str, days: int = 3) -> str:
+        """
+        Retrieve recent reflection summaries for an agent to use in planning prompts.
+
+        Args:
+            agent_name: Name of the agent
+            days: Number of recent days to retrieve (default 3)
+
+        Returns:
+            Formatted string of recent reflections, or empty string if none available
+        """
+        try:
+            if agent_name not in self.agent_reflections:
+                return ""
+
+            agent_refs = self.agent_reflections[agent_name]
+            if not agent_refs:
+                return ""
+
+            # Get most recent days
+            sorted_days = sorted(agent_refs.keys(), reverse=True)
+            recent_days = sorted_days[:days]
+
+            if not recent_days:
+                return ""
+
+            summary = ""
+            for day in sorted(recent_days):  # Sort chronologically for display
+                reflection = agent_refs[day]
+                execution_summary = reflection.get('execution_summary', '')
+                metrics = reflection.get('metrics', {})
+
+                summary += f"\n**Day {day} Summary:**\n"
+                summary += f"{execution_summary}\n"
+                summary += f"(Ended with: ${metrics.get('money', 0)}, Energy: {metrics.get('energy', 0)})\n"
+
+            return summary
+
+        except Exception as e:
+            print(f"[ERROR] Failed to retrieve reflection summary for {agent_name}: {str(e)}")
+            return ""

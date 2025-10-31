@@ -2126,9 +2126,10 @@ class ConversationManager:
                         'employment_type': current_speaker.income_info.get('type', 'hourly'),
                         'work_schedule': current_speaker.income_info.get('schedule', {}),
                         'is_student': False,  # Explicitly set based on occupation (can be enhanced)
-                        'typical_work_hours': self._get_work_hours_description(current_speaker.income_info.get('schedule', {}))
+                        'typical_work_hours': self._get_work_hours_description(current_speaker.income_info.get('schedule', {})),
+                        'current_day': TimeManager.get_current_day()  # Add current_day for reflection retrieval
                     }
-                    
+
                     # Generate conversation turn using prompt manager
                     conversation_prompt = prompt_mgr.get_prompt("conversation", prompt_context)
                     
